@@ -69,7 +69,17 @@ def upload_text_to_milvus(
         ) from e
 
     try:
-        inserted = insert_text_chunks(current.id, doc_id, chunks, vectors)
+        inserted = insert_text_chunks(
+            current.id,
+            doc_id,
+            chunks,
+            vectors,
+            age=payload.age,
+            job=payload.job,
+            region=payload.region,
+            fraud_type=payload.fraud_type,
+            fraud_amount=payload.fraud_amount,
+        )
     except Exception as e:
         logger.exception("Milvus insert error")
         raise HTTPException(

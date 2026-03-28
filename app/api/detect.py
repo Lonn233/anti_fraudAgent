@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from uuid import uuid4
 
@@ -11,11 +12,12 @@ from app.config.settings import settings
 from app.db.models import DetectionRecord, User
 from app.db.session import get_db
 from app.schemas import DetectOut, DetectTextIn
-from app.services.anti_fraud import score_media, score_text
+from app.services.anti_fraud import score_media
+from app.services.rag import detect_fraud_by_rag
 from app.utils.deps import get_current_user
 
-
 router = APIRouter(prefix="/detect", tags=["detect"])
+logger = logging.getLogger(__name__)
 
 
 def _ensure_storage() -> Path:
@@ -29,24 +31,52 @@ def detect_text(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    risk, reasons = score_text(payload.text)
-    rec = DetectionRecord(
-        user_id=current.id,
-        kind="text",
-        input_text=payload.text,
-        risk_score=risk,
-        result_json=json.dumps({"reasons": reasons}, ensure_ascii=False),
-    )
-    db.add(rec)
-    db.commit()
-    db.refresh(rec)
-    return DetectOut(
-        id=rec.id,
-        kind="text",
-        risk_score=risk,
-        reasons=reasons,
-        created_at=rec.created_at,
-    )
+    """文本反诈检测：基于 RAG 向量检索"""
+    try:
+        # 调用 RAG 服务进行检测
+        result = detect_fraud_by_rag(payload.text)
+        
+        # 保存检测记录
+        rec = DetectionRecord(
+            user_id=current.id,
+            kind="text",
+            input_text=payload.text,
+            risk_score=result["risk_score"],
+            result_json=json.dumps(
+                {
+                    "reasons": result["reasons"],
+                    "retrieved_cases": result["retrieved_cases"],
+                    "method": "rag_vector_search",
+                },
+                ensure_ascii=False,
+            ),
+        )
+        db.add(rec)
+        db.commit()
+        db.refresh(rec)
+
+        logger.info("Detection completed for user %d: risk_score=%d", current.id, result["risk_score"])
+
+        return DetectOut(
+            id=rec.id,
+            kind="text",
+            risk_score=result["risk_score"],
+            reasons=result["reasons"],
+            created_at=rec.created_at,
+        )
+
+    except ValueError as e:
+        logger.error("Detection error: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        ) from e
+    except Exception as e:
+        logger.exception("Unexpected error in detect_text")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Detection failed: {e}",
+        ) from e
 
 
 @router.post("/media", response_model=DetectOut)
@@ -138,4 +168,3 @@ def list_records(
         }
         for r in rows
     ]
-

@@ -39,8 +39,15 @@ def ensure_text_collection_exists() -> None:
         FieldSchema(name="chunk_index", dtype=DataType.INT32),
         FieldSchema(name="content", dtype=DataType.VARCHAR, max_length=65535),
         FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dim),
+        # 可选字段：用户信息
+        FieldSchema(name="age", dtype=DataType.INT32, nullable=True),
+        FieldSchema(name="job", dtype=DataType.VARCHAR, max_length=128, nullable=True),
+        FieldSchema(name="region", dtype=DataType.VARCHAR, max_length=128, nullable=True),
+        # 可选字段：诈骗案例信息
+        FieldSchema(name="fraud_type", dtype=DataType.VARCHAR, max_length=128, nullable=True),
+        FieldSchema(name="fraud_amount", dtype=DataType.FLOAT, nullable=True),
     ]
-    schema = CollectionSchema(fields, description="anti-fraud KB text chunks")
+    schema = CollectionSchema(fields, description="anti-fraud KB text chunks with user and fraud info")
     col = Collection(name=name, schema=schema)
     col.create_index(
         field_name="embedding",
@@ -53,6 +60,11 @@ def insert_text_chunks(
     doc_id: str,
     chunks: list[str],
     vectors: list[list[float]],
+    age: int | None = None,
+    job: str | None = None,
+    region: str | None = None,
+    fraud_type: str | None = None,
+    fraud_amount: float | None = None,
 ) -> int:
     if len(chunks) != len(vectors):
         raise ValueError("chunks and vectors length mismatch")
@@ -73,6 +85,12 @@ def insert_text_chunks(
     user_ids = [user_id] * len(chunks)
     doc_ids = [doc_id] * len(chunks)
     chunk_indices = list(range(len(chunks)))
+    ages = [age] * len(chunks)
+    jobs = [job] * len(chunks)
+    regions = [region] * len(chunks)
+    fraud_types = [fraud_type] * len(chunks)
+    fraud_amounts = [fraud_amount] * len(chunks)
+
     col.insert(
         [
             user_ids,
@@ -80,6 +98,11 @@ def insert_text_chunks(
             chunk_indices,
             chunks,
             vectors,
+            ages,
+            jobs,
+            regions,
+            fraud_types,
+            fraud_amounts,
         ]
     )
     col.flush()

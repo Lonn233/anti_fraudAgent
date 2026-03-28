@@ -67,6 +67,12 @@ class TextKbUploadIn(BaseModel):
     doc_id: str | None = Field(default=None, max_length=128)
     chunk_max_chars: int | None = Field(default=None, ge=200, le=4000)
     chunk_overlap_chars: int | None = Field(default=None, ge=0, le=2000)
+    # 可选字段：用户信息和诈骗案例信息
+    age: int | None = Field(default=None, ge=0, le=150)
+    job: str | None = Field(default=None, max_length=128)
+    region: str | None = Field(default=None, max_length=128)
+    fraud_type: str | None = Field(default=None, max_length=128)
+    fraud_amount: float | None = Field(default=None, ge=0)
 
 
 class TextKbUploadOut(BaseModel):
