@@ -1,16 +1,21 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from typing import TypedDict
 
 from pymilvus import Collection
 
 from app.config.settings import settings
-from app.services.doubao_embed import embed_texts
+from app.services.doubao_embed import _embed_image, _embed_single, _embed_video, embed_texts
 from app.services.milvus_text import _ensure_connection
 
 logger = logging.getLogger(__name__)
 
+
+# --------------------------------------------------------------------------- #
+# TypedDict
+# --------------------------------------------------------------------------- #
 
 class RetrievedCase(TypedDict):
     """检索到的诈骗案例"""
@@ -31,38 +36,25 @@ class DetectionResult(TypedDict):
     retrieved_cases: list[RetrievedCase]
 
 
-def detect_fraud_by_rag(text: str) -> DetectionResult:
-    """
-    基于 RAG（检索增强生成）的反诈检测。
-    
-    流程：
-    1. 对输入文本进行向量化
-    2. 在 Milvus 中检索相似的诈骗案例
-    3. 根据相似度计算风险分数
-    
-    Args:
-        text: 待检测的文本
-        
-    Returns:
-        DetectionResult: 包含风险分数、原因和检索案例的结果
-        
-    Raises:
-        ValueError: 向量化或检索失败
-    """
-    logger.info("Starting RAG-based fraud detection")
-    
-    # 第一步：向量化输入文本
-    logger.info("Embedding input text")
-    vectors = embed_texts([text])
-    if not vectors:
-        raise ValueError("Failed to embed text")
-    input_vector = vectors[0]
+# --------------------------------------------------------------------------- #
+# 公共：Milvus 检索 + 风险计算
+# --------------------------------------------------------------------------- #
 
-    # 第二步：在 Milvus 中检索相似案例
+def _search_and_score(input_vector: list[float]) -> DetectionResult:
+    """对输入向量在 Milvus 中检索相似案例，并计算风险分数。
+
+    供文本、图片、视频三个 RAG 函数共用。
+
+    Args:
+        input_vector: 已经过嵌入的查询向量
+
+    Returns:
+        DetectionResult
+    """
     logger.info("Searching Milvus for similar cases")
     _ensure_connection()
     col = Collection(settings.milvus_collection)
-    
+
     search_results = col.search(
         data=[input_vector],
         anns_field="embedding",
@@ -80,19 +72,15 @@ def detect_fraud_by_rag(text: str) -> DetectionResult:
         ],
     )
 
-    # 第三步：解析检索结果并计算风险分数
     reasons: list[str] = []
     retrieved_cases: list[RetrievedCase] = []
     risk_score = 0
 
     if search_results and len(search_results) > 0:
-        hits = search_results[0]
-        for hit in hits:
+        for hit in search_results[0]:
             # COSINE 距离范围 [-1, 1]，越接近 1 越相似
-            distance = hit.distance
-            similarity = (distance + 1) / 2  # 转换为 [0, 1] 范围
-            
-            # 提取字段
+            similarity = (hit.distance + 1) / 2  # 转换为 [0, 1]
+
             entity = hit.entity
             case_info: RetrievedCase = {
                 "doc_id": entity.get("doc_id", "unknown"),
@@ -105,8 +93,7 @@ def detect_fraud_by_rag(text: str) -> DetectionResult:
                 "similarity": round(similarity, 3),
             }
             retrieved_cases.append(case_info)
-            
-            # 根据相似度计算风险分数
+
             if similarity > 0.7:
                 risk_score = max(risk_score, 85)
                 reasons.append(
@@ -127,10 +114,70 @@ def detect_fraud_by_rag(text: str) -> DetectionResult:
         risk_score = 10
         reasons = ["未发现相似诈骗案例，风险较低"]
 
-    logger.info("Detection completed: risk_score=%d, cases=%d", risk_score, len(retrieved_cases))
+    logger.info("Search completed: risk_score=%d, cases=%d", risk_score, len(retrieved_cases))
 
     return {
         "risk_score": risk_score,
         "reasons": reasons,
         "retrieved_cases": retrieved_cases,
     }
+
+
+# --------------------------------------------------------------------------- #
+# 文本 RAG
+# --------------------------------------------------------------------------- #
+
+def detect_fraud_by_rag(text: str) -> DetectionResult:
+    """基于文本的反诈 RAG 检测。
+
+    Args:
+        text: 待检测的文本内容
+
+    Returns:
+        DetectionResult
+    """
+    logger.info("RAG detect: text")
+    vectors = embed_texts([text])
+    if not vectors:
+        raise ValueError("Failed to embed text")
+    return _search_and_score(vectors[0])
+
+
+# --------------------------------------------------------------------------- #
+# 图片 RAG
+# --------------------------------------------------------------------------- #
+
+def detect_fraud_by_image_rag(image_path: str | Path) -> DetectionResult:
+    """基于图片的反诈 RAG 检测。
+
+    将图片 Base64 编码后调用豆包多模态嵌入，再在 Milvus 中检索相似案例。
+
+    Args:
+        image_path: 本地图片文件路径
+
+    Returns:
+        DetectionResult
+    """
+    logger.info("RAG detect: image path=%s", image_path)
+    input_vector = _embed_image(image_path)
+    return _search_and_score(input_vector)
+
+
+# --------------------------------------------------------------------------- #
+# 视频 RAG
+# --------------------------------------------------------------------------- #
+
+def detect_fraud_by_video_rag(video_path: str | Path) -> DetectionResult:
+    """基于视频的反诈 RAG 检测。
+
+    将视频 Base64 编码后调用豆包多模态嵌入，再在 Milvus 中检索相似案例。
+
+    Args:
+        video_path: 本地视频文件路径
+
+    Returns:
+        DetectionResult
+    """
+    logger.info("RAG detect: video path=%s", video_path)
+    input_vector = _embed_video(video_path)
+    return _search_and_score(input_vector)

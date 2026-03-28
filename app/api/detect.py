@@ -12,8 +12,7 @@ from app.config.settings import settings
 from app.db.models import DetectionRecord, User
 from app.db.session import get_db
 from app.schemas import DetectOut, DetectTextIn
-from app.services.anti_fraud import score_media
-from app.services.rag import detect_fraud_by_rag
+from app.services.rag import detect_fraud_by_rag, detect_fraud_by_image_rag, detect_fraud_by_video_rag
 from app.utils.deps import get_current_user
 
 router = APIRouter(prefix="/detect", tags=["detect"])
@@ -25,67 +24,77 @@ def _ensure_storage() -> Path:
     return settings.storage_path
 
 
+def _save_record(
+    db: Session,
+    user_id: int,
+    kind: str,
+    result: dict,
+    input_text: str | None = None,
+    file_path: str | None = None,
+    file_name: str | None = None,
+    content_type: str | None = None,
+    extra: dict | None = None,
+) -> DetectionRecord:
+    """统一保存检测记录到数据库。"""
+    result_data = {
+        "reasons": result["reasons"],
+        "retrieved_cases": result["retrieved_cases"],
+        "method": "rag_vector_search",
+    }
+    if extra:
+        result_data.update(extra)
+
+    rec = DetectionRecord(
+        user_id=user_id,
+        kind=kind,
+        input_text=input_text,
+        file_path=file_path,
+        file_name=file_name,
+        content_type=content_type,
+        risk_score=result["risk_score"],
+        result_json=json.dumps(result_data, ensure_ascii=False),
+    )
+    db.add(rec)
+    db.commit()
+    db.refresh(rec)
+    return rec
+
+
 @router.post("/text", response_model=DetectOut)
 def detect_text(
     payload: DetectTextIn,
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    """文本反诈检测：基于 RAG 向量检索"""
+    """文本反诈检测：向量化 > Milvus RAG 检索 > 风险评分"""
     try:
-        # 调用 RAG 服务进行检测
         result = detect_fraud_by_rag(payload.text)
-        
-        # 保存检测记录
-        rec = DetectionRecord(
-            user_id=current.id,
-            kind="text",
+        rec = _save_record(
+            db, current.id, "text", result,
             input_text=payload.text,
-            risk_score=result["risk_score"],
-            result_json=json.dumps(
-                {
-                    "reasons": result["reasons"],
-                    "retrieved_cases": result["retrieved_cases"],
-                    "method": "rag_vector_search",
-                },
-                ensure_ascii=False,
-            ),
         )
-        db.add(rec)
-        db.commit()
-        db.refresh(rec)
-
-        logger.info("Detection completed for user %d: risk_score=%d", current.id, result["risk_score"])
-
+        logger.info("Text detection done: user=%d risk=%d", current.id, result["risk_score"])
         return DetectOut(
-            id=rec.id,
-            kind="text",
+            id=rec.id, kind="text",
             risk_score=result["risk_score"],
             reasons=result["reasons"],
             created_at=rec.created_at,
         )
-
     except ValueError as e:
-        logger.error("Detection error: %s", e)
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e),
-        ) from e
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except Exception as e:
-        logger.exception("Unexpected error in detect_text")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Detection failed: {e}",
-        ) from e
+        logger.exception("Text detection error")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Detection failed: {e}") from e
 
 
 @router.post("/media", response_model=DetectOut)
 async def detect_media(
-    media_type: str = Form(...),  # image|audio|video
+    media_type: str = Form(...),  # image | audio | video
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
+    """媒体反诈检测：图片/视频走 RAG 检索；音频走占位评分。"""
     media_type = media_type.strip().lower()
     if media_type not in {"image", "audio", "video"}:
         raise HTTPException(
@@ -93,6 +102,7 @@ async def detect_media(
             detail="media_type must be image|audio|video",
         )
 
+    # 保存上传文件
     storage = _ensure_storage()
     safe_name = Path(file.filename or "upload").name
     ext = Path(safe_name).suffix[:16]
@@ -118,29 +128,47 @@ async def detect_media(
     finally:
         await file.close()
 
-    risk, reasons = score_media(media_type, safe_name)
-    rec = DetectionRecord(
-        user_id=current.id,
-        kind=media_type,
-        file_path=str(saved_path),
-        file_name=safe_name,
-        content_type=file.content_type,
-        risk_score=risk,
-        result_json=json.dumps(
-            {"reasons": reasons, "saved_name": saved_name, "bytes": size},
-            ensure_ascii=False,
-        ),
-    )
-    db.add(rec)
-    db.commit()
-    db.refresh(rec)
-    return DetectOut(
-        id=rec.id,
-        kind=media_type,  # type: ignore[arg-type]
-        risk_score=risk,
-        reasons=reasons,
-        created_at=rec.created_at,
-    )
+    try:
+        # 图片：RAG 检索
+        if media_type == "image":
+            result = detect_fraud_by_image_rag(saved_path)
+
+        # 视频：RAG 检索
+        elif media_type == "video":
+            result = detect_fraud_by_video_rag(saved_path)
+
+        # 音频：暂无多模态向量支持，返回占位结果
+        else:
+            result = {
+                "risk_score": 0,
+                "reasons": ["音频检测暂不支持向量检索，请人工核查"],
+                "retrieved_cases": [],
+            }
+
+        rec = _save_record(
+            db, current.id, media_type, result,
+            file_path=str(saved_path),
+            file_name=safe_name,
+            content_type=file.content_type,
+            extra={"saved_name": saved_name, "bytes": size},
+        )
+        logger.info("Media detection done: user=%d type=%s risk=%d", current.id, media_type, result["risk_score"])
+        return DetectOut(
+            id=rec.id,
+            kind=media_type,  # type: ignore[arg-type]
+            risk_score=result["risk_score"],
+            reasons=result["reasons"],
+            created_at=rec.created_at,
+        )
+
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+    except Exception as e:
+        logger.exception("Media detection error")
+        #HTTPException是用来返回给前端用户的错误提醒
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Detection failed: {e}") from e
 
 
 @router.get("/records")
