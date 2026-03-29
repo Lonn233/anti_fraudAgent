@@ -60,11 +60,11 @@ def insert_text_chunks(
     doc_id: str,
     chunks: list[str],
     vectors: list[list[float]],
-    age: int | None = None,
-    job: str | None = None,
-    region: str | None = None,
-    fraud_type: str | None = None,
-    fraud_amount: float | None = None,
+    ages: list[int | None] | None = None,
+    jobs: list[str | None] | None = None,
+    regions: list[str | None] | None = None,
+    fraud_types: list[str | None] | None = None,
+    fraud_amounts: list[float | None] | None = None,
 ) -> int:
     if len(chunks) != len(vectors):
         raise ValueError("chunks and vectors length mismatch")
@@ -85,11 +85,13 @@ def insert_text_chunks(
     user_ids = [user_id] * len(chunks)
     doc_ids = [doc_id] * len(chunks)
     chunk_indices = list(range(len(chunks)))
-    ages = [age] * len(chunks)
-    jobs = [job] * len(chunks)
-    regions = [region] * len(chunks)
-    fraud_types = [fraud_type] * len(chunks)
-    fraud_amounts = [fraud_amount] * len(chunks)
+    
+    # 如果未提供，使用 None 填充
+    ages = ages or [None] * len(chunks)
+    jobs = jobs or [None] * len(chunks)
+    regions = regions or [None] * len(chunks)
+    fraud_types = fraud_types or [None] * len(chunks)
+    fraud_amounts = fraud_amounts or [None] * len(chunks)
 
     col.insert(
         [

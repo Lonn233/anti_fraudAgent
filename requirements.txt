@@ -7,3 +7,4 @@ python-jose[cryptography]
 pydantic-settings
 httpx
 pymilvus
+python-docx

@@ -81,3 +81,37 @@ class TextKbUploadOut(BaseModel):
     inserted: int
     milvus_collection: str
     embedding_model: str
+
+
+class TextReportIn(BaseModel):
+    """单个诈骗案例上报（不分段）"""
+    text: str = Field(min_length=1, max_length=500_000)
+    doc_id: str | None = Field(default=None, max_length=128)
+    age: int | None = Field(default=None, ge=0, le=150)
+    job: str | None = Field(default=None, max_length=128)
+    region: str | None = Field(default=None, max_length=128)
+    fraud_type: str | None = Field(default=None, max_length=128)
+    fraud_amount: float | None = Field(default=None, ge=0)
+
+
+class TextReportOut(BaseModel):
+    """单个案例上报响应"""
+    doc_id: str
+    inserted: int
+    milvus_collection: str
+    embedding_model: str
+
+
+class TextUploadIn(BaseModel):
+    """批量文本上传（自动分段）"""
+    text: str = Field(min_length=1, max_length=500_000)
+    doc_id: str | None = Field(default=None, max_length=128)
+
+
+class TextUploadOut(BaseModel):
+    """批量文本上传响应"""
+    doc_id: str
+    chunk_count: int
+    inserted: int
+    milvus_collection: str
+    embedding_model: str

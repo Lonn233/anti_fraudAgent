@@ -1,49 +1,28 @@
 from __future__ import annotations
 
-
-def chunk_text(text: str, max_chars: int, overlap: int) -> list[str]:
-    """按段落优先、再按固定窗口分段（带重叠）。"""
+#按照一段一个向量进行分割，因为这里主要是上传反诈案例的，并不是上传文献资料，所以一段的内容是独立完整的。
+def chunk_text(text: str, max_chars: int = None, overlap: int = None) -> list[str]:
+    """按段落分段，一段一个向量。
+    
+    忽略 max_chars 和 overlap 参数，仅按段落（双换行）分割。
+    
+    Args:
+        text: 待分段的文本
+        max_chars: 已弃用（保留参数以兼容旧接口）
+        overlap: 已弃用（保留参数以兼容旧接口）
+        
+    Returns:
+        段落列表，每个元素是一个段落
+    """
     text = text.strip()
     if not text:
         return []
 
-    overlap = max(0, min(overlap, max_chars - 1)) if max_chars > 1 else 0
-    raw_parts: list[str] = []
-    for block in text.replace("\r\n", "\n").replace("\r", "\n").split("\n\n"):
-        b = block.strip()
-        if b:
-            raw_parts.append(b)
-
-    if not raw_parts:
-        raw_parts = [text]
-
-    merged: list[str] = []
-    buf = ""
-    for p in raw_parts:
-        if not buf:
-            buf = p
-            continue
-        if len(buf) + 1 + len(p) <= max_chars:
-            buf = f"{buf}\n{p}"
-        else:
-            merged.append(buf)
-            buf = p
-    if buf:
-        merged.append(buf)
-
+    # 按双换行（段落分隔符）分割
     chunks: list[str] = []
-    for segment in merged:
-        if len(segment) <= max_chars:
-            chunks.append(segment)
-            continue
-        start = 0
-        while start < len(segment):
-            end = min(start + max_chars, len(segment))
-            piece = segment[start:end].strip()
-            if piece:
-                chunks.append(piece)
-            if end >= len(segment):
-                break
-            start = max(end - overlap, start + 1)
+    for paragraph in text.replace("\r\n", "\n").replace("\r", "\n").split("\n\n"):
+        p = paragraph.strip()
+        if p:
+            chunks.append(p)
 
-    return [c for c in chunks if c]
+    return chunks
