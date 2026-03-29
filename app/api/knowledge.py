@@ -12,8 +12,8 @@ from app.config.settings import settings
 from app.db.models import User
 from app.db.session import get_db
 from app.schemas import TextKbUploadIn, TextKbUploadOut, TextReportIn
-from app.services.doubao_embed import embed_texts
-from app.services.milvus_text import insert_text_chunks
+from app.models.doubao_embed import embed_texts
+from app.utils.milvus_text import insert_text_chunks
 from app.services.upload import upload_and_chunk_file
 from app.utils.deps import get_current_user
 

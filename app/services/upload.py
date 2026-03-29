@@ -4,9 +4,9 @@ import logging
 import uuid
 from pathlib import Path
 
-from app.services.doubao_embed import embed_texts
-from app.services.milvus_text import insert_text_chunks
-from app.services.text_chunk import chunk_text
+from app.models.doubao_embed import embed_texts
+from app.utils.milvus_text import insert_text_chunks
+from app.utils.text_chunk import chunk_text
 
 logger = logging.getLogger(__name__)
 

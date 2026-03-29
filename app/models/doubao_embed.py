@@ -57,7 +57,6 @@ def _call_embed_api(input_items: list[dict]) -> list[float]:
     logger.info("Doubao response: status=%s body_prefix=%s", r.status_code, r.text[:200])
 
     if r.status_code != 200:
-        #这里的error是处理火山方舟接口返回的错误信息
         raise httpx.HTTPStatusError(
             message=f"{r.status_code} {r.text}",
             request=r.request,
@@ -81,6 +80,7 @@ def _call_embed_api(input_items: list[dict]) -> list[float]:
             emb = item.get("embedding")
             if isinstance(emb, list) and emb and isinstance(emb[0], (int, float)):
                 return [float(x) for x in emb]
+
     raise ValueError(f"Unexpected embeddings response structure: {str(body)[:300]}")
 
 

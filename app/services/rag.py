@@ -7,8 +7,8 @@ from typing import TypedDict
 from pymilvus import Collection
 
 from app.config.settings import settings
-from app.services.doubao_embed import _embed_image, _embed_single, _embed_video, embed_texts
-from app.services.milvus_text import _ensure_connection
+from app.models.doubao_embed import _embed_image, _embed_single, _embed_video, embed_texts
+from app.utils.milvus_text import _ensure_connection
 
 logger = logging.getLogger(__name__)
 
