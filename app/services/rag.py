@@ -136,11 +136,23 @@ def detect_fraud_by_rag(text: str) -> DetectionResult:
     Returns:
         DetectionResult
     """
+    import time
     logger.info("RAG detect: text")
+
+    embed_start = time.perf_counter()
     vectors = embed_texts([text])
+    embed_elapsed = time.perf_counter() - embed_start
+    logger.info("[TIMER] embed_texts: %.3fs", embed_elapsed)
+
     if not vectors:
         raise ValueError("Failed to embed text")
-    return _search_and_score(vectors[0])
+
+    search_start = time.perf_counter()
+    result = _search_and_score(vectors[0])
+    search_elapsed = time.perf_counter() - search_start
+    logger.info("[TIMER] milvus search+score: %.3fs", search_elapsed)
+
+    return result
 
 
 # --------------------------------------------------------------------------- #

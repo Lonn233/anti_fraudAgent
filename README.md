@@ -27,7 +27,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-打开接口文档：`http://127.0.0.1:8080/docs`
+打开接口文档：`http://127.0.0.1:8090/docs`
 
 ## 主要接口（摘要）
 - `POST /auth/register`

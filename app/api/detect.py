@@ -12,6 +12,7 @@ from app.config.settings import settings
 from app.db.models import DetectionRecord, User
 from app.db.session import get_db
 from app.schemas import DetectOut, DetectTextIn
+from app.services.llm import generate_fraud_advice
 from app.services.rag import detect_fraud_by_rag, detect_fraud_by_image_rag, detect_fraud_by_video_rag
 from app.utils.deps import get_current_user
 
@@ -66,20 +67,49 @@ def detect_text(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    """文本反诈检测：向量化 > Milvus RAG 检索 > 风险评分"""
+    """文本反诈检测：向量化 > Milvus RAG 检索 > LLM 生成建议"""
+    import time
+    total_start = time.perf_counter()
     try:
+        # 第一步：RAG 检索（含向量化）
+        logger.info("[TIMER] RAG detection start for user %d", current.id)
+        rag_start = time.perf_counter()
         result = detect_fraud_by_rag(payload.text)
+        rag_elapsed = time.perf_counter() - rag_start
+        logger.info("[TIMER] RAG detection done: %.3fs (risk_score=%d, cases=%d)",
+                    rag_elapsed, result["risk_score"], len(result["retrieved_cases"]))
+        
+        # 第二步：调用 LLM 生成反诈建议（基于前三个相似案例）
+        logger.info("[TIMER] LLM advice start")
+        llm_start = time.perf_counter()
+        advice = ""
+        try:
+            advice = generate_fraud_advice(payload.text, result["retrieved_cases"])
+            llm_elapsed = time.perf_counter() - llm_start
+            logger.info("[TIMER] LLM advice done: %.3fs", llm_elapsed)
+        except Exception as e:
+            llm_elapsed = time.perf_counter() - llm_start
+            logger.warning("[TIMER] LLM advice failed after %.3fs: %s", llm_elapsed, e)
+            advice = "无法生成 LLM 建议，请参考上述相似案例进行判断。"
+        
+        # 第三步：保存检测记录
         rec = _save_record(
             db, current.id, "text", result,
             input_text=payload.text,
+            extra={"llm_advice": advice},
         )
-        logger.info("Text detection done: user=%d risk=%d", current.id, result["risk_score"])
+
+        total_elapsed = time.perf_counter() - total_start
+        logger.info("[TIMER] detect/text total: %.3fs (rag=%.3fs, llm=%.3fs)",
+                    total_elapsed, rag_elapsed, llm_elapsed)
+
         return DetectOut(
             id=rec.id, kind="text",
             risk_score=result["risk_score"],
-            reasons=result["reasons"],
+            reasons=result["reasons"] + [f"\n\n💡 反诈建议：\n{advice}"],
             created_at=rec.created_at,
         )
+
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except Exception as e:
@@ -167,7 +197,6 @@ async def detect_media(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
     except Exception as e:
         logger.exception("Media detection error")
-        #HTTPException是用来返回给前端用户的错误提醒
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Detection failed: {e}") from e
 
 
