@@ -24,6 +24,8 @@ class Settings(BaseSettings):
 
     storage_dir: str = "./storage"
     max_upload_mb: int = 50
+    # 对外访问本服务资源时用于拼接完整 URL（数据库存相对路径 /media/...）
+    public_base_url: str = "http://127.0.0.1:8020"
 
     # 豆包 / 火山方舟向量化（OpenAI 兼容 POST {base}/embeddings）
     doubao_ark_base_url: str = "https://ark.cn-beijing.volces.com/api/v3"

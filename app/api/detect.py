@@ -51,11 +51,13 @@ async def detect_media(
         )
 
     storage = detect_serve.ensure_storage()
+    type_dir = storage / media_type
+    type_dir.mkdir(parents=True, exist_ok=True)
     safe_name = Path(file.filename or "upload").name
     ext = Path(safe_name).suffix[:16]
     uid = uuid4().hex
     saved_name = f"{media_type}_{uid}{ext}"
-    saved_path = storage / saved_name
+    saved_path = type_dir / saved_name
 
     max_bytes = settings.max_upload_mb * 1024 * 1024
     size = 0

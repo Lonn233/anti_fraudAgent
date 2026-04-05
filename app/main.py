@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from app.api import auth, detect, guardians, knowledge, users
+from app.api import auth, detect, guardians, knowledge, media, users
 from app.config.settings import settings
 from app.db.session import Base, engine
 
@@ -22,6 +22,7 @@ def create_app() -> FastAPI:
     app.include_router(users.router)
     app.include_router(guardians.router)
     app.include_router(detect.router)
+    app.include_router(media.router)
     app.include_router(knowledge.router)
     return app
 

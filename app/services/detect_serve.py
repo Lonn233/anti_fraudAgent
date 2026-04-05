@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import json
 import logging
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
 from sqlalchemy.orm import Session
 
 from app.config.settings import settings
-from app.db.models import DetectionRecord
+from app.db.models import Detect, DetectionReport
 from app.schemas import (
     DetectMetaDataOut,
     DetectMultimodalFusionRecognitionOut,
@@ -25,44 +25,84 @@ from app.utils.rag import detect_fraud_by_image_rag, detect_fraud_by_rag, detect
 logger = logging.getLogger(__name__)
 
 
+def _utc_now_naive() -> datetime:
+    """UTC 当前时刻；无时区信息，与 SQLite 中 DateTime 存储习惯一致。"""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+def _naive_utc_iso_z(dt: datetime) -> str:
+    """将库里的 UTC 朴素时间格式化为带 Z 的 ISO，避免被误当成本地时间。"""
+    u = dt.replace(tzinfo=timezone.utc) if dt.tzinfo is None else dt.astimezone(timezone.utc)
+    return u.isoformat(timespec="microseconds").replace("+00:00", "Z")
+
+
 def ensure_storage() -> Path:
     settings.storage_path.mkdir(parents=True, exist_ok=True)
     return settings.storage_path
 
 
-def save_record(
+def media_relative_path(media_type: str, stored_file_name: str) -> str:
+    """入库用的相对路径：/media/{类型}/{磁盘文件名}"""
+    mt = media_type.strip().lower()
+    return f"/media/{mt}/{stored_file_name}"
+
+
+def media_absolute_url(relative_path: str) -> str:
+    """用全局 public_base_url 拼完整 URL（相对路径须以 / 开头）。"""
+    base = settings.public_base_url.rstrip("/")
+    rel = relative_path if relative_path.startswith("/") else f"/{relative_path}"
+    return f"{base}{rel}"
+
+
+def _persist_report_and_detect(
     db: Session,
     user_id: int,
-    kind: str,
-    result: dict,
-    input_text: str | None = None,
-    file_path: str | None = None,
-    file_name: str | None = None,
-    content_type: str | None = None,
-    extra: dict | None = None,
-) -> DetectionRecord:
-    result_data = {
-        "reasons": result.get("reasons", []),
-        "retrieved_cases": result.get("retrieved_cases", []),
-        "method": "rag_vector_search",
-    }
-    if extra:
-        result_data.update(extra)
-
-    rec = DetectionRecord(
-        user_id=user_id,
-        kind=kind,
-        input_text=input_text,
-        file_path=file_path,
-        file_name=file_name,
-        content_type=content_type,
-        risk_score=int(result.get("risk_score", 0)),
-        result_json=json.dumps(result_data, ensure_ascii=False),
+    detect_type: str,
+    detect_content: str,
+    risk_index: float,
+    top_case: dict | None,
+    llm_result: dict | None,
+) -> Detect:
+    """写入 report + detect；返回 detect 行（含 id、detect_time）。"""
+    now = _utc_now_naive()
+    draft = build_detect_response(
+        report_id="0",
+        detect_type=detect_type,
+        detect_content=detect_content,
+        detect_time=_naive_utc_iso_z(now),
+        risk_index=risk_index,
+        top_case=top_case,
+        llm_result=llm_result,
     )
-    db.add(rec)
+    rc = draft.report_content
+    fraud_type = (rc.overall_judgment.fraud_type_rag or "").strip()
+    rep = DetectionReport(
+        detect_type=detect_type,
+        detect_content=detect_content,
+        overall_judgment=rc.overall_judgment.model_dump(),
+        rag_result=rc.rag_result.model_dump(),
+        multimodal_fusion_recognition=rc.multimodal_fusion_recognition.model_dump(),
+        personal_info_analysis=rc.personal_info_analysis.model_dump(),
+        fraud_type=fraud_type,
+        created_at=now,
+    )
+    db.add(rep)
+    db.flush()
+
+    det = Detect(
+        user_id=user_id,
+        isreport=True,
+        report_id=rep.id,
+        detect_time=now,
+        risk_index=risk_index,
+        detect_type=detect_type,
+        detect_content=detect_content,
+    )
+    db.add(det)
     db.commit()
-    db.refresh(rec)
-    return rec
+    db.refresh(det)
+    db.refresh(rep)
+    return det
 
 
 def build_detect_response(
@@ -177,13 +217,16 @@ def process_text_detection(db: Session, user_id: int, text: str) -> DetectOut:
     llm_result = run_llm_advice(text, result)
     llm_elapsed = time.perf_counter() - llm_start
 
-    rec = save_record(
+    top_case = result["retrieved_cases"][0] if result["retrieved_cases"] else None
+    risk_index = round(result["risk_score"] / 10, 1)
+    det = _persist_report_and_detect(
         db,
         user_id,
         "text",
-        result,
-        input_text=text,
-        extra={"llm_result": llm_result},
+        text,
+        risk_index,
+        top_case,
+        llm_result,
     )
 
     total_elapsed = time.perf_counter() - total_start
@@ -194,13 +237,12 @@ def process_text_detection(db: Session, user_id: int, text: str) -> DetectOut:
         llm_elapsed,
     )
 
-    top_case = result["retrieved_cases"][0] if result["retrieved_cases"] else None
     return build_detect_response(
-        report_id=str(rec.id),
+        report_id=str(det.id),
         detect_type="text",
         detect_content=text,
-        detect_time=rec.created_at.isoformat(),
-        risk_index=round(result["risk_score"] / 10, 1),
+        detect_time=_naive_utc_iso_z(det.detect_time),
+        risk_index=risk_index,
         top_case=top_case,
         llm_result=llm_result,
     )
@@ -220,23 +262,19 @@ def process_saved_media_detection(
     file_size: int,
     content_type: str | None,
 ) -> DetectOut:
+    logger.debug(
+        "Media saved: name=%s bytes=%s content_type=%s",
+        stored_name,
+        file_size,
+        content_type,
+    )
+
     if media_type == "image":
         result = detect_fraud_by_image_rag(saved_path)
     elif media_type == "video":
         result = detect_fraud_by_video_rag(saved_path)
     else:
         result = {"risk_score": 0, "reasons": [], "retrieved_cases": []}
-
-    rec = save_record(
-        db,
-        user_id,
-        media_type,
-        result,
-        file_path=str(saved_path),
-        file_name=original_file_name,
-        content_type=content_type,
-        extra={"saved_name": stored_name, "bytes": file_size},
-    )
 
     logger.info("[TIMER] LLM advice start")
     user_msg = _media_user_message(media_type, original_file_name)
@@ -248,12 +286,29 @@ def process_saved_media_detection(
     )
 
     top_case = result["retrieved_cases"][0] if result["retrieved_cases"] else None
+    risk_index = round(result["risk_score"] / 10, 1)
+    detect_content = (
+        media_relative_path(media_type, stored_name)
+        if media_type in ("image", "video", "audio")
+        else original_file_name
+    )
+
+    det = _persist_report_and_detect(
+        db,
+        user_id,
+        media_type,
+        detect_content,
+        risk_index,
+        top_case,
+        llm_result,
+    )
+
     return build_detect_response(
-        report_id=str(rec.id),
+        report_id=str(det.id),
         detect_type=media_type,
-        detect_content=original_file_name,
-        detect_time=rec.created_at.isoformat(),
-        risk_index=round(result["risk_score"] / 10, 1),
+        detect_content=detect_content,
+        detect_time=_naive_utc_iso_z(det.detect_time),
+        risk_index=risk_index,
         top_case=top_case,
         llm_result=llm_result,
     )
@@ -262,20 +317,21 @@ def process_saved_media_detection(
 def list_user_detection_records(db: Session, user_id: int, limit: int) -> list[dict]:
     limit = max(1, min(200, limit))
     rows = (
-        db.query(DetectionRecord)
-        .filter(DetectionRecord.user_id == user_id)
-        .order_by(DetectionRecord.created_at.desc())
+        db.query(Detect)
+        .filter(Detect.user_id == user_id)
+        .order_by(Detect.detect_time.desc())
         .limit(limit)
         .all()
     )
     return [
         {
             "id": r.id,
-            "kind": r.kind,
-            "risk_score": r.risk_score,
-            "created_at": r.created_at,
-            "file_name": r.file_name,
-            "content_type": r.content_type,
+            "kind": r.detect_type,
+            "risk_score": int(round(r.risk_index * 10)),
+            "risk_index": r.risk_index,
+            "report_id": r.report_id,
+            "created_at": r.detect_time,
+            "detect_content": r.detect_content,
         }
         for r in rows
     ]
