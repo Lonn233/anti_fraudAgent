@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     doubao_ark_base_url: str = "https://ark.cn-beijing.volces.com/api/v3"
     doubao_api_key: str = ""
     doubao_embedding_model: str = "doubao-embedding-vision-251215"
+    # 对话（文本与带图/带视频请求共用同一端点模型 ID）
+    doubao_chat_model: str = "doubao-seed-2-0-mini-260215"
 
     # Milvus（Docker 部署）
     milvus_uri: str = "http://127.0.0.1:19530"
