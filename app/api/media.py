@@ -21,12 +21,12 @@ def _resolve_stored_file(media_type: str, file_name: str) -> Path:
     if media_type not in _ALLOWED_MEDIA_TYPES:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found",
+            detail="未找到资源",
         )
     if not _SAFE_FILENAME.fullmatch(file_name) or ".." in file_name:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found",
+            detail="未找到资源",
         )
     base = settings.storage_path.resolve()
     path = (base / media_type / file_name).resolve()
@@ -35,7 +35,7 @@ def _resolve_stored_file(media_type: str, file_name: str) -> Path:
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found",
+            detail="未找到资源",
         ) from None
     return path
 
@@ -48,7 +48,7 @@ def get_media_file(media_type: str, file_name: str):
     if not path.is_file():
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Not found",
+            detail="未找到资源",
         )
     mime, _ = mimetypes.guess_type(path.name)
     return FileResponse(

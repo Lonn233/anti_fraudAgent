@@ -1,0 +1,120 @@
+.modal-one-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(9, 14, 23, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.modal-one-backdrop.hidden {
+  display: none;
+}
+
+.modal-one {
+  width: 100%;
+  max-width: 440px;
+  border-radius: 12px;
+  border: 1px solid rgba(92, 191, 255, 0.18);
+  background: rgba(20, 26, 37, 0.95);
+  box-shadow: 0 0 24px rgba(92, 191, 255, 0.16);
+  color: #e1e5f3;
+  font-family: Inter, sans-serif;
+}
+
+.modal-one-header {
+  padding: 18px 20px 10px;
+  border-bottom: 1px solid rgba(67, 72, 83, 0.35);
+}
+
+.modal-one h3 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.modal-one form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+}
+
+.modal-one label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a6abb7;
+}
+
+.modal-one input,
+.modal-one select {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(67, 72, 83, 0.45);
+  background: #000000;
+  color: #e1e5f3;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-one input {
+  background: #000000;
+  color: #a6abb7;
+}
+
+.modal-one input::placeholder {
+  color: #a6abb7;
+}
+
+.modal-one input:focus,
+.modal-one select:focus {
+  border-color: rgba(92, 191, 255, 0.7);
+  box-shadow: 0 0 0 1px rgba(92, 191, 255, 0.25);
+}
+
+.modal-one-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-one-actions button {
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.modal-one-btn-cancel {
+  background: transparent;
+  color: #5cbfff;
+  border-color: rgba(92, 191, 255, 0.3);
+}
+
+.modal-one-btn-cancel:hover {
+  background: rgba(92, 191, 255, 0.08);
+}
+
+.modal-one-btn-add {
+  background: #5cbfff;
+  color: #003854;
+}
+
+.modal-one-btn-add:hover {
+  box-shadow: 0 0 15px rgba(92, 191, 255, 0.4);
+}
+
+.modal-one-actions button:active {
+  transform: scale(0.97);
+}

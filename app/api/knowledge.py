@@ -40,7 +40,7 @@ def upload_report_text(
     if not settings.doubao_api_key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="DOUBAO_API_KEY is not configured",
+            detail="未配置 DOUBAO_API_KEY",
         )
 
     doc_id = (payload.doc_id or "").strip() or uuid.uuid4().hex
@@ -81,7 +81,7 @@ def upload_report_text(
         logger.error("Embedding API error: %s", body_text)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Embedding API error: {body_text[:800]}",
+            detail=f"向量化接口错误：{body_text[:800]}",
         ) from e
     except ValueError as e:
         logger.error("Embedding error: %s", e)
@@ -93,7 +93,7 @@ def upload_report_text(
         logger.exception("Report upload error")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Upload failed: {e}",
+            detail=f"上传失败：{e}",
         ) from e
 
 
@@ -115,7 +115,7 @@ async def upload_text_file(
     if not settings.doubao_api_key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="DOUBAO_API_KEY is not configured",
+            detail="未配置 DOUBAO_API_KEY",
         )
 
     # 检查文件格式
@@ -123,7 +123,7 @@ async def upload_text_file(
     if suffix not in {".txt", ".md", ".docx"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Unsupported file format. Supported: .txt, .md, .docx",
+            detail="不支持的文件格式，仅支持 .txt、.md、.docx",
         )
 
     # 保存临时文件
@@ -146,7 +146,7 @@ async def upload_text_file(
                 if size > max_bytes:
                     raise HTTPException(
                         status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                        detail=f"File too large (> {settings.max_upload_mb}MB)",
+                        detail=f"文件过大（超过 {settings.max_upload_mb}MB）",
                     )
                 f.write(chunk)
 
@@ -172,7 +172,7 @@ async def upload_text_file(
         logger.error("Embedding API error: %s", body_text)
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Embedding API error: {body_text[:800]}",
+            detail=f"向量化接口错误：{body_text[:800]}",
         ) from e
     except ValueError as e:
         logger.error("File processing error: %s", e)
@@ -184,7 +184,7 @@ async def upload_text_file(
         logger.exception("File upload error")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Upload failed: {e}",
+            detail=f"上传失败：{e}",
         ) from e
     finally:
         # 清理临时文件（可选，注释掉以保留上传的文件）

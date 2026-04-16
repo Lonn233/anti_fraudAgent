@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     kb_chunk_max_chars: int = 500
     kb_chunk_overlap_chars: int = 80
 
+    # 多模态深度学习检测（MVP）
+    model_detect_device: str = "cuda"
+    model_detect_fraud_labels: str = "刷单诈骗,虚假征信诈骗,贷款诈骗,投资理财诈骗,冒充客服诈骗"
+    model_detect_text_cls_model: str = "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli"
+    model_detect_ai_voice_model: str = ""
+    model_detect_asr_model: str = "large-v3"
+    model_detect_ocr_lang: str = "ch"
+    model_detect_max_video_frames: int = 3
+
     @property
     def storage_path(self) -> Path:
         return Path(self.storage_dir).resolve()

@@ -14,6 +14,22 @@ class TokenOut(BaseModel):
 class RegisterIn(BaseModel):
     username: str = Field(min_length=3, max_length=64)
     password: str = Field(min_length=6, max_length=128)
+    phone: str = Field(min_length=5, max_length=32)
+    birth_date: str | None = Field(default=None, max_length=16)
+    occupation_category: str | None = Field(default=None, max_length=64)
+    occupation_subcategory: str | None = Field(default=None, max_length=64)
+    region_province: str | None = Field(default=None, max_length=64)
+    region_city: str | None = Field(default=None, max_length=64)
+
+
+class RegisterCheckIn(BaseModel):
+    username: str | None = Field(default=None, min_length=3, max_length=64)
+    phone: str | None = Field(default=None, min_length=5, max_length=32)
+
+
+class RegisterCheckOut(BaseModel):
+    username_exists: bool = False
+    phone_exists: bool = False
 
 
 class LoginIn(BaseModel):
@@ -24,6 +40,12 @@ class LoginIn(BaseModel):
 class UserOut(BaseModel):
     id: int
     username: str
+    phone: str | None = None
+    birth_date: str | None = None
+    occupation_category: str | None = None
+    occupation_subcategory: str | None = None
+    region_province: str | None = None
+    region_city: str | None = None
     age: int | None = None
     job: str | None = None
     region: str | None = None
@@ -31,27 +53,115 @@ class UserOut(BaseModel):
 
 
 class UserProfileIn(BaseModel):
+    username: str | None = Field(default=None, min_length=3, max_length=64)
+    phone: str | None = Field(default=None, min_length=5, max_length=32)
+    birth_date: str | None = Field(default=None, max_length=16)
+    occupation_category: str | None = Field(default=None, max_length=64)
+    occupation_subcategory: str | None = Field(default=None, max_length=64)
+    region_province: str | None = Field(default=None, max_length=64)
+    region_city: str | None = Field(default=None, max_length=64)
     age: int | None = Field(default=None, ge=0, le=150)
     job: str | None = Field(default=None, max_length=128)
     region: str | None = Field(default=None, max_length=128)
 
 
-class GuardianCreateIn(BaseModel):
-    name: str = Field(min_length=1, max_length=64)
-    relation: str | None = Field(default=None, max_length=64)
-    phone: str = Field(min_length=5, max_length=32)
+class ChangePasswordIn(BaseModel):
+    current_password: str = Field(min_length=1, max_length=128)
+    new_password: str = Field(min_length=6, max_length=128)
 
 
 class GuardianOut(BaseModel):
     id: int
-    name: str
-    relation: str | None
-    phone: str
+    monitor_id: int
+    monitor_username: str | None = None
+    monitor_phone: str | None = None
+    ward_id: int
+    ward_username: str | None = None
+    ward_phone: str | None = None
+    monitor_note: str | None = None
+    ward_note: str | None = None
+    note: str | None = None
+    phone: str | None = None
+    relationship: str | None
     created_at: datetime
+
+
+class GuardianPageOut(BaseModel):
+    items: list[GuardianOut]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
+
+
+class GuardianUpdateIn(BaseModel):
+    note: str | None = Field(default=None, max_length=64)
+
+
+class GuardianRequestOut(BaseModel):
+    id: int
+    monitor_id: int
+    monitor_username: str
+    ward_id: int
+    ward_username: str
+    name: str
+    relationship: str | None
+    status: str
+    created_at: datetime
+    processed_at: datetime | None = None
+
+
+class GuardianRequestApplyIn(BaseModel):
+    mode: Literal["monitor", "ward"]
+    target_username: str = Field(max_length=64)
+    name: str = Field(max_length=64)
+    relationship: str | None = Field(default=None, max_length=64)
+
+
+class GuardianRequestDecisionIn(BaseModel):
+    decision: Literal["accept", "reject"]
+    note: str | None = Field(default=None, max_length=64)
+
+
+class GuardianRequestDecisionOut(BaseModel):
+    request: GuardianRequestOut
+    guardian: GuardianOut | None = None
 
 
 class DetectTextIn(BaseModel):
     text: str = Field(min_length=1, max_length=20000)
+
+
+class AgentChatIn(BaseModel):
+    session_id: str = Field(min_length=1, max_length=128)
+    message: str = Field(min_length=1, max_length=20000)
+
+
+class AgentChatOut(BaseModel):
+    mode: Literal["chat"] = "chat"
+    reply: str
+    suggested_mode: Literal["none", "detect", "alert"] = "none"
+
+
+class AgentChatSessionOut(BaseModel):
+    session_id: str
+    updated_at: datetime
+    message_count: int = 0
+
+
+class AgentChatMessageOut(BaseModel):
+    role: str
+    content: str
+    created_at: datetime
+
+
+class AgentDetectIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20000)
+
+
+class AgentAlertIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20000)
+    notify: bool = True
 
 
 class DetectMetaDataOut(BaseModel):
@@ -146,3 +256,25 @@ class TextUploadOut(BaseModel):
     inserted: int
     milvus_collection: str
     embedding_model: str
+
+
+class ModelDetectFraudOut(BaseModel):
+    labels: dict[str, float] = Field(default_factory=dict)
+    top_label: str = ""
+    top_score: float = 0.0
+
+
+class ModelDetectAiVoiceOut(BaseModel):
+    probability: float | None = None
+    judgment: str = ""
+    evidence: str = ""
+
+
+class ModelDetectOut(BaseModel):
+    media_type: str
+    extracted_text: str = ""
+    fraud_classification: ModelDetectFraudOut
+    ai_voice_detection: ModelDetectAiVoiceOut
+    ocr_text: str = ""
+    asr_text: str = ""
+    notes: list[str] = Field(default_factory=list)

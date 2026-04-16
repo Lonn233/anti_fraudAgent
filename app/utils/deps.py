@@ -26,7 +26,7 @@ def get_current_user(
     if not username:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
+            detail="未认证或登录已过期",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -34,7 +34,7 @@ def get_current_user(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
+            detail="用户不存在",
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user

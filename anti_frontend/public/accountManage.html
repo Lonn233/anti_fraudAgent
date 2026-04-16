@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SENTINEL - 账户管理</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="/ui/src/css/modal-one.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#36404f",
+                        "inverse-surface": "#f9f9ff",
+                        "tertiary-container": "#00e3fd",
+                        "on-tertiary-fixed-variant": "#005762",
+                        "on-tertiary-fixed": "#003840",
+                        "surface-container-high": "#19202c",
+                        "on-secondary-container": "#c7d1e4",
+                        "secondary-dim": "#cbd5e8",
+                        "primary-fixed": "#0cb3ff",
+                        "on-background": "#e1e5f3",
+                        "on-error-container": "#ffa8a3",
+                        "primary-container": "#0cb3ff",
+                        "inverse-primary": "#006593",
+                        "secondary": "#d9e3f7",
+                        "inverse-on-surface": "#505560",
+                        "surface-container-low": "#0e131d",
+                        "error-dim": "#d7383b",
+                        "surface-dim": "#090e17",
+                        "outline": "#717581",
+                        "surface-tint": "#5cbfff",
+                        "primary-dim": "#00a7f0",
+                        "primary": "#5cbfff",
+                        "on-secondary-fixed-variant": "#525c6c",
+                        "surface-container-lowest": "#000000",
+                        "tertiary": "#81ecff",
+                        "background": "#090e17",
+                        "surface-variant": "#1f2633",
+                        "on-primary-fixed-variant": "#003752",
+                        "surface": "#090e17",
+                        "on-surface-variant": "#a6abb7",
+                        "on-surface": "#e1e5f3",
+                        "error-container": "#9f0519",
+                        "on-error": "#490006",
+                        "surface-bright": "#252c3b",
+                        "tertiary-dim": "#00d4ec",
+                        "surface-container-highest": "#1f2633",
+                        "on-secondary": "#485262",
+                        "on-primary-fixed": "#000d18",
+                        "secondary-container": "#3d4757",
+                        "error": "#ff716c",
+                        "primary-fixed-dim": "#00a5ec",
+                        "outline-variant": "#434853",
+                        "on-primary": "#003854",
+                        "tertiary-fixed-dim": "#00d4ec",
+                        "on-primary-container": "#002d45",
+                        "secondary-fixed-dim": "#cbd5e8",
+                        "tertiary-fixed": "#00e3fd",
+                        "on-tertiary": "#005762",
+                        "on-tertiary-container": "#004d57",
+                        "surface-container": "#141a25",
+                        "secondary-fixed": "#d9e3f7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #090e17; color: #e1e5f3; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel { background: rgba(25, 32, 44, 0.6); backdrop-filter: blur(20px); }
+        .grid-texture { background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 0); background-size: 24px 24px; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    </style>
+</head>
+<body class="min-h-screen grid-texture">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+</div>
+</nav><!-- SideNavBar -->
+<aside class="fixed left-0 w-72 h-[calc(100vh-64px)] flex flex-col py-6 gap-2 bg-[#0e131d] border-r border-outline-variant/15">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="shield_person">shield_person</span>
+</div>
+<div>
+<h2 class="text-sm font-headline font-semibold text-on-surface">Personal Profile</h2>
+<p class="text-[0.65rem] font-label uppercase tracking-tighter text-tertiary/80">Account Security Level: High</p>
+</div>
+</div>
+<button class="w-full mt-4 py-2 px-4 bg-primary/10 border border-primary/20 hover:bg-primary/20 text-primary text-xs font-headline font-bold rounded transition-all">Review Security</button>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 bg-[#1f2633] text-[#81ecff] rounded-r-full font-bold px-6 py-3 border-l-4 border-[#81ecff] translate-x-1 duration-200" href="/ui/infoSetting.html">
+<span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
+<span class="text-sm font-body">个人信息设置</span>
+</a>
+<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/overAllEvaluation.html">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="text-sm font-body">综合风险评估</span>
+</a>
+<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/accountManage.html">
+<span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
+<span class="text-sm font-body">账号管理</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="text-sm font-body">Help Center</span>
+</a>
+<a class="flex items-center gap-3 text-error/60 px-6 py-3 hover:bg-error/10 hover:text-error transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-sm font-body">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-72 p-12">
+<div class="max-w-5xl mx-auto space-y-10">
+<!-- Hero Header -->
+<section class="space-y-2">
+<span class="font-['Inter'] text-[0.6875rem] uppercase tracking-[0.2em] text-[#81ecff] font-bold">核心安全中心</span>
+<h1 class="font-['Space_Grotesk'] text-5xl font-extrabold tracking-tight text-on-surface">账户管理</h1>
+<p class="text-on-surface-variant max-w-xl">管理您的数字身份、安全凭证及授权设备。Sentinel 实时监控所有账户活动以确保绝对完整性。</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Password & Security Card -->
+<div class="col-span-12 md:col-span-8 bg-surface-container-low rounded-xl p-8 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-9xl">lock_open</span>
+</div>
+<h3 class="font-headline text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-[#5cbfff]">key</span>
+                            身份凭证与访问控制
+                        </h3>
+<div class="space-y-6 relative z-10">
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-2 border-[#5cbfff]">
+<div>
+<h4 class="font-semibold">登录密码</h4>
+<p class="text-sm text-on-surface-variant">上次更新于 42 天前。建议定期更换以维持高安全性。</p>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-bold text-sm hover:shadow-[0_0_15px_rgba(92,191,255,0.4)] transition-all" id="account-change-password-btn">修改密码</button>
+</div>
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border-l-2 border-[#81ecff]">
+<div>
+<h4 class="font-semibold">双重身份验证 (2FA)</h4>
+<p class="text-sm text-on-surface-variant">当前状态：<span class="text-tertiary font-bold">已激活</span> (应用令牌模式)</p>
+</div>
+<button class="text-tertiary border border-tertiary/20 px-6 py-2 rounded-lg font-bold text-sm hover:bg-tertiary/10 transition-all">重新配置</button>
+</div>
+</div>
+</div>
+<!-- Security Score Card -->
+<div class="col-span-12 md:col-span-4 glass-panel rounded-xl p-8 flex flex-col justify-center items-center text-center border border-white/5">
+<span class="font-label text-[0.625rem] uppercase tracking-widest text-on-surface-variant mb-4">当前安全评级</span>
+<div class="relative w-32 h-32 flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full -rotate-90">
+<circle class="text-surface-variant" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-tertiary" cx="64" cy="64" fill="transparent" r="58" stroke="currentColor" stroke-dasharray="364" stroke-dashoffset="36" stroke-width="8"></circle>
+</svg>
+<span class="font-headline text-4xl font-bold">94</span>
+</div>
+<p class="mt-4 font-bold text-[#81ecff]">状态：坚固</p>
+<p class="text-xs text-on-surface-variant mt-2">您的账户目前处于受保护状态，未发现已知漏洞。</p>
+</div>
+<!-- Linked Devices Section -->
+<div class="col-span-12 bg-surface-container-low rounded-xl p-8">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-[#5cbfff]">devices</span>
+                                已链接的设备与会话
+                            </h3>
+<button class="text-xs font-bold text-on-surface-variant hover:text-white uppercase tracking-wider">注销所有会话</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Device Item -->
+<div class="bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-variant transition-colors border border-transparent hover:border-[#434853]/30">
+<div class="flex items-start justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-tertiary">laptop_mac</span>
+<span class="bg-tertiary/10 text-tertiary text-[10px] px-2 py-1 rounded font-bold">当前会话</span>
+</div>
+<h4 class="font-bold">MacBook Pro 16"</h4>
+<p class="text-xs text-on-surface-variant mt-1">上海, 中国 • 正在使用</p>
+<div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant font-mono">ID: SN-8829-X</span>
+<button class="text-error text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">断开连接</button>
+</div>
+</div>
+<!-- Device Item -->
+<div class="bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-variant transition-colors border border-transparent hover:border-[#434853]/30">
+<div class="flex items-start justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant">smartphone</span>
+<span class="bg-surface-variant text-on-surface-variant text-[10px] px-2 py-1 rounded font-bold">2小时前</span>
+</div>
+<h4 class="font-bold">iPhone 15 Pro</h4>
+<p class="text-xs text-on-surface-variant mt-1">伦敦, 英国 • Safari 移动版</p>
+<div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant font-mono">ID: SN-4122-M</span>
+<button class="text-error text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">断开连接</button>
+</div>
+</div>
+<!-- Device Item -->
+<div class="bg-surface-container-lowest p-6 rounded-lg group hover:bg-surface-variant transition-colors border border-transparent hover:border-[#434853]/30">
+<div class="flex items-start justify-between mb-4">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant">desktop_windows</span>
+<span class="bg-surface-variant text-on-surface-variant text-[10px] px-2 py-1 rounded font-bold">1天前</span>
+</div>
+<h4 class="font-bold">Workstation - PC</h4>
+<p class="text-xs text-on-surface-variant mt-1">北京, 中国 • Chrome 桌面版</p>
+<div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant font-mono">ID: SN-0931-K</span>
+<button class="text-error text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">断开连接</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Logout Section -->
+<div class="col-span-12 border border-outline-variant/40 bg-surface-container-low rounded-xl p-8">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div>
+<h3 class="font-headline text-xl font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">logout</span>
+                                    退出登录
+                                </h3>
+<p class="text-sm text-on-surface-variant mt-2">退出后将结束当前登录会话。您可以随时重新登录继续使用 Sentinel。</p>
+</div>
+<button class="bg-transparent border border-primary/50 text-primary px-8 py-3 rounded-lg font-bold text-sm hover:bg-primary/15 transition-all whitespace-nowrap" id="account-logout-btn" type="button">
+                                退出登录
+                            </button>
+</div>
+</div>
+</div>
+<!-- Footer Metadata -->
+<footer class="pt-12 pb-6 border-t border-white/5 flex justify-between items-center">
+<p class="text-[0.625rem] text-on-surface-variant font-mono uppercase tracking-widest">© 2024 SENTINEL DEFENSE SYSTEMS. ALL RIGHTS RESERVED.</p>
+<div class="flex gap-4">
+<a class="text-[0.625rem] text-on-surface-variant hover:text-white uppercase tracking-widest" href="#">隐私协议</a>
+<a class="text-[0.625rem] text-on-surface-variant hover:text-white uppercase tracking-widest" href="#">合规证明</a>
+</div>
+</footer>
+</div>
+</main>
+</div>
+<script>
+  (function () {
+    const map = {
+      "detectAgent.html": "/ui/detectAgent.html",
+      "monitor.html": "/ui/monitor.html",
+      "reportHistory.html": "/ui/reportHistory.html",
+      "detectSetting.html": "/ui/detectSetting.html",
+      "infoSetting.html": "/ui/infoSetting.html"
+    };
+
+    const activeHref = map[window.location.pathname.split('/').pop()];
+    if (!activeHref) return;
+
+    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+    );
+
+    navLinks.forEach((a) => {
+      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+    });
+
+    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+    if (!activeLink) return;
+
+    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+  })();
+</script>
+<script src="/ui/src/account-manage-page.js" type="module"></script>
+</body></html>
+
+
+
+
+
+
+
+
+

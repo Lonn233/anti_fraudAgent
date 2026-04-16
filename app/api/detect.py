@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, s
 from sqlalchemy.orm import Session
 
 from app.config.settings import settings
-from app.db.models import User
+from app.db.models import Detect, DetectionReport, User
 from app.db.session import get_db
 from app.schemas import DetectOut, DetectTextIn
 from app.services import detect_serve
@@ -32,7 +32,7 @@ def detect_text(
         logger.exception("Text detection error")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Detection failed: {e}",
+            detail=f"检测失败：{e}",
         ) from e
 
 
@@ -47,7 +47,7 @@ async def detect_media(
     if media_type not in {"image", "audio", "video"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="media_type must be image|audio|video",
+            detail="媒体类型参数错误，必须为 image|audio|video",
         )
 
     storage = detect_serve.ensure_storage()
@@ -71,7 +71,7 @@ async def detect_media(
                 if size > max_bytes:
                     raise HTTPException(
                         status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                        detail=f"File too large (> {settings.max_upload_mb}MB)",
+                        detail=f"文件过大（超过 {settings.max_upload_mb}MB）",
                     )
                 f.write(chunk)
     finally:
@@ -96,7 +96,7 @@ async def detect_media(
         logger.exception("Media detection error")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Detection failed: {e}",
+            detail=f"检测失败：{e}",
         ) from e
 
 
@@ -107,3 +107,37 @@ def list_records(
     limit: int = 50,
 ):
     return detect_serve.list_user_detection_records(db, current.id, limit)
+
+
+@router.get("/reports/{detect_id}")
+def get_report_by_detect_id(
+    detect_id: int,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    detect_row = (
+        db.query(Detect)
+        .filter(Detect.id == detect_id, Detect.user_id == current.id)
+        .first()
+    )
+    if not detect_row:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="检测记录不存在")
+
+    report = db.query(DetectionReport).filter(DetectionReport.id == detect_row.report_id).first()
+    if not report:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="报告不存在")
+
+    return {
+        "detect_id": detect_row.id,
+        "report_id": report.id,
+        "detect_time": detect_row.detect_time,
+        "risk_index": detect_row.risk_index,
+        "detect_type": detect_row.detect_type,
+        "detect_content": detect_row.detect_content,
+        "fraud_type": report.fraud_type,
+        "overall_judgment": report.overall_judgment,
+        "rag_result": report.rag_result,
+        "multimodal_fusion_recognition": report.multimodal_fusion_recognition,
+        "personal_info_analysis": report.personal_info_analysis,
+        "created_at": report.created_at,
+    }

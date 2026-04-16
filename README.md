@@ -27,7 +27,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-打开接口文档：`http://127.0.0.1:8090/docs`
+打开接口文档：`http://127.0.0.1:8000/docs`
 
 ## 主要接口（摘要）
 - `POST /auth/register`
@@ -35,11 +35,18 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 - `POST /auth/login/json`（JSON 登录，返回 `access_token`）
 - `GET /users/me`
 - `PUT /users/me/profile`
-- `POST /guardians` / `GET /guardians` / `DELETE /guardians/{guardian_id}`
+- 监护关系（统一版）
+  - `POST /guardians/requests/apply`（发起申请，监护人/被监护人共用）
+  - `GET /guardians/requests`（获取申请记录，监护人/被监护人共用）
+  - `POST /guardians/requests/{request_id}/decision`（批准/拒绝，监护人/被监护人共用）
+  - `GET /guardians/relations`（查看监护人/被监护人列表，通过 `role` 区分）
+  - `DELETE /guardians/{guardian_id}`
 - `POST /detect/text`
 - `POST /detect/media`（multipart `file` + `media_type`）
 - `GET /detect/records`（当前用户识别记录）
 - `POST /kb/text/upload`（JSON：`text`；可选 `doc_id`、`chunk_max_chars`、`chunk_overlap_chars`；需 JWT，依赖 Milvus + 方舟 API Key）
+
+监护关系接口详细说明见：`docs/guardians_api.md`
 
 ## 鉴权方式（JWT Bearer）
 除 `/health`、`/auth/register`、`/auth/login`、`/auth/login/json` 外，其它接口都需要携带 Bearer Token：

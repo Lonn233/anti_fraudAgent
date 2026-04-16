@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SENTINEL - 被监护人管理</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="/ui/src/css/modal-one.css" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#5cbfff",
+                        "tertiary-fixed": "#00e3fd",
+                        "surface-variant": "#1f2633",
+                        "tertiary-fixed-dim": "#00d4ec",
+                        "surface-container-lowest": "#000000",
+                        "surface-container-highest": "#1f2633",
+                        "surface-container-high": "#19202c",
+                        "tertiary": "#81ecff",
+                        "primary-fixed": "#0cb3ff",
+                        "error": "#ff716c",
+                        "secondary-fixed-dim": "#cbd5e8",
+                        "secondary-container": "#3d4757",
+                        "primary-container": "#0cb3ff",
+                        "error-container": "#9f0519",
+                        "surface": "#090e17",
+                        "tertiary-container": "#00e3fd",
+                        "surface-container": "#141a25",
+                        "secondary-fixed": "#d9e3f7",
+                        "tertiary-dim": "#00d4ec",
+                        "on-surface": "#e1e5f3",
+                        "on-primary-fixed": "#000d18",
+                        "on-primary-container": "#002d45",
+                        "error-dim": "#d7383b",
+                        "outline-variant": "#434853",
+                        "inverse-on-surface": "#505560",
+                        "primary-dim": "#00a7f0",
+                        "on-error-container": "#ffa8a3",
+                        "outline": "#717581",
+                        "primary-fixed-dim": "#00a5ec",
+                        "on-tertiary-fixed-variant": "#005762",
+                        "on-error": "#490006",
+                        "secondary": "#d9e3f7",
+                        "primary": "#5cbfff",
+                        "on-primary-fixed-variant": "#003752",
+                        "on-tertiary-container": "#004d57",
+                        "on-tertiary": "#005762",
+                        "surface-bright": "#252c3b",
+                        "on-tertiary-fixed": "#003840",
+                        "inverse-primary": "#006593",
+                        "on-surface-variant": "#a6abb7",
+                        "inverse-surface": "#f9f9ff",
+                        "on-secondary-fixed": "#36404f",
+                        "on-background": "#e1e5f3",
+                        "secondary-dim": "#cbd5e8",
+                        "surface-dim": "#090e17",
+                        "on-secondary-container": "#c7d1e4",
+                        "on-secondary-fixed-variant": "#525c6c",
+                        "on-primary": "#003854",
+                        "on-secondary": "#485262",
+                        "surface-container-low": "#0e131d",
+                        "background": "#090e17"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #090e17;
+            color: #e1e5f3;
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(25, 32, 44, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .data-grid-texture {
+            background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary/30">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+</div>
+</nav><!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-full w-64 border-r border-slate-800/30 bg-[#090e17] dark:bg-slate-950 shadow-2xl flex flex-col pt-4 pb-20 z-40 hidden md:flex">
+<div class="px-6 mb-8">
+<div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
+<div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low</div>
+</div>
+<nav class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
+<a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/monitor.html">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span>监护人管理</span></a>
+<a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/under_guardian.html">
+<span class="material-symbols-outlined">supervisor_account</span>
+<span>被监护人管理</span>
+</a>
+<a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/monitor_msg.html">
+<span class="material-symbols-outlined">hub</span>
+<span>风险联动消息</span>
+</a>
+<a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/monitor.html#requests-panel">
+<span class="material-symbols-outlined">mark_email_read</span>
+<span>联动申请消息</span>
+</a>
+</nav>
+<div class="px-4 mt-auto mb-20">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg shadow-lg shadow-primary/20 active:scale-95 transition-all text-sm uppercase tracking-wider">
+                发起全盘扫描
+            </button>
+<div class="mt-4 pt-4 border-t border-slate-800/50">
+<a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>退出登录</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 min-h-screen pt-24 pb-16 px-10 data-grid-texture" >
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<div class="xl:col-span-2">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+<div>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-[0.2em] text-tertiary mb-2 block">Protection Registry</span>
+<h1 class="font-headline text-4xl font-bold tracking-tight text-on-surface">被监护人管理</h1>
+<p class="text-on-surface-variant text-sm mt-2 max-w-lg">监管并保护您的家庭成员，实时监测异常通讯与潜在诈骗风险。</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="glass-panel px-4 py-2 rounded-lg border border-outline-variant/10">
+<p class="text-[10px] uppercase text-on-surface-variant font-label tracking-widest">Active Wards</p>
+<p class="font-headline text-xl font-bold text-tertiary">08 / 12</p>
+</div>
+<div class="glass-panel px-4 py-2 rounded-lg border border-outline-variant/10">
+<p class="text-[10px] uppercase text-on-surface-variant font-label tracking-widest">Risk Alerts</p>
+<p class="font-headline text-xl font-bold text-error">02</p>
+</div>
+</div>
+</div>
+<!-- Management Tools -->
+<div class="glass-panel p-1 rounded-xl mb-6 shadow-2xl border border-outline-variant/10">
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-4 flex-1">
+<div class="relative min-w-[300px]">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">search</span>
+<input class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-primary/40 rounded-md placeholder:text-outline/60" placeholder="搜索被监护人姓名" type="text"/>
+</div>
+<div class="relative min-w-[180px]">
+<select class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-4 pr-10 focus:ring-1 focus:ring-primary/40 rounded-md appearance-none">
+<option value="">选择关系</option>
+<option value="parent">父母</option>
+<option value="child">子女</option>
+<option value="elderly">高龄亲属</option>
+<option value="other">其他</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold px-6 py-2.5 rounded-md flex items-center gap-2 hover:shadow-[0_0_20px_rgba(92,191,255,0.3)] transition-all active:scale-95" id="open-ward-modal-btn" type="button">
+<span class="material-symbols-outlined text-lg">person_add</span>
+                        添加被监护人
+                    </button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="glass-panel rounded-xl overflow-hidden shadow-2xl border border-outline-variant/10">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50 border-b border-outline-variant/5">
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold">序号</th>
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold">备注</th>
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold">关系</th>
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold">用户名</th>
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold">联系方式</th>
+<th class="px-6 py-5 font-label text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-semibold text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="px-6 py-5 text-sm font-headline text-outline/80">01</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border border-primary/20">
+                                            L
+                                        </div>
+<span class="text-sm font-medium text-on-surface">李建国</span>
+<span class="bg-tertiary/10 text-tertiary text-[9px] px-1.5 py-0.5 rounded border border-tertiary/20 uppercase tracking-tighter">Security Active</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">父亲</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs font-mono text-on-surface-variant">jianguo_li88</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">138 **** 9021</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="monitor-edit-btn p-2 text-primary hover:bg-primary/10 rounded-md transition-colors" title="修改" type="button">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="monitor-delete-btn p-2 text-error hover:bg-error/10 rounded-md transition-colors" title="删除" type="button">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="px-6 py-5 text-sm font-headline text-outline/80">02</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center text-error font-bold text-xs border border-error/20">
+                                            W
+                                        </div>
+<span class="text-sm font-medium text-on-surface">王秀珍</span>
+<span class="bg-error/10 text-error text-[9px] px-1.5 py-0.5 rounded border border-error/20 uppercase tracking-tighter">Alert Detected</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">母亲</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs font-mono text-on-surface-variant">xiuzhen_w</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">139 **** 4432</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="monitor-edit-btn p-2 text-primary hover:bg-primary/10 rounded-md transition-colors" title="修改" type="button">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="monitor-delete-btn p-2 text-error hover:bg-error/10 rounded-md transition-colors" title="删除" type="button">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="px-6 py-5 text-sm font-headline text-outline/80">03</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center text-outline font-bold text-xs border border-outline/20">
+                                            Z
+                                        </div>
+<span class="text-sm font-medium text-on-surface">张小明</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">子女</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs font-mono text-on-surface-variant">xiaoming_z7</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">150 **** 1129</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="monitor-edit-btn p-2 text-primary hover:bg-primary/10 rounded-md transition-colors" title="修改" type="button">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="monitor-delete-btn p-2 text-error hover:bg-error/10 rounded-md transition-colors" title="删除" type="button">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-highest/30 transition-colors group">
+<td class="px-6 py-5 text-sm font-headline text-outline/80">04</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs border border-primary/20">
+                                            L
+                                        </div>
+<span class="text-sm font-medium text-on-surface">李芳</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">姐妹</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs font-mono text-on-surface-variant">fang_l_92</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-xs text-on-surface-variant">136 **** 8876</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="monitor-edit-btn p-2 text-primary hover:bg-primary/10 rounded-md transition-colors" title="修改" type="button">
+<span class="material-symbols-outlined text-lg">edit</span>
+</button>
+<button class="monitor-delete-btn p-2 text-error hover:bg-error/10 rounded-md transition-colors" title="删除" type="button">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-high/50 p-4 border-t border-outline-variant/10 flex items-center justify-between">
+<p class="text-xs text-on-surface-variant" id="ward-pagination-summary">显示 0-0 条，共 0 条记录；共 1 页</p>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-highest transition-colors disabled:opacity-30" disabled="" id="ward-pagination-prev" type="button">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-16 h-8 flex items-center justify-center rounded bg-primary text-on-primary text-xs font-bold" id="ward-pagination-page" type="button">1 / 1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant/20 text-on-surface-variant hover:bg-surface-container-highest transition-colors" id="ward-pagination-next" type="button">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Visual Decorative Element -->
+<div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="glass-panel p-6 rounded-xl border border-outline-variant/10 overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="font-headline text-lg font-bold text-on-surface mb-2">安全矩阵概览</h3>
+<p class="text-xs text-on-surface-variant mb-6 leading-relaxed">系统实时分析被监护人的网络环境与社交动态，通过多维向量匹配识别潜在欺诈威胁。</p>
+<div class="flex items-center gap-4">
+<div class="h-2 flex-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%] shadow-[0_0_10px_rgba(92,191,255,0.5)]"></div>
+</div>
+<span class="text-xs font-headline font-bold text-primary">75% 安全率</span>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[160px] text-primary" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl border border-outline-variant/10 overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="font-headline text-lg font-bold text-on-surface mb-2">近期活动轨迹</h3>
+<p class="text-xs text-on-surface-variant mb-4 leading-relaxed">过去 24 小时内监控到的 152 次安全交互中，未发现关键漏洞。</p>
+<div class="flex gap-2">
+<div class="h-10 w-2 bg-primary/20 rounded-t-sm self-end"></div>
+<div class="h-16 w-2 bg-primary/40 rounded-t-sm self-end"></div>
+<div class="h-12 w-2 bg-primary/30 rounded-t-sm self-end"></div>
+<div class="h-20 w-2 bg-tertiary/60 rounded-t-sm self-end shadow-[0_0_15px_rgba(129,236,255,0.4)]"></div>
+<div class="h-14 w-2 bg-primary/50 rounded-t-sm self-end"></div>
+<div class="h-18 w-2 bg-primary/40 rounded-t-sm self-end"></div>
+<div class="h-8 w-2 bg-primary/20 rounded-t-sm self-end"></div>
+<div class="h-24 w-2 bg-primary/70 rounded-t-sm self-end"></div>
+<div class="h-10 w-2 bg-primary/30 rounded-t-sm self-end"></div>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[160px] text-tertiary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+</div>
+</div>
+</div>
+<aside class="glass-panel rounded-xl p-5 border border-outline-variant/10 h-fit xl:sticky xl:top-24">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-headline text-lg font-bold text-on-surface">联动申请信息</h3>
+    <span class="text-xs text-on-surface-variant">收/发记录</span>
+  </div>
+  <div class="space-y-2 max-h-[70vh] overflow-auto pr-1" id="requests-panel">
+    <p class="text-sm text-on-surface-variant">加载中...</p>
+  </div>
+</aside>
+</div>
+</main>
+</div>
+<script src="/ui/src/under-guardian-page.js" type="module"></script>
+
+<script>
+  (function () {
+    const map = {
+      "detectAgent.html": "/ui/detectAgent.html",
+      "monitor.html": "/ui/monitor.html",
+      "reportHistory.html": "/ui/reportHistory.html",
+      "detectSetting.html": "/ui/detectSetting.html",
+      "infoSetting.html": "/ui/infoSetting.html"
+    };
+
+    const activeHref = map[window.location.pathname.split('/').pop()];
+    if (!activeHref) return;
+
+    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+    );
+
+    navLinks.forEach((a) => {
+      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+    });
+
+    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+    if (!activeLink) return;
+
+    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+  })();
+</script>
+</body></html>
+
+
+
+
+
+
+
+
+
+

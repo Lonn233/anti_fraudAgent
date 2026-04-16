@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SENTINEL | 完善哨兵档案</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-dim": "#00d4ec",
+                    "surface-container-lowest": "#000000",
+                    "secondary-dim": "#cbd5e8",
+                    "surface-container-low": "#0e131d",
+                    "tertiary-fixed": "#00e3fd",
+                    "surface-container-high": "#19202c",
+                    "outline-variant": "#434853",
+                    "surface": "#090e17",
+                    "on-tertiary": "#005762",
+                    "outline": "#717581",
+                    "on-tertiary-fixed-variant": "#005762",
+                    "primary-fixed": "#0cb3ff",
+                    "on-primary": "#003854",
+                    "surface-variant": "#1f2633",
+                    "on-tertiary-fixed": "#003840",
+                    "secondary-fixed-dim": "#cbd5e8",
+                    "on-secondary-fixed-variant": "#525c6c",
+                    "background": "#090e17",
+                    "tertiary-fixed-dim": "#00d4ec",
+                    "error-container": "#9f0519",
+                    "surface-container": "#141a25",
+                    "tertiary-container": "#00e3fd",
+                    "inverse-surface": "#f9f9ff",
+                    "error": "#ff716c",
+                    "secondary-container": "#3d4757",
+                    "surface-bright": "#252c3b",
+                    "inverse-primary": "#006593",
+                    "primary-fixed-dim": "#00a5ec",
+                    "on-secondary": "#485262",
+                    "primary": "#5cbfff",
+                    "surface-tint": "#5cbfff",
+                    "surface-container-highest": "#1f2633",
+                    "primary-container": "#0cb3ff",
+                    "on-primary-fixed-variant": "#003752",
+                    "tertiary": "#81ecff",
+                    "on-primary-container": "#002d45",
+                    "secondary": "#d9e3f7",
+                    "on-secondary-container": "#c7d1e4",
+                    "on-surface": "#e1e5f3",
+                    "secondary-fixed": "#d9e3f7",
+                    "on-error-container": "#ffa8a3",
+                    "surface-dim": "#090e17",
+                    "primary-dim": "#00a7f0",
+                    "on-error": "#490006",
+                    "inverse-on-surface": "#505560",
+                    "on-primary-fixed": "#000d18",
+                    "on-background": "#e1e5f3",
+                    "on-surface-variant": "#a6abb7",
+                    "error-dim": "#d7383b",
+                    "on-tertiary-container": "#004d57",
+                    "on-secondary-fixed": "#36404f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #090e17;
+            color: #e1e5f3;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(25, 32, 44, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(67, 72, 83, 0.15);
+        }
+        .data-grid-texture {
+            background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen selection:bg-tertiary/30">
+<!-- Main Content Area -->
+<main class="flex-grow flex items-center justify-center pt-24 pb-16 px-4 data-grid-texture relative overflow-hidden">
+<!-- Atmospheric Glows -->
+<div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-tertiary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<!-- Registration Card -->
+<div class="w-full max-w-[480px] glass-panel rounded-xl shadow-2xl relative overflow-hidden">
+<!-- Progress Bar -->
+<div class="absolute top-0 left-0 w-full h-[3px] bg-surface-container-highest">
+<div class="h-full w-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]"></div>
+</div>
+<div class="p-8 md:p-10 flex flex-col gap-8">
+<!-- Header -->
+<div class="text-center space-y-2">
+<h1 class="font-headline text-3xl font-bold tracking-tight text-on-surface">完善哨兵档案</h1>
+<p class="font-label text-sm uppercase tracking-widest text-on-surface-variant">第二步：个人详细信息</p>
+</div>
+<!-- Form -->
+<form class="space-y-6" id="register2-form">
+<div class="space-y-2">
+<label class="flex items-center gap-2 font-label text-[0.6875rem] uppercase tracking-wider text-outline">
+<span>出生日期设置</span>
+<span aria-live="polite" class="text-error min-h-[1em] normal-case tracking-normal" id="register2-birth-error"></span>
+</label>
+<div class="grid grid-cols-3 gap-3">
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-3 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="birth-year">
+<option disabled selected value="">年</option>
+</select>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-3 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="birth-month">
+<option disabled selected value="">月</option>
+</select>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-3 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="birth-day">
+<option disabled selected value="">日</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-2 font-label text-[0.6875rem] uppercase tracking-wider text-outline">
+<span>当前职业选择</span>
+<span aria-live="polite" class="text-error min-h-[1em] normal-case tracking-normal" id="register2-job-error"></span>
+</label>
+<div class="space-y-3">
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="job-category">
+<option disabled selected value="">选择职业大类</option>
+<option value="学生">学生</option>
+<option value="教育行业">教育行业</option>
+<option value="金融行业">金融行业</option>
+<option value="互联网与 IT">互联网与 IT</option>
+<option value="服务业">服务业</option>
+<option value="医疗健康">医疗健康</option>
+<option value="制造业">制造业</option>
+<option value="自由职业">自由职业</option>
+<option value="其他">其他</option>
+</select>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="job-subcategory">
+<option disabled selected value="">请选择职业小类</option>
+</select>
+</div>
+</div>
+<div class="space-y-2">
+<label class="flex items-center gap-2 font-label text-[0.6875rem] uppercase tracking-wider text-outline">
+<span>地区选择</span>
+<span aria-live="polite" class="text-error min-h-[1em] normal-case tracking-normal" id="register2-region-error"></span>
+</label>
+<div class="space-y-3">
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="region-province">
+<option disabled selected value="">选择省市</option>
+</select>
+<select class="w-full bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-on-surface focus:ring-1 focus:ring-tertiary/40 font-body appearance-none transition-all" id="region-city">
+<option disabled selected value="">选择城市</option>
+</select>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-4 flex flex-col items-center gap-6">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg hover:shadow-[inset_0_0_15px_rgba(255,255,255,0.3)] transition-all active:scale-95" type="submit">
+                            完成注册
+                        </button>
+<p class="text-sm text-error min-h-5 text-center" id="register2-error"></p>
+<a class="font-label text-[0.6875rem] uppercase tracking-widest text-outline hover:text-primary transition-colors flex items-center gap-2" href="/ui/register1.html">
+<span class="material-symbols-outlined text-[1rem]" data-icon="arrow_back">arrow_back</span>
+                            返回上一步
+                        </a>
+</div>
+</form>
+</div>
+<!-- Technical Decor -->
+<div class="absolute bottom-2 right-2 opacity-20 pointer-events-none">
+<span class="font-headline text-[8px] text-tertiary uppercase tracking-tighter">Sentinel Security Protocol v2.04</span>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#090e17] w-full py-8">
+<div class="bg-gradient-to-r from-transparent via-[#434853]/15 to-transparent h-[1px] mb-8"></div>
+<div class="flex flex-col items-center gap-4 max-w-7xl mx-auto px-6">
+<div class="flex gap-8 font-['Inter'] text-[0.6875rem] uppercase tracking-[0.05em]">
+<a class="text-[#e1e5f3]/40 hover:text-[#5cbfff] opacity-80 hover:opacity-100 transition-opacity" href="#">Protocol</a>
+<a class="text-[#e1e5f3]/40 hover:text-[#5cbfff] opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy</a>
+<a class="text-[#e1e5f3]/40 hover:text-[#5cbfff] opacity-80 hover:opacity-100 transition-opacity" href="#">Security</a>
+</div>
+<p class="font-['Inter'] text-[0.6875rem] uppercase tracking-[0.05em] text-[#e1e5f3]/40">© 2024 SENTINEL INTELLIGENCE UNIT</p>
+</div>
+</footer>
+<script>
+  (function () {
+    const yearSelect = document.getElementById("birth-year");
+    const monthSelect = document.getElementById("birth-month");
+    const daySelect = document.getElementById("birth-day");
+    const categorySelect = document.getElementById("job-category");
+    const subcategorySelect = document.getElementById("job-subcategory");
+    const provinceSelect = document.getElementById("region-province");
+    const citySelect = document.getElementById("region-city");
+
+    const now = new Date();
+    for (let y = now.getFullYear(); y >= 1950; y--) {
+      const option = document.createElement("option");
+      option.value = String(y);
+      option.textContent = String(y);
+      yearSelect.appendChild(option);
+    }
+
+    for (let m = 1; m <= 12; m++) {
+      const option = document.createElement("option");
+      option.value = String(m);
+      option.textContent = String(m);
+      monthSelect.appendChild(option);
+    }
+
+    function refreshDays() {
+      const y = Number(yearSelect.value);
+      const m = Number(monthSelect.value);
+      daySelect.innerHTML = '<option disabled selected value="">日</option>';
+      if (!y || !m) return;
+      const days = new Date(y, m, 0).getDate();
+      for (let d = 1; d <= days; d++) {
+        const option = document.createElement("option");
+        option.value = String(d);
+        option.textContent = String(d);
+        daySelect.appendChild(option);
+      }
+    }
+
+    yearSelect.addEventListener("change", refreshDays);
+    monthSelect.addEventListener("change", refreshDays);
+
+    const jobMap = {
+      "学生": ["小学生", "中学生", "大学生", "研究生", "博士生"],
+      "教育行业": ["小学老师", "中学老师", "大学老师", "导师", "教授", "校长", "辅导员", "幼教"],
+      "金融行业": ["银行职员", "证券", "基金", "保险", "会计", "审计", "投资"],
+      "互联网与 IT": ["前端开发", "后端开发", "测试", "产品", "设计", "运维", "数据分析"],
+      "服务业": ["餐饮", "零售", "物流", "酒店", "安保", "家政", "美容"],
+      "医疗健康": ["医生", "护士", "药师", "医技", "护理", "健康管理"],
+      "制造业": ["普工", "技工", "工程师", "质检", "管理"],
+      "自由职业": ["设计师", "摄影师", "博主", "家教", "独立顾问"],
+      "其他": ["其他职业"]
+    };
+
+    categorySelect.addEventListener("change", function () {
+      const selected = categorySelect.value;
+      subcategorySelect.innerHTML = '<option disabled selected value="">请选择职业小类</option>';
+      if (!selected || !jobMap[selected]) return;
+      jobMap[selected].forEach(function (item) {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        subcategorySelect.appendChild(option);
+      });
+    });
+
+    const regionMap = {
+      "北京市": ["北京"],
+      "天津市": ["天津"],
+      "河北省": ["石家庄", "唐山", "秦皇岛", "邯郸", "邢台", "保定", "张家口", "承德", "沧州", "廊坊", "衡水"],
+      "山西省": ["太原", "大同", "阳泉", "长治", "晋城", "朔州", "晋中", "运城", "忻州", "临汾", "吕梁"],
+      "内蒙古自治区": ["呼和浩特", "包头", "乌海", "赤峰", "通辽", "鄂尔多斯", "呼伦贝尔", "巴彦淖尔", "乌兰察布", "兴安盟", "锡林郭勒盟", "阿拉善盟"],
+      "辽宁省": ["沈阳", "大连", "鞍山", "抚顺", "本溪", "丹东", "锦州", "营口", "阜新", "辽阳", "盘锦", "铁岭", "朝阳", "葫芦岛"],
+      "吉林省": ["长春", "吉林", "四平", "辽源", "通化", "白山", "松原", "白城", "延边朝鲜族自治州"],
+      "黑龙江省": ["哈尔滨", "齐齐哈尔", "鸡西", "鹤岗", "双鸭山", "大庆", "伊春", "佳木斯", "七台河", "牡丹江", "黑河", "绥化", "大兴安岭地区"],
+      "上海市": ["上海"],
+      "江苏省": ["南京", "无锡", "徐州", "常州", "苏州", "南通", "连云港", "淮安", "盐城", "扬州", "镇江", "泰州", "宿迁"],
+      "浙江省": ["杭州", "宁波", "温州", "嘉兴", "湖州", "绍兴", "金华", "衢州", "舟山", "台州", "丽水"],
+      "安徽省": ["合肥", "芜湖", "蚌埠", "淮南", "马鞍山", "淮北", "铜陵", "安庆", "黄山", "滁州", "阜阳", "宿州", "六安", "亳州", "池州", "宣城"],
+      "福建省": ["福州", "厦门", "莆田", "三明", "泉州", "漳州", "南平", "龙岩", "宁德"],
+      "江西省": ["南昌", "景德镇", "萍乡", "九江", "新余", "鹰潭", "赣州", "吉安", "宜春", "抚州", "上饶"],
+      "山东省": ["济南", "青岛", "淄博", "枣庄", "东营", "烟台", "潍坊", "济宁", "泰安", "威海", "日照", "临沂", "德州", "聊城", "滨州", "菏泽"],
+      "河南省": ["郑州", "开封", "洛阳", "平顶山", "安阳", "鹤壁", "新乡", "焦作", "濮阳", "许昌", "漯河", "三门峡", "南阳", "商丘", "信阳", "周口", "驻马店"],
+      "湖北省": ["武汉", "黄石", "十堰", "宜昌", "襄阳", "鄂州", "荆门", "孝感", "荆州", "黄冈", "咸宁", "随州", "恩施土家族苗族自治州"],
+      "湖南省": ["长沙", "株洲", "湘潭", "衡阳", "邵阳", "岳阳", "常德", "张家界", "益阳", "郴州", "永州", "怀化", "娄底", "湘西土家族苗族自治州"],
+      "广东省": ["广州", "韶关", "深圳", "珠海", "汕头", "佛山", "江门", "湛江", "茂名", "肇庆", "惠州", "梅州", "汕尾", "河源", "阳江", "清远", "东莞", "中山", "潮州", "揭阳", "云浮"],
+      "广西壮族自治区": ["南宁", "柳州", "桂林", "梧州", "北海", "防城港", "钦州", "贵港", "玉林", "百色", "贺州", "河池", "来宾", "崇左"],
+      "海南省": ["海口", "三亚", "三沙", "儋州"],
+      "重庆市": ["重庆"],
+      "四川省": ["成都", "自贡", "攀枝花", "泸州", "德阳", "绵阳", "广元", "遂宁", "内江", "乐山", "南充", "眉山", "宜宾", "广安", "达州", "雅安", "巴中", "资阳", "阿坝", "甘孜", "凉山"],
+      "贵州省": ["贵阳", "六盘水", "遵义", "安顺", "毕节", "铜仁", "黔西南", "黔东南", "黔南"],
+      "云南省": ["昆明", "曲靖", "玉溪", "保山", "昭通", "丽江", "普洱", "临沧", "楚雄", "红河", "文山", "西双版纳", "大理", "德宏", "怒江", "迪庆"],
+      "西藏自治区": ["拉萨", "日喀则", "昌都", "林芝", "山南市", "那曲", "阿里"],
+      "陕西省": ["西安", "铜川", "宝鸡", "咸阳", "渭南", "延安", "汉中", "榆林", "安康", "商洛"],
+      "甘肃省": ["兰州", "嘉峪关", "金昌", "白银", "天水", "武威", "张掖", "平凉", "酒泉", "庆阳", "定西", "陇南", "临夏", "甘南"],
+      "青海省": ["西宁", "海东", "海北", "黄南", "海南", "果洛", "玉树", "海西"],
+      "宁夏回族自治区": ["银川", "石嘴山", "吴忠", "固原", "中卫"],
+      "新疆维吾尔自治区": ["乌鲁木齐", "克拉玛依", "吐鲁番", "哈密", "昌吉", "博尔塔拉", "巴音郭楞", "阿克苏", "克孜勒苏", "喀什", "和田", "伊犁", "塔城", "阿勒泰"],
+      "香港特别行政区": ["香港"],
+      "澳门特别行政区": ["澳门"],
+      "台湾省": ["台北", "新北", "桃园", "台中", "台南", "高雄", "基隆", "新竹", "嘉义", "苗栗", "彰化", "南投", "云林", "嘉义县", "屏东", "宜兰", "花莲", "台东", "澎湖"]
+    };
+
+    Object.keys(regionMap).forEach(function (province) {
+      const option = document.createElement("option");
+      option.value = province;
+      option.textContent = province;
+      provinceSelect.appendChild(option);
+    });
+
+    provinceSelect.addEventListener("change", function () {
+      const selected = provinceSelect.value;
+      citySelect.innerHTML = '<option disabled selected value="">选择城市</option>';
+      if (!selected || !regionMap[selected]) return;
+      regionMap[selected].forEach(function (city) {
+        const option = document.createElement("option");
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    });
+
+    // function forceDropdownDown(select) {
+    //   const collapsedSize = 1;
+    //   const maxExpandedRows = 8;
+
+    //   select.size = collapsedSize;
+
+    //   select.addEventListener("focus", function () {
+    //     const optionCount = Math.max(select.options.length, 2);
+    //     select.size = Math.min(optionCount, maxExpandedRows);
+    //   });
+
+    //   select.addEventListener("blur", function () {
+    //     select.size = collapsedSize;
+    //   });
+
+    //   select.addEventListener("change", function () {
+    //     select.size = collapsedSize;
+    //   });
+    // }
+
+    // [yearSelect, monthSelect, daySelect, categorySelect, subcategorySelect, provinceSelect, citySelect].forEach(forceDropdownDown);
+  })();
+</script>
+<script src="/ui/src/register2-page.js" type="module"></script>
+<script>
+  (function () {
+    const map = {
+      "detectAgent.html": "/ui/detectAgent.html",
+      "monitor.html": "/ui/monitor.html",
+      "reportHistory.html": "/ui/reportHistory.html",
+      "detectSetting.html": "/ui/detectSetting.html",
+      "infoSetting.html": "/ui/infoSetting.html"
+    };
+
+    const activeHref = map[window.location.pathname.split('/').pop()];
+    if (!activeHref) return;
+
+    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+    );
+
+    navLinks.forEach((a) => {
+      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+    });
+
+    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+    if (!activeLink) return;
+
+    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+  })();
+</script>
+</body></html>
+
+
+
+
+
+

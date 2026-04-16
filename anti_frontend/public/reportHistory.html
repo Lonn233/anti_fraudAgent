@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#252c3b",
+                    "inverse-primary": "#006593",
+                    "error-dim": "#d7383b",
+                    "on-primary": "#003854",
+                    "tertiary-dim": "#00d4ec",
+                    "error": "#ff716c",
+                    "secondary": "#d9e3f7",
+                    "primary-dim": "#00a7f0",
+                    "tertiary": "#81ecff",
+                    "secondary-fixed": "#d9e3f7",
+                    "primary-container": "#0cb3ff",
+                    "on-tertiary-container": "#004d57",
+                    "secondary-container": "#3d4757",
+                    "outline": "#717581",
+                    "on-surface-variant": "#a6abb7",
+                    "primary-fixed-dim": "#00a5ec",
+                    "surface-container-low": "#0e131d",
+                    "secondary-dim": "#cbd5e8",
+                    "secondary-fixed-dim": "#cbd5e8",
+                    "inverse-surface": "#f9f9ff",
+                    "surface-container": "#141a25",
+                    "surface-tint": "#5cbfff",
+                    "on-error": "#490006",
+                    "on-tertiary-fixed-variant": "#005762",
+                    "outline-variant": "#434853",
+                    "on-secondary-fixed": "#36404f",
+                    "surface-container-highest": "#1f2633",
+                    "primary": "#5cbfff",
+                    "on-secondary": "#485262",
+                    "on-tertiary": "#005762",
+                    "surface-container-high": "#19202c",
+                    "primary-fixed": "#0cb3ff",
+                    "surface-container-lowest": "#000000",
+                    "tertiary-container": "#00e3fd",
+                    "on-tertiary-fixed": "#003840",
+                    "error-container": "#9f0519",
+                    "on-secondary-fixed-variant": "#525c6c",
+                    "background": "#090e17",
+                    "on-primary-fixed": "#000d18",
+                    "on-surface": "#e1e5f3",
+                    "inverse-on-surface": "#505560",
+                    "on-primary-container": "#002d45",
+                    "on-primary-fixed-variant": "#003752",
+                    "surface": "#090e17",
+                    "on-error-container": "#ffa8a3",
+                    "tertiary-fixed-dim": "#00d4ec",
+                    "on-background": "#e1e5f3",
+                    "tertiary-fixed": "#00e3fd",
+                    "on-secondary-container": "#c7d1e4",
+                    "surface-dim": "#090e17",
+                    "surface-variant": "#1f2633"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .brand-font { font-family: 'Space Grotesk', sans-serif; }
+        .data-grid-texture {
+            background-image: radial-gradient(circle, #434853 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.03;
+        }
+        .glass-panel {
+            background: rgba(25, 32, 44, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative group">
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+</div>
+</nav><!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col h-full py-6 fixed left-0 top-16 w-64 bg-[#0e131d] dark:bg-[#0e131d]">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="p-2 bg-surface-container-highest rounded-lg">
+<span class="material-symbols-outlined text-[#5cbfff]" style='font-variation-settings: "FILL" 1;'>shield</span>
+</div>
+<div>
+<div class="text-lg font-black text-[#5cbfff] font-['Space_Grotesk']" style="">ANTI-FRAUD AI</div>
+<div class="text-[10px] text-tertiary tracking-[0.2em] font-bold" style="">ACTIVE MONITORING</div>
+</div>
+</div>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-[#e1e5f3] opacity-60 hover:bg-[#1f2633] hover:text-[#5cbfff] transition-all group" href="#" style="">
+<span class="material-symbols-outlined" data-icon="shield" style="">shield</span>
+<span class="font-['Inter']" style="">综合风险情况</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-[#81ecff] bg-[#1f2633] rounded-r-full font-bold" href="#" style="">
+<span class="material-symbols-outlined" data-icon="history" style="">history</span>
+<span class="font-['Inter']" style="">检测历史</span>
+</a>
+</div>
+<div class="px-6 py-4 mt-auto border-t border-outline-variant/10">
+<button class="w-full py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg mb-4 hover:brightness-110 active:scale-95 transition-all text-sm uppercase tracking-widest" style="">
+                Start Deep Scan
+            </button>
+<div class="space-y-2">
+<a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 hover:text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined text-sm" data-icon="help" style="">help</span> Support
+                </a>
+<a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 hover:text-primary transition-colors" href="#" style="">
+<span class="material-symbols-outlined text-sm" data-icon="terminal" style="">terminal</span> Logs
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-24 lg:pl-72 pr-8 pb-12 min-h-screen">
+<div class="max-w-6xl mx-auto">
+<!-- Header Section -->
+<header class="mb-10 relative">
+<div class="absolute -top-10 -left-10 w-64 h-64 bg-primary/10 blur-[100px] rounded-full"></div>
+<div class="flex justify-between items-end relative z-10">
+<div>
+<span class="font-['Inter'] uppercase text-[0.6875rem] tracking-widest text-tertiary font-bold mb-2 block" style="">System Archives</span>
+<h1 class="text-4xl font-bold tracking-tight text-on-surface font-['Space_Grotesk']" style="">检测历史报告</h1>
+</div>
+<div class="flex gap-4">
+<div class="text-right">
+<div class="text-3xl font-bold text-tertiary font-headline leading-none" id="report-total-scans" style="">0</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1" style="">Total Scans</div>
+</div>
+<div class="w-[1px] h-10 bg-outline-variant/30"></div>
+<div class="text-right">
+<div class="text-3xl font-bold text-error font-headline leading-none" id="report-active-threats" style="">0</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1" style="">Active Threats</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Filtering Console -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
+<!-- Search -->
+<div class="md:col-span-4 relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" style="">search</span>
+</div>
+<input class="w-full bg-surface-container-lowest border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/50 font-body transition-all" placeholder="搜索关键词、ID或应用名称..." type="text"/>
+</div>
+<!-- Date Filter -->
+<div class="md:col-span-3 relative">
+<select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
+<option>所有时间</option>
+<option>过去 24 小时</option>
+<option>过去 7 天</option>
+<option>过去 30 天</option>
+<option>自定义范围</option>
+</select>
+<div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined" style="">calendar_today</span>
+</div>
+</div>
+<!-- Type Filter -->
+<div class="md:col-span-3 relative">
+<select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
+<option>全部检测类型</option>
+<option>通讯检测</option>
+<option>支付安全</option>
+<option>链接扫描</option>
+<option>应用审计</option>
+</select>
+<div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined" style="">filter_list</span>
+</div>
+</div>
+<!-- Risk Filter -->
+<div class="md:col-span-2 relative">
+<select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
+<option>所有风险等级</option>
+<option class="text-error">高危</option>
+<option class="text-primary">中等</option>
+<option class="text-tertiary">安全</option>
+</select>
+</div>
+</section>
+<!-- Results List (Editorial Style) -->
+<section class="space-y-4" id="report-history-list">
+<!-- Item 1 (Critical) -->
+<div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-start gap-5">
+<div class="p-4 bg-error/10 rounded-xl">
+<span class="material-symbols-outlined text-error" style='font-variation-settings: "FILL" 1;'>warning</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="text-lg font-bold font-headline" style="">可疑通讯拦截</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-error/20 text-error" style="">高危风险</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-2" style="">检测到来自高风险地区的加密语音通话请求，可能涉及电信诈骗。</p>
+<div class="flex items-center gap-4 text-[11px] text-outline font-label tracking-wide uppercase">
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">schedule</span> 2023.10.24 14:32</span>
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">fingerprint</span> ID: ST-90283</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-outline-variant/30 hover:border-primary/50 text-on-surface text-sm font-semibold rounded-lg transition-all active:scale-95" style="">
+                                查看详情
+                            </button>
+<button class="p-2 text-outline hover:text-error transition-colors" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 2 (Safe) -->
+<div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-start gap-5">
+<div class="p-4 bg-tertiary/10 rounded-xl">
+<span class="material-symbols-outlined text-tertiary" style='font-variation-settings: "FILL" 1;'>verified_user</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="text-lg font-bold font-headline" style="">支付环境扫描</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-tertiary/20 text-tertiary" style="">安全</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-2" style="">已成功验证微信支付环境安全性。未发现越狱、根权限或恶意键盘干扰。</p>
+<div class="flex items-center gap-4 text-[11px] text-outline font-label tracking-wide uppercase">
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">schedule</span> 2023.10.24 09:15</span>
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">fingerprint</span> ID: ST-90244</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-outline-variant/30 hover:border-primary/50 text-on-surface text-sm font-semibold rounded-lg transition-all active:scale-95" style="">
+                                查看详情
+                            </button>
+<button class="p-2 text-outline hover:text-error transition-colors" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 3 (Warning) -->
+<div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-start gap-5">
+<div class="p-4 bg-primary/10 rounded-xl">
+<span class="material-symbols-outlined text-primary" style='font-variation-settings: "FILL" 1;'>info</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="text-lg font-bold font-headline" style="">未知链接检测</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/20 text-primary" style="">中等风险</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-2" style="">短信内含缩略网址链接。该域名具有不寻常的流量特征，建议保持警惕。</p>
+<div class="flex items-center gap-4 text-[11px] text-outline font-label tracking-wide uppercase">
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">schedule</span> 2023.10.23 18:44</span>
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">fingerprint</span> ID: ST-89110</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-outline-variant/30 hover:border-primary/50 text-on-surface text-sm font-semibold rounded-lg transition-all active:scale-95" style="">
+                                查看详情
+                            </button>
+<button class="p-2 text-outline hover:text-error transition-colors" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item 4 (Safe) -->
+<div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
+<div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex items-start gap-5">
+<div class="p-4 bg-tertiary/10 rounded-xl">
+<span class="material-symbols-outlined text-tertiary" style='font-variation-settings: "FILL" 1;'>account_tree</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h3 class="text-lg font-bold font-headline" style="">系统权限完整性核查</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-tertiary/20 text-tertiary" style="">安全</span>
+</div>
+<p class="text-on-surface-variant text-sm mb-2" style="">例行系统安全审计。所有敏感权限（摄像头、麦克风、位置）均符合预设策略。</p>
+<div class="flex items-center gap-4 text-[11px] text-outline font-label tracking-wide uppercase">
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">schedule</span> 2023.10.22 00:00</span>
+<span class="flex items-center gap-1" style=""><span class="material-symbols-outlined text-xs" style="">fingerprint</span> ID: ST-88001</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-6 py-2 border border-outline-variant/30 hover:border-primary/50 text-on-surface text-sm font-semibold rounded-lg transition-all active:scale-95" style="">
+                                查看详情
+                            </button>
+<button class="p-2 text-outline hover:text-error transition-colors" style="">
+<span class="material-symbols-outlined" style="">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Pagination -->
+<footer class="mt-12 flex justify-between items-center py-6 border-t border-outline-variant/10">
+<p class="text-xs text-outline font-label" id="report-history-summary" style="">SHOWING 0 OF 0 RECORDS</p>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/30 text-on-surface-variant hover:border-primary transition-all active:scale-90" style="">
+<span class="material-symbols-outlined" style="">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center bg-primary text-on-primary font-bold" style="">1</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/30 text-on-surface-variant hover:border-primary transition-all" style="">2</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/30 text-on-surface-variant hover:border-primary transition-all" style="">3</button>
+<button class="w-10 h-10 rounded-lg flex items-center justify-center border border-outline-variant/30 text-on-surface-variant hover:border-primary transition-all active:scale-90" style="">
+<span class="material-symbols-outlined" style="">chevron_right</span>
+</button>
+</div>
+</footer>
+</div>
+</main>
+<!-- FAB for Quick Actions (Mobile Context) -->
+<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-primary to-primary-container rounded-full shadow-2xl flex items-center justify-center text-on-primary z-40 active:scale-90 transition-transform" style="">
+<span class="material-symbols-outlined" style="">analytics</span>
+</button>
+<script>
+  (function () {
+    const map = {
+      "detectAgent.html": "/ui/detectAgent.html",
+      "monitor.html": "/ui/monitor.html",
+      "reportHistory.html": "/ui/reportHistory.html",
+      "detectSetting.html": "/ui/detectSetting.html",
+      "infoSetting.html": "/ui/infoSetting.html"
+    };
+
+    const activeHref = map[window.location.pathname.split('/').pop()];
+    if (!activeHref) return;
+
+    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+    );
+
+    navLinks.forEach((a) => {
+      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+    });
+
+    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+    if (!activeLink) return;
+
+    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+  })();
+</script>
+<script src="/ui/src/report-history-page.js" type="module"></script>
+</body></html>
+
+
+
+
+
+
+
+
+

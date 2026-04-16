@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Any
 
 from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, JSON, String, Text, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship as orm_relationship
 
 from app.db.session import Base
 
@@ -22,30 +22,101 @@ class User(Base):
     job: Mapped[str | None] = mapped_column(String(128), nullable=True)
     region: Mapped[str | None] = mapped_column(String(128), nullable=True)
 
-    guardians: Mapped[list["Guardian"]] = relationship(
-        back_populates="ward", cascade="all, delete-orphan"
+    monitor_guardians: Mapped[list["Guardian"]] = orm_relationship(
+        back_populates="monitor",
+        cascade="all, delete-orphan",
+        foreign_keys="Guardian.monitor_id",
     )
-    detections: Mapped[list["Detect"]] = relationship(
+    ward_guardians: Mapped[list["Guardian"]] = orm_relationship(
+        back_populates="ward",
+        cascade="all, delete-orphan",
+        foreign_keys="Guardian.ward_id",
+    )
+    outgoing_guardian_requests: Mapped[list["GuardianLinkRequest"]] = orm_relationship(
+        back_populates="monitor",
+        cascade="all, delete-orphan",
+        foreign_keys="GuardianLinkRequest.monitor_id",
+    )
+    incoming_guardian_requests: Mapped[list["GuardianLinkRequest"]] = orm_relationship(
+        back_populates="ward",
+        cascade="all, delete-orphan",
+        foreign_keys="GuardianLinkRequest.ward_id",
+    )
+    detections: Mapped[list["Detect"]] = orm_relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+    profile: Mapped["UserProfile | None"] = orm_relationship(
+        back_populates="user", uselist=False, cascade="all, delete-orphan"
+    )
+
+
+class UserProfile(Base):
+    __tablename__ = "user_profiles"
+    __table_args__ = (
+        UniqueConstraint("user_id", name="uq_user_profile_user"),
+        UniqueConstraint("phone", name="uq_user_profile_phone"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    phone: Mapped[str] = mapped_column(String(32))
+    birth_date: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    occupation_category: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    occupation_subcategory: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    region_province: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    region_city: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    user: Mapped["User"] = orm_relationship(back_populates="profile")
 
 
 class Guardian(Base):
     __tablename__ = "guardians"
     __table_args__ = (
-        UniqueConstraint("ward_user_id", "phone", name="uq_guardian_ward_phone"),
+        UniqueConstraint("monitor_id", "ward_id", name="uq_guardian_monitor_ward"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    ward_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    monitor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    ward_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
 
-    name: Mapped[str] = mapped_column(String(64))
-    relation: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    phone: Mapped[str] = mapped_column(String(32))
+    monitor_note: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    ward_note: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    relationship: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    ward: Mapped["User"] = relationship(back_populates="guardians")
+    monitor: Mapped["User"] = orm_relationship(
+        back_populates="monitor_guardians",
+        foreign_keys=[monitor_id],
+    )
+    ward: Mapped["User"] = orm_relationship(
+        back_populates="ward_guardians",
+        foreign_keys=[ward_id],
+    )
+
+
+class GuardianLinkRequest(Base):
+    __tablename__ = "guardian_link_requests"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    requester_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    monitor_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    ward_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    name: Mapped[str] = mapped_column(String(64))
+    relationship: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+    processed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    monitor: Mapped["User"] = orm_relationship(
+        back_populates="outgoing_guardian_requests",
+        foreign_keys=[monitor_id],
+    )
+    ward: Mapped["User"] = orm_relationship(
+        back_populates="incoming_guardian_requests",
+        foreign_keys=[ward_id],
+    )
 
 
 class DetectionReport(Base):
@@ -63,7 +134,7 @@ class DetectionReport(Base):
     fraud_type: Mapped[str] = mapped_column(String(512), default="", index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    detect_row: Mapped["Detect | None"] = relationship(
+    detect_row: Mapped["Detect | None"] = orm_relationship(
         back_populates="report",
         uselist=False,
     )
@@ -83,5 +154,26 @@ class Detect(Base):
     detect_type: Mapped[str] = mapped_column(String(32), index=True)
     detect_content: Mapped[str] = mapped_column(Text, default="")
 
-    user: Mapped["User"] = relationship(back_populates="detections")
-    report: Mapped["DetectionReport"] = relationship(back_populates="detect_row")
+    user: Mapped["User"] = orm_relationship(back_populates="detections")
+    report: Mapped["DetectionReport"] = orm_relationship(back_populates="detect_row")
+
+
+class AgentChatSession(Base):
+    __tablename__ = "agent_chat_sessions"
+    __table_args__ = (UniqueConstraint("user_id", "session_id", name="uq_agent_chat_user_session"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    session_id: Mapped[str] = mapped_column(String(128), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class AgentChatMessage(Base):
+    __tablename__ = "agent_chat_messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    chat_session_id: Mapped[int] = mapped_column(ForeignKey("agent_chat_sessions.id"), index=True)
+    role: Mapped[str] = mapped_column(String(16), index=True)
+    content: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)

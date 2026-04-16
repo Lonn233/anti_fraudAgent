@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>哨兵风险情报中心 - 登录</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#252c3b",
+                        "inverse-primary": "#006593",
+                        "error-dim": "#d7383b",
+                        "on-primary": "#003854",
+                        "tertiary-dim": "#00d4ec",
+                        "error": "#ff716c",
+                        "secondary": "#d9e3f7",
+                        "primary-dim": "#00a7f0",
+                        "tertiary": "#81ecff",
+                        "secondary-fixed": "#d9e3f7",
+                        "primary-container": "#0cb3ff",
+                        "on-tertiary-container": "#004d57",
+                        "secondary-container": "#3d4757",
+                        "outline": "#717581",
+                        "on-surface-variant": "#a6abb7",
+                        "primary-fixed-dim": "#00a5ec",
+                        "surface-container-low": "#0e131d",
+                        "secondary-dim": "#cbd5e8",
+                        "secondary-fixed-dim": "#cbd5e8",
+                        "inverse-surface": "#f9f9ff",
+                        "surface-container": "#141a25",
+                        "surface-tint": "#5cbfff",
+                        "on-error": "#490006",
+                        "on-tertiary-fixed-variant": "#005762",
+                        "outline-variant": "#434853",
+                        "on-secondary-fixed": "#36404f",
+                        "surface-container-highest": "#1f2633",
+                        "primary": "#5cbfff",
+                        "on-secondary": "#485262",
+                        "on-tertiary": "#005762",
+                        "surface-container-high": "#19202c",
+                        "primary-fixed": "#0cb3ff",
+                        "surface-container-lowest": "#000000",
+                        "tertiary-container": "#00e3fd",
+                        "on-tertiary-fixed": "#003840",
+                        "error-container": "#9f0519",
+                        "on-secondary-fixed-variant": "#525c6c",
+                        "background": "#090e17",
+                        "on-primary-fixed": "#000d18",
+                        "on-surface": "#e1e5f3",
+                        "inverse-on-surface": "#505560",
+                        "on-primary-container": "#002d45",
+                        "on-primary-fixed-variant": "#003752",
+                        "surface": "#090e17",
+                        "on-error-container": "#ffa8a3",
+                        "tertiary-fixed-dim": "#00d4ec",
+                        "on-background": "#e1e5f3",
+                        "tertiary-fixed": "#00e3fd",
+                        "on-secondary-container": "#c7d1e4",
+                        "surface-dim": "#090e17",
+                        "surface-variant": "#1f2633"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(25, 32, 44, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .data-grid-overlay {
+            background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .digital-line-v {
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #5cbfff, transparent);
+            opacity: 0.2;
+        }
+        .digital-line-h {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #81ecff, transparent);
+            opacity: 0.2;
+        }
+        .node-glow {
+            box-shadow: 0 0 15px rgba(129, 236, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen overflow-hidden flex items-center justify-center relative">
+<!-- Cinematic Background Infrastructure -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute inset-0 data-grid-overlay"></div>
+<!-- Animated Background Elements (Abstract Representation) -->
+<div class="absolute top-0 left-1/4 w-px h-full digital-line-v"></div>
+<div class="absolute top-0 right-1/3 w-px h-full digital-line-v"></div>
+<div class="absolute top-1/4 left-0 w-full h-px digital-line-h"></div>
+<div class="absolute bottom-1/3 left-0 w-full h-px digital-line-h"></div>
+<!-- Glowing Nodes -->
+<div class="absolute top-[25%] left-[25%] w-2 h-2 rounded-full bg-tertiary node-glow"></div>
+<div class="absolute top-[25%] right-[33.3%] w-2 h-2 rounded-full bg-primary node-glow"></div>
+<div class="absolute bottom-[33.3%] left-[25%] w-2 h-2 rounded-full bg-primary node-glow"></div>
+<div class="absolute bottom-[33.3%] right-[33.3%] w-2 h-2 rounded-full bg-tertiary node-glow"></div>
+<!-- Radial Ambient Glows -->
+<div class="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full bg-primary opacity-5 blur-[120px]"></div>
+<div class="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-tertiary opacity-5 blur-[120px]"></div>
+</div>
+<!-- Main Content Shell -->
+<main class="relative z-10 w-full max-w-[1200px] px-6 flex flex-col lg:flex-row items-center justify-between gap-12">
+<!-- Brand Narrative Side -->
+<div class="hidden lg:flex flex-col space-y-6 max-w-md">
+<div class="flex items-center space-x-3">
+<div class="w-12 h-12 bg-primary flex items-center justify-center rounded-lg shadow-[0_0_20px_rgba(92,191,255,0.3)]">
+<span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<h1 class="font-headline text-3xl font-bold tracking-tighter text-primary">SENTINEL</h1>
+</div>
+<div class="space-y-4">
+<h2 class="font-headline text-5xl font-extrabold leading-tight tracking-tight">
+                    哨兵风险<br/>
+<span class="text-tertiary">情报中心</span>
+</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed font-light">
+                    利用全球领先的分布式AI网络，为您提供实时、精准的反欺诈与情报监测服务。保障数字资产安全，预警潜在威胁。
+                </p>
+</div>
+<div class="flex items-center space-x-8 pt-8">
+<div class="flex flex-col">
+<span class="font-headline text-2xl font-bold text-primary">99.9%</span>
+<span class="font-label text-[0.625rem] tracking-widest uppercase opacity-60">监测精度</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline text-2xl font-bold text-primary">24/7</span>
+<span class="font-label text-[0.625rem] tracking-widest uppercase opacity-60">活跃防护</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline text-2xl font-bold text-primary">&lt;50ms</span>
+<span class="font-label text-[0.625rem] tracking-widest uppercase opacity-60">响应延迟</span>
+</div>
+</div>
+</div>
+<!-- Login Container -->
+<div class="w-full max-w-md">
+<div class="glass-panel p-10 rounded-xl shadow-[0_0_64px_rgba(0,0,0,0.5)] border border-outline-variant/10 relative overflow-hidden">
+<!-- Inner Texture -->
+<div class="absolute inset-0 data-grid-overlay opacity-30 pointer-events-none"></div>
+<div class="relative z-10">
+<div class="mb-10 lg:hidden text-center">
+<h2 class="font-headline text-2xl font-bold text-primary tracking-tighter">SENTINEL</h2>
+<h3 class="text-on-surface text-lg font-medium mt-1">哨兵风险情报中心</h3>
+</div>
+<div class="mb-8">
+<h3 class="font-headline text-xl font-bold text-on-surface">系统访问控制</h3>
+<p class="text-on-surface-variant text-sm mt-1">请输入您的凭据以访问安全核心</p>
+</div>
+<form class="space-y-6" id="login-form">
+<div class="space-y-1.5">
+<label class="font-label text-[0.6875rem] uppercase tracking-widest text-primary/80 ml-1">用户名 / 识别码</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-xl">account_circle</span>
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-primary/40 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/40 transition-all" id="login-username" placeholder="Intelligence Officer ID" type="text"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="font-label text-[0.6875rem] uppercase tracking-widest text-primary/80 ml-1">安全密钥 / 密码</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-xl">key</span>
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 focus:ring-primary/40 rounded-lg py-4 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/40 transition-all" id="login-password" placeholder="••••••••••••" type="password"/>
+</div>
+</div>
+<div class="flex items-center justify-between py-2">
+<label class="flex items-center space-x-2 cursor-pointer group">
+<input class="rounded-sm bg-surface-container-highest border-outline-variant text-primary focus:ring-0 focus:ring-offset-0 transition-all" type="checkbox"/>
+<span class="text-xs text-on-surface-variant group-hover:text-on-surface transition-colors">保持登录状态</span>
+</label>
+<a class="text-xs text-primary/80 hover:text-tertiary transition-colors underline-offset-4 hover:underline" href="#">忘记密钥?</a>
+</div>
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold py-4 rounded-lg shadow-[0_4px_20px_rgba(92,191,255,0.2)] hover:shadow-[0_4px_30px_rgba(92,191,255,0.4)] active:scale-[0.98] transition-all flex items-center justify-center space-x-2 group" id="login-button" type="submit">
+<span>建立加密连接</span>
+<span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-sm text-error mt-2 min-h-5" id="login-error"></p>
+</form>
+<!-- Registration & Alternate Methods -->
+<div class="mt-10 pt-8 border-t border-outline-variant/10 flex flex-col items-center space-y-6">
+<div class="flex items-center space-x-4">
+<button class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-xl">fingerprint</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-xl">qr_code_scanner</span>
+</button>
+</div>
+<div class="w-full flex justify-end">
+<p class="text-sm text-on-surface-variant">
+                                尚无作战序列? <a class="text-tertiary font-bold hover:underline transition-all" href="/ui/register1.html">立即注册</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Security Footnote -->
+<div class="mt-8 flex items-center justify-center space-x-2 opacity-40">
+<span class="material-symbols-outlined text-xs">verified_user</span>
+<span class="font-label text-[0.625rem] tracking-[0.2em] uppercase">AES-256 位加密受保护的会话</span>
+</div>
+</div>
+</main>
+<!-- Global Decoration Elements -->
+<div class="fixed top-8 right-8 font-label text-[0.625rem] tracking-[0.3em] uppercase vertical-text opacity-20 pointer-events-none hidden md:block">
+        GLOBAL INTELLIGENCE NETWORK // STATUS: ACTIVE
+    </div>
+<div class="fixed bottom-8 left-8 flex items-center space-x-4 opacity-20 pointer-events-none">
+<div class="h-px w-12 bg-on-surface"></div>
+<span class="font-label text-[0.625rem] tracking-[0.3em] uppercase">Core Revision 4.0.2</span>
+</div>
+<script src="/ui/src/login-page.js" type="module"></script>
+<script>
+  (function () {
+    const map = {
+      "detectAgent.html": "/ui/detectAgent.html",
+      "monitor.html": "/ui/monitor.html",
+      "reportHistory.html": "/ui/reportHistory.html",
+      "detectSetting.html": "/ui/detectSetting.html",
+      "infoSetting.html": "/ui/infoSetting.html"
+    };
+
+    const activeHref = map[window.location.pathname.split('/').pop()];
+    if (!activeHref) return;
+
+    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+    );
+
+    navLinks.forEach((a) => {
+      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+    });
+
+    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+    if (!activeLink) return;
+
+    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+  })();
+</script>
+</body></html>
+
+
+
+
+
