@@ -143,6 +143,32 @@ class AgentChatOut(BaseModel):
     suggested_mode: Literal["none", "detect", "alert"] = "none"
 
 
+class AgentDetectMaterialIn(BaseModel):
+    type: Literal["text", "image", "video"]
+    content: str | None = Field(default=None, max_length=20000)
+    url: str | None = Field(default=None, max_length=2048)
+    summary_text: str | None = Field(default=None, max_length=20000)
+    file_name: str | None = Field(default=None, max_length=255)
+
+
+class AgentDetectMaterialOut(BaseModel):
+    type: Literal["text", "image", "video"]
+    content: str | None = None
+    url: str | None = None
+    summary_text: str | None = None
+    file_name: str | None = None
+
+
+class AgentDetectOut(BaseModel):
+    mode: Literal["detect"] = "detect"
+    reply: str
+    detect_stage: Literal["guide", "awaiting_confirm"] = "guide"
+    candidate_content: str = ""
+    candidate_materials: list[AgentDetectMaterialOut] = Field(default_factory=list)
+    should_run_detect: bool = False
+    detect_result: DetectOut | None = None
+
+
 class AgentChatSessionOut(BaseModel):
     session_id: str
     updated_at: datetime
@@ -156,7 +182,9 @@ class AgentChatMessageOut(BaseModel):
 
 
 class AgentDetectIn(BaseModel):
-    text: str = Field(min_length=1, max_length=20000)
+    session_id: str | None = Field(default=None, min_length=1, max_length=128)
+    text: str = Field(default="", max_length=20000)
+    materials: list[AgentDetectMaterialIn] = Field(default_factory=list)
 
 
 class AgentAlertIn(BaseModel):

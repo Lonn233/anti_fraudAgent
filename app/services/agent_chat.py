@@ -115,11 +115,13 @@ def chat_reply(db: Session, user_id: int, session_id: str, user_message: str) ->
             content=reply_text,
         )
     )
+    chat_session.mode = "chat"
+    chat_session.detect_stage = "guide"
+    chat_session.candidate_content = ""
     chat_session.updated_at = now
     db.add(chat_session)
     db.commit()
 
-    # Keep only recent short-term context in DB for this session.
     all_rows = (
         db.query(AgentChatMessage)
         .filter(AgentChatMessage.chat_session_id == chat_session.id)

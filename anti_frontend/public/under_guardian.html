@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="dark" lang="zh-CN"><head>
 <meta charset="utf-8"/>
@@ -121,7 +121,7 @@
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
 <span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
 <aside class="fixed left-0 top-16 h-full w-64 border-r border-slate-800/30 bg-[#090e17] dark:bg-slate-950 shadow-2xl flex flex-col pt-4 pb-20 z-40 hidden md:flex">
@@ -182,27 +182,45 @@
 </div>
 <!-- Management Tools -->
 <div class="glass-panel p-1 rounded-xl mb-6 shadow-2xl border border-outline-variant/10">
-<div class="bg-surface-container-low rounded-lg p-6 flex flex-wrap items-center justify-between gap-4">
-<div class="flex flex-wrap items-center gap-4 flex-1">
-<div class="relative min-w-[300px]">
-<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">search</span>
-<input class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-primary/40 rounded-md placeholder:text-outline/60" placeholder="搜索被监护人姓名" type="text"/>
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 flex-1">
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">badge</span>
+<input class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-primary/40 rounded-md placeholder:text-outline/60" id="ward-search-note" placeholder="备注" type="text"/>
 </div>
-<div class="relative min-w-[180px]">
-<select class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-4 pr-10 focus:ring-1 focus:ring-primary/40 rounded-md appearance-none">
-<option value="">选择关系</option>
-<option value="parent">父母</option>
-<option value="child">子女</option>
-<option value="elderly">高龄亲属</option>
-<option value="other">其他</option>
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">person</span>
+<input class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-primary/40 rounded-md placeholder:text-outline/60" id="ward-search-username" placeholder="用户名" type="text"/>
+</div>
+<div class="relative w-full">
+<select class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-4 pr-10 focus:ring-1 focus:ring-primary/40 rounded-md appearance-none" id="ward-search-relation">
+<option value="">关系</option>
+<option value="儿子">儿子</option>
+<option value="女儿">女儿</option>
+<option value="父亲">父亲</option>
+<option value="母亲">母亲</option>
+<option value="家属">家属</option>
+<option value="朋友">朋友</option>
+<option value="丈夫">丈夫</option>
+<option value="妻子">妻子</option>
 </select>
 <span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline pointer-events-none">expand_more</span>
 </div>
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">call</span>
+<input class="w-full bg-surface-container-lowest border-none text-on-surface text-sm py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-primary/40 rounded-md placeholder:text-outline/60" id="ward-search-phone" placeholder="关系电话号" type="text"/>
 </div>
-<button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold px-6 py-2.5 rounded-md flex items-center gap-2 hover:shadow-[0_0_20px_rgba(92,191,255,0.3)] transition-all active:scale-95" id="open-ward-modal-btn" type="button">
+</div>
+<div class="flex w-full lg:w-auto items-center gap-3">
+<button class="bg-surface-container-lowest border border-outline-variant/20 text-on-surface font-bold px-5 py-2.5 rounded-md flex items-center justify-center gap-2 hover:border-primary/40 hover:text-primary transition-all active:scale-95 w-full lg:w-auto" id="ward-search-btn" type="button">
+<span class="material-symbols-outlined text-lg">search</span>
+<span>搜索</span>
+</button>
+<button class="bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold px-6 py-2.5 rounded-md flex items-center gap-2 hover:shadow-[0_0_20px_rgba(92,191,255,0.3)] transition-all active:scale-95 w-full lg:w-auto" id="open-ward-modal-btn" type="button">
 <span class="material-symbols-outlined text-lg">person_add</span>
                         添加被监护人
                     </button>
+</div>
 </div>
 </div>
 <!-- Table Container -->

@@ -129,6 +129,14 @@ export async function postJsonWithToken(url, payload, token) {
   });
 }
 
+export async function postFormDataWithToken(url, formData, token) {
+  return requestJson(url, {
+    method: "POST",
+    headers: buildAuthHeaders(token, false),
+    body: formData,
+  });
+}
+
 export async function putJson(url, payload, token) {
   return requestJson(url, {
     method: "PUT",

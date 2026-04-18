@@ -20,6 +20,11 @@ const prevBtn = document.getElementById("monitor-pagination-prev");
 const nextBtn = document.getElementById("monitor-pagination-next");
 const pageBtn = document.getElementById("monitor-pagination-page");
 const requestsPanel = document.getElementById("requests-panel");
+const searchNoteInput = document.getElementById("monitor-search-note");
+const searchUsernameInput = document.getElementById("monitor-search-username");
+const searchRelationSelect = document.getElementById("monitor-search-relation");
+const searchPhoneInput = document.getElementById("monitor-search-phone");
+const searchBtn = document.getElementById("monitor-search-btn");
 
 let currentMode = "add";
 let currentItem = null;
@@ -27,6 +32,8 @@ let currentPage = 1;
 const pageSize = 10;
 let totalPages = 1;
 let totalItems = 0;
+let allRelations = [];
+let filteredRelations = [];
 
 function showError(message) {
   showAlertModal(message);
@@ -102,16 +109,49 @@ function createRow(item) {
   return row;
 }
 
-async function loadRelations() {
+function getSearchFilters() {
+  return {
+    note: (searchNoteInput?.value || "").trim().toLowerCase(),
+    username: (searchUsernameInput?.value || "").trim().toLowerCase(),
+    relation: (searchRelationSelect?.value || "").trim().toLowerCase(),
+    phone: (searchPhoneInput?.value || "").trim().toLowerCase(),
+  };
+}
+
+function matchesFilter(value, keyword) {
+  if (!keyword) return true;
+  return String(value || "").toLowerCase().includes(keyword);
+}
+
+function applyFilters() {
+  const filters = getSearchFilters();
+  filteredRelations = allRelations.filter((item) => {
+    const noteMatched = matchesFilter(item.note, filters.note);
+    const usernameMatched = matchesFilter(item.ward_username || item.ward_id, filters.username);
+    const relationMatched = !filters.relation || String(item.relationship || "").toLowerCase() === filters.relation;
+    const phoneMatched = matchesFilter(item.phone, filters.phone);
+    return noteMatched && usernameMatched && relationMatched && phoneMatched;
+  });
+  totalItems = filteredRelations.length;
+  totalPages = Math.max(Math.ceil(totalItems / pageSize), 1);
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+  renderCurrentPage();
+}
+
+function renderCurrentPage() {
   if (!tbody) return;
-  const result = await listRelations("monitor", currentPage, pageSize);
-  const list = Array.isArray(result?.items) ? result.items : [];
-  totalItems = Number(result?.total || 0);
-  totalPages = Math.max(Number(result?.total_pages || 1), 1);
-  currentPage = Math.min(Math.max(Number(result?.page || 1), 1), totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
+  const pageList = filteredRelations.slice(startIndex, startIndex + pageSize);
   tbody.innerHTML = "";
-  list.forEach((item) => tbody.appendChild(createRow(item)));
-  renderPagination(list.length);
+  pageList.forEach((item) => tbody.appendChild(createRow(item)));
+  renderPagination(pageList.length);
+}
+
+async function loadRelations() {
+  const result = await listRelations("monitor", 1, 100);
+  allRelations = Array.isArray(result?.items) ? result.items : [];
+  applyFilters();
 }
 
 function renderPagination(currentCount) {
@@ -245,23 +285,19 @@ cancelBtn?.addEventListener("click", closeModal);
 backdrop?.addEventListener("click", (event) => {
   if (event.target === backdrop) closeModal();
 });
+searchBtn?.addEventListener("click", () => {
+  currentPage = 1;
+  applyFilters();
+});
 prevBtn?.addEventListener("click", async () => {
   if (currentPage <= 1) return;
   currentPage -= 1;
-  try {
-    await loadAll();
-  } catch (err) {
-    showError(err.message || "加载失败");
-  }
+  renderCurrentPage();
 });
 nextBtn?.addEventListener("click", async () => {
   if (currentPage >= totalPages) return;
   currentPage += 1;
-  try {
-    await loadAll();
-  } catch (err) {
-    showError(err.message || "加载失败");
-  }
+  renderCurrentPage();
 });
 
 form?.addEventListener("submit", async (event) => {

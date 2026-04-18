@@ -127,6 +127,7 @@ class DetectionReport(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     detect_type: Mapped[str] = mapped_column(String(32), index=True)
     detect_content: Mapped[str] = mapped_column(Text, default="")
+    source_materials: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
     overall_judgment: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     rag_result: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     multimodal_fusion_recognition: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
@@ -165,6 +166,10 @@ class AgentChatSession(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     session_id: Mapped[str] = mapped_column(String(128), index=True)
+    mode: Mapped[str] = mapped_column(String(16), default="chat", index=True)
+    detect_stage: Mapped[str] = mapped_column(String(32), default="guide", index=True)
+    candidate_content: Mapped[str] = mapped_column(Text, default="")
+    candidate_materials: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 

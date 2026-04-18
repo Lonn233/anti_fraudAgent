@@ -1,16 +1,25 @@
-# Anti-Fraud 智能体助手后端（FastAPI）
+# Anti-Fraud 智能反诈助手
 
-## 功能
-- 注册/登录（JWT Bearer）
-- 设置/读取用户基础信息：年龄、工作、地区
-- 监护人管理：新增/列表/删除（绑定到当前用户）
-- 反诈识别：
-  - 文字识别：提交文本，返回风险评分与原因
-  - 媒体识别：上传图片/语音/视频文件，保存文件并返回风险评分与原因（当前为可替换的占位规则引擎）
-- 知识库：`POST /kb/text/upload` 上传长文本 → 分段 → 调用 **Doubao-embedding-vision**（火山方舟 `/embeddings`）→ 写入 **Milvus**
+## 项目简介
+本项目是一个基于 FastAPI 的智能反诈辅助系统，集成用户认证、反诈检测、历史记录、监护关系管理与知识库检索能力。系统支持文本、多媒体材料接入，并结合大模型与向量检索对可疑内容进行分析，输出风险判断、防范建议和检测记录。后端提供标准 HTTP API，适合本地运行、二次开发和部署到服务器，前端可直接对接现有接口完成完整业务流程。
 
-## 本地启动（Windows / PowerShell）
-1) 创建虚拟环境并安装依赖
+## 部署教程
+
+### 1. 环境准备
+建议环境：
+- Python 3.10+
+- Milvus
+- 可用的大模型 API Key（豆包 / 火山方舟）
+
+安装依赖：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Windows PowerShell：
 
 ```bash
 python -m venv .venv
@@ -18,61 +27,55 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-2) 配置环境变量
-- 复制 `.env.example` 为 `.env`（如需自定义数据库路径、上传目录等可在此修改）
+### 2. 配置 API Key 与环境变量
+项目通过根目录下的 `.env` 读取配置，至少需要检查以下项目：
 
-3) 启动
-
-```bash
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```env
+DOUBAO_API_KEY="你的大模型 API Key"
+DOUBAO_ARK_BASE_URL="https://ark.cn-beijing.volces.com/api/v3"
+DOUBAO_EMBEDDING_MODEL="doubao-embedding-vision-250615"
+DOUBAO_CHAT_MODEL="doubao-seed-2-0-mini-260215"
+MILVUS_URI="http://127.0.0.1:19530"
+MILVUS_COLLECTION="anti_fraud_text_kb"
+MILVUS_EMBEDDING_DIM=2048
+JWT_SECRET_KEY="请替换为你自己的安全密钥"
+PUBLIC_BASE_URL="http://127.0.0.1:8010"
 ```
 
-打开接口文档：`http://127.0.0.1:8000/docs`
+如果是服务器部署，请务必修改：
+- `DOUBAO_API_KEY`
+- `JWT_SECRET_KEY`
+- `PUBLIC_BASE_URL`
+- 与 Milvus 相关的连接配置
 
-## 主要接口（摘要）
-- `POST /auth/register`
-- `POST /auth/login`（表单登录，返回 `access_token`）
-- `POST /auth/login/json`（JSON 登录，返回 `access_token`）
-- `GET /users/me`
-- `PUT /users/me/profile`
-- 监护关系（统一版）
-  - `POST /guardians/requests/apply`（发起申请，监护人/被监护人共用）
-  - `GET /guardians/requests`（获取申请记录，监护人/被监护人共用）
-  - `POST /guardians/requests/{request_id}/decision`（批准/拒绝，监护人/被监护人共用）
-  - `GET /guardians/relations`（查看监护人/被监护人列表，通过 `role` 区分）
-  - `DELETE /guardians/{guardian_id}`
-- `POST /detect/text`
-- `POST /detect/media`（multipart `file` + `media_type`）
-- `GET /detect/records`（当前用户识别记录）
-- `POST /kb/text/upload`（JSON：`text`；可选 `doc_id`、`chunk_max_chars`、`chunk_overlap_chars`；需 JWT，依赖 Milvus + 方舟 API Key）
+### 3. 启动 Milvus
+如果你使用 Docker，可参考如下命令启动 Milvus：
 
-监护关系接口详细说明见：`docs/guardians_api.md`
+```bash
+docker compose up -d
+```
 
-## 鉴权方式（JWT Bearer）
-除 `/health`、`/auth/register`、`/auth/login`、`/auth/login/json` 外，其它接口都需要携带 Bearer Token：
+如果你的环境没有现成的 `docker-compose.yml`，也可以按 Milvus 官方文档部署，并确保 `.env` 中的 `MILVUS_URI` 指向正确地址。
 
-1) 先调用 `POST /auth/login` 或 `POST /auth/login/json` 获取 `access_token`
-2) 在 Swagger `/docs` 里点右上角 `Authorize`，填入：
-   - `Bearer <access_token>`
+### 4. 启动项目
+本地开发启动：
 
-## 知识库 / Milvus / 豆包向量化
-1) 本地或云端启动 **Milvus**（默认连 `http://127.0.0.1:19530`）。
-2) 在 `.env` 中配置 `DOUBAO_API_KEY`，必要时修改：
-   - `DOUBAO_ARK_BASE_URL`（默认方舟 `.../api/v3`）
-   - `DOUBAO_EMBEDDING_MODEL`（默认 `doubao-embedding-vision-251215`，按控制台实际模型名修改）
-   - `MILVUS_EMBEDDING_DIM`（需与模型输出维度一致，常见 1024 / 2048）
-3) 安装依赖：`pip install -r requirements.txt`
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8010 --reload
+```
 
-说明：向量化请求按火山方舟 **OpenAI 兼容** `POST {DOUBAO_ARK_BASE_URL}/embeddings`，body 为 `model` + `input`（文本分段列表）。若你使用的接入方式或请求体与文档不一致，可在 `app/services/doubao_embed.py` 中调整。
+服务器部署可使用：
 
-## 目录结构
-- `app/main.py`：入口
-- `app/config/settings.py`：配置（读取 `.env`）
-- `app/db/session.py`：数据库连接与 Session
-- `app/db/models.py`：SQLAlchemy 模型
-- `app/schemas.py`：Pydantic 入参/出参
-- `app/utils/security.py`：密码哈希（`pbkdf2_sha256`）+ JWT 编解码
-- `app/utils/deps.py`：鉴权依赖（`get_current_user`）
-- `app/services/anti_fraud.py`：反诈识别逻辑（当前为可替换占位规则引擎）
-- `app/services/text_chunk.py`、`doubao_embed.py`、`milvus_text.py`：知识库分段、嵌入、Milvus 写入
-- `app/api/*`：各业务路由（auth/users/guardians/detect/knowledge）
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8010
+```
+
+启动后可先访问健康检查或文档页面确认服务正常。
+
+## 接口文档 URL
+启动成功后，可通过以下地址查看接口文档：
+
+- Swagger UI：`http://127.0.0.1:8010/docs`
+- ReDoc：`http://127.0.0.1:8010/redoc`
+
+如果部署到服务器，请将 `127.0.0.1:8010` 替换为你的实际域名或服务器地址。

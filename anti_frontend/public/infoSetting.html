@@ -109,7 +109,7 @@
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
 <span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
 <aside class="fixed left-0 w-72 h-[calc(100vh-64px)] flex flex-col py-6 gap-2 bg-[#0e131d] border-r border-outline-variant/15">
@@ -129,10 +129,6 @@
 <a class="flex items-center gap-3 bg-[#1f2633] text-[#81ecff] rounded-r-full font-bold px-6 py-3 border-l-4 border-[#81ecff] translate-x-1 duration-200" href="/ui/infoSetting.html">
 <span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
 <span class="text-sm font-body">个人信息设置</span>
-</a>
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/overAllEvaluation.html">
-<span class="material-symbols-outlined" data-icon="security">security</span>
-<span class="text-sm font-body">综合风险评估</span>
 </a>
 <a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/accountManage.html">
 <span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
@@ -164,11 +160,14 @@
 <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 <div class="relative w-32 h-32 mb-6">
 <div class="absolute inset-0 rounded-full border-2 border-dashed border-primary/40 animate-[spin_10s_linear_infinite]"></div>
-<img alt="Profile Avatar" class="w-full h-full rounded-full object-cover p-2" data-alt="Close-up portrait of a high-tech digital analyst avatar with subtle blue glowing neural patterns on their skin" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYpPMh44W39B9YsErGQYqj86PduRd4XVmwyuBKHi3MsMbnAEK9iXeUdi-Fo2SW5ljGUrGahwHmhxjpIiMrk79551Ff7iy9pNCNjVOWkPuLh7mUSH-zIilcaw6rYu2b3OesS8SlPi7zKNySoGfGJ0QBRfmPAIHGwOSG2MTK1-xeNdlqJSWSTNkrerxKoATAR40YfI1m3BOfSj73_18KungmoBVUC4ua3azrMOZcmLwsIA7h2Xfjqu_DTvCfYwhTob-phCFzHgvss9gA"/>
-<button class="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-on-primary text-sm" data-icon="edit">edit</span>
+<input accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" id="profile-avatar-input" type="file"/>
+<img alt="用户头像" class="h-full w-full rounded-full object-cover p-2" data-alt="用户头像" id="profile-avatar-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYpPMh44W39B9YsErGQYqj86PduRd4XVmwyuBKHi3MsMbnAEK9iXeUdi-Fo2SW5ljGUrGahwHmhxjpIiMrk79551Ff7iy9pNCNjVOWkPuLh7mUSH-zIilcaw6rYu2b3OesS8SlPi7zKNySoGfGJ0QBRfmPAIHGwOSG2MTK1-xeNdlqJSWSTNkrerxKoATAR40YfI1m3BOfSj73_18KungmoBVUC4ua3azrMOZcmLwsIA7h2Xfjqu_DTvCfYwhTob-phCFzHgvss9gA"/>
+<button aria-label="上传头像" class="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-lg transition-transform hover:scale-110" id="profile-avatar-trigger" type="button">
+<span class="material-symbols-outlined text-sm text-on-primary" data-icon="edit">edit</span>
 </button>
 </div>
+<p class="mt-2 max-w-[11rem] text-center text-[0.65rem] leading-relaxed text-on-surface-variant" id="profile-avatar-hint">支持 JPG / PNG / WebP / GIF，单文件不超过 5MB；头像保存在本机浏览器。</p>
+<p aria-live="polite" class="mt-1 min-h-[1.25em] max-w-[14rem] text-center text-xs text-error" id="profile-avatar-error"></p>
 <div class="text-center">
 <p class="text-xs font-label uppercase tracking-widest text-primary mb-1">系统识别 ID</p>
 <p class="text-xl font-headline font-semibold text-on-surface" id="profile-system-id">SENTINEL_ALPHA_01</p>

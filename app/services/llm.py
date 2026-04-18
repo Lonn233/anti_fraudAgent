@@ -85,6 +85,65 @@ def _extract_json_object(text: str) -> dict[str, Any]:
     return json.loads(match.group(0))
 
 
+def summarize_media_for_detect(
+    media_path: str | Path,
+    *,
+    media_kind: _MediaKind,
+    file_name: str = "",
+) -> str:
+    if not settings.doubao_api_key:
+        raise ValueError("DOUBAO_API_KEY is not configured")
+
+    prompt_text = (
+        f"请描述当前{('图片' if media_kind == 'image' else '视频')}里发生了什么，重点提取和诈骗识别有关的信息。"
+        "只输出简洁中文，不要使用 markdown，不要输出条目符号。"
+        "如果看不清楚，就明确说明看不清楚的部分。"
+    )
+    if file_name:
+        prompt_text = f"文件名：{file_name}。" + prompt_text
+
+    url = f"{settings.doubao_ark_base_url.rstrip('/')}/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {settings.doubao_api_key}",
+        "Content-Type": "application/json",
+    }
+    path_obj = Path(media_path)
+    user_content = _user_content_parts(
+        prompt_text,
+        media_path=path_obj,
+        media_kind=media_kind,
+    )
+    payload: dict[str, Any] = {
+        "model": settings.doubao_chat_model,
+        "thinking": {"type": "disabled"},
+        "messages": [
+            {"role": "system", "content": "你是一个多模态内容理解助手，负责准确描述图片或视频中发生的事情。"},
+            {"role": "user", "content": user_content},
+        ],
+        "temperature": 0.2,
+        "max_tokens": 512,
+    }
+
+    with httpx.Client(timeout=120.0) as client:
+        r = client.post(url, headers=headers, json=payload)
+    if r.status_code != 200:
+        raise httpx.HTTPStatusError(
+            message=f"{r.status_code} {r.text}",
+            request=r.request,
+            response=r,
+        )
+
+    body = r.json()
+    choices = body.get("choices", [])
+    if not choices:
+        raise ValueError(f"Unexpected media summary response: {str(body)[:300]}")
+    message = choices[0].get("message", {})
+    content = (message.get("content") or "").strip()
+    if not content:
+        raise ValueError(f"Empty media summary response: {str(body)[:300]}")
+    return content
+
+
 def generate_fraud_advice(
     user_input: str,
     retrieved_cases: list[dict],

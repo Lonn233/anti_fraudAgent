@@ -122,7 +122,7 @@
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
 <span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
 <aside class="flex flex-col pt-20 pb-8 px-4 border-r border-[#434853]/15 h-screen w-72 left-0 top-0 fixed bg-[#0e131d] font-['Inter'] text-sm antialiased">
@@ -319,6 +319,34 @@
 </div>
 </footer>
 </main>
+<!-- Delete Chat Modal -->
+<div class="fixed inset-0 z-[80] hidden items-center justify-center px-4" id="delete-chat-modal">
+<div class="absolute inset-0 bg-[#090e17]/80 backdrop-blur-sm" data-delete-chat-cancel="overlay"></div>
+<div class="relative w-full max-w-md glass-card rounded-2xl border border-outline-variant/20 shadow-[0_20px_80px_rgba(0,0,0,0.55)] overflow-hidden">
+<div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-error/0 via-error to-error/0"></div>
+<div class="p-6 md:p-7 space-y-6">
+<div class="flex items-start gap-4">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-error/10 border border-error/20 shadow-[0_0_24px_rgba(255,113,108,0.18)]">
+<span class="material-symbols-outlined text-error text-[24px]">delete_forever</span>
+</div>
+<div class="space-y-2">
+<p class="text-[10px] font-bold uppercase tracking-[0.28em] text-error/80">Deletion Protocol</p>
+<h3 class="headline-font text-2xl font-bold tracking-tight text-on-surface">删除对话记录</h3>
+<p class="text-sm leading-relaxed text-on-surface-variant" id="delete-chat-modal-message">删除后将同步清空该会话及全部消息记录，此操作不可撤销。</p>
+</div>
+</div>
+<div class="rounded-xl border border-outline-variant/15 bg-surface-container-low/80 px-4 py-3">
+<p class="text-[10px] font-bold uppercase tracking-[0.22em] text-outline">Target Session</p>
+<p class="mt-2 text-sm font-medium text-on-surface truncate" id="delete-chat-modal-title">--</p>
+</div>
+<div class="flex items-center justify-end gap-3">
+<button class="px-5 py-2.5 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-outline/40 transition-all" data-delete-chat-cancel="button" type="button">取消</button>
+<button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-error to-[#ff8a7e] text-on-error font-bold shadow-[0_0_20px_rgba(255,113,108,0.22)] hover:brightness-110 active:scale-[0.98] transition-all disabled:cursor-not-allowed disabled:opacity-60" id="delete-chat-confirm-btn" type="button">确认删除</button>
+</div>
+</div>
+</div>
+</div>
+
 <!-- Visual Accents -->
 <div class="fixed top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none z-0"></div>
 <div class="fixed bottom-0 left-0 w-64 h-64 bg-tertiary/5 blur-[120px] pointer-events-none z-0"></div>

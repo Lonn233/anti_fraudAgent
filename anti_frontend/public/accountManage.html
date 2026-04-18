@@ -109,7 +109,7 @@
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
 <span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
 <aside class="fixed left-0 w-72 h-[calc(100vh-64px)] flex flex-col py-6 gap-2 bg-[#0e131d] border-r border-outline-variant/15">
@@ -126,15 +126,11 @@
 <button class="w-full mt-4 py-2 px-4 bg-primary/10 border border-primary/20 hover:bg-primary/20 text-primary text-xs font-headline font-bold rounded transition-all">Review Security</button>
 </div>
 <nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 bg-[#1f2633] text-[#81ecff] rounded-r-full font-bold px-6 py-3 border-l-4 border-[#81ecff] translate-x-1 duration-200" href="/ui/infoSetting.html">
+<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/infoSetting.html">
 <span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
 <span class="text-sm font-body">个人信息设置</span>
 </a>
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/overAllEvaluation.html">
-<span class="material-symbols-outlined" data-icon="security">security</span>
-<span class="text-sm font-body">综合风险评估</span>
-</a>
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/accountManage.html">
+<a class="flex items-center gap-3 bg-[#1f2633] text-[#81ecff] rounded-r-full font-bold px-6 py-3 border-l-4 border-[#81ecff] translate-x-1 duration-200" href="/ui/accountManage.html">
 <span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
 <span class="text-sm font-body">账号管理</span>
 </a>

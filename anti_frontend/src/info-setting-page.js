@@ -102,6 +102,116 @@ const REGION_MAP = {
 };
 
 let snapshot = null;
+/** @type {string} */
+let defaultAvatarSrc = "";
+
+const AVATAR_MAX_BYTES = 5 * 1024 * 1024;
+const AVATAR_MAX_SIDE = 512;
+const AVATAR_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+function avatarStorageKey(userId) {
+  return `anti_fraud_profile_avatar_${userId}`;
+}
+
+function applyAvatarDisplay() {
+  const img = document.getElementById("profile-avatar-img");
+  if (!img || snapshot == null || snapshot.id == null) return;
+  const raw = localStorage.getItem(avatarStorageKey(snapshot.id));
+  if (raw && typeof raw === "string" && raw.startsWith("data:image")) {
+    img.src = raw;
+  } else {
+    img.src = defaultAvatarSrc || img.src;
+  }
+}
+
+/**
+ * @param {File} file
+ * @returns {Promise<string>}
+ */
+function fileToResizedDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("读取文件失败"));
+    reader.onload = () => {
+      const url = reader.result;
+      if (typeof url !== "string") {
+        reject(new Error("读取文件失败"));
+        return;
+      }
+      const image = new Image();
+      image.onload = () => {
+        let w = image.naturalWidth;
+        let h = image.naturalHeight;
+        const scale = Math.min(1, AVATAR_MAX_SIDE / Math.max(w, h, 1));
+        w = Math.max(1, Math.round(w * scale));
+        h = Math.max(1, Math.round(h * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("无法处理图片"));
+          return;
+        }
+        ctx.drawImage(image, 0, 0, w, h);
+        let quality = 0.88;
+        let dataUrl = canvas.toDataURL("image/jpeg", quality);
+        while (dataUrl.length > 480000 && quality > 0.42) {
+          quality -= 0.06;
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        if (dataUrl.length > 520000) {
+          reject(new Error("压缩后仍过大，请换一张更小的图片"));
+          return;
+        }
+        resolve(dataUrl);
+      };
+      image.onerror = () => reject(new Error("无法解析图片"));
+      image.src = url;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function bindAvatarUpload() {
+  const input = document.getElementById("profile-avatar-input");
+  const trigger = document.getElementById("profile-avatar-trigger");
+  const errEl = document.getElementById("profile-avatar-error");
+  const img = document.getElementById("profile-avatar-img");
+
+  if (!input || !trigger || !img) return;
+
+  trigger.addEventListener("click", () => {
+    if (errEl) errEl.textContent = "";
+    input.click();
+  });
+
+  input.addEventListener("change", async () => {
+    if (errEl) errEl.textContent = "";
+    const file = input.files && input.files[0];
+    input.value = "";
+    if (!file || snapshot == null || snapshot.id == null) return;
+
+    if (!AVATAR_ALLOWED_TYPES.includes(file.type)) {
+      if (errEl) errEl.textContent = "请使用 JPG、PNG、WebP 或 GIF 图片";
+      return;
+    }
+    if (file.size > AVATAR_MAX_BYTES) {
+      if (errEl) errEl.textContent = "文件不能超过 5MB";
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToResizedDataUrl(file);
+      localStorage.setItem(avatarStorageKey(snapshot.id), dataUrl);
+      img.src = dataUrl;
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "上传失败";
+      if (errEl) errEl.textContent = msg;
+    }
+  });
+}
+
 const usernameError = document.getElementById("profile-username-error");
 const birthError = document.getElementById("profile-birth-error");
 const jobError = document.getElementById("profile-job-error");
@@ -193,6 +303,7 @@ function populateCascades() {
 
 function applySnapshot() {
   if (!snapshot) return;
+  applyAvatarDisplay();
   setValue("profile-system-id", snapshot.username || `USER_${snapshot.id}`);
   setValue("profile-username", snapshot.username);
   setValue("profile-phone", snapshot.phone);
@@ -363,10 +474,13 @@ function bindActions() {
 
 (async function initInfoSetting() {
   try {
+    const avatarImg = document.getElementById("profile-avatar-img");
+    if (avatarImg && avatarImg.src) defaultAvatarSrc = avatarImg.src;
     populateBirthSelects();
     populateCascades();
     await loadMe();
     bindActions();
+    bindAvatarUpload();
   } catch (_err) {
     window.location.href = "/ui/Login.html";
   }

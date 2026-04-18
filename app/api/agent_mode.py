@@ -1,22 +1,157 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+import json
+from pathlib import Path
+from uuid import uuid4
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from starlette.datastructures import UploadFile
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from app.config.settings import settings
 from app.db.models import AgentChatMessage, AgentChatSession, User
-from app.db.session import get_db
+from app.db.session import engine, get_db
 from app.schemas import (
     AgentAlertIn,
     AgentChatIn,
     AgentChatMessageOut,
     AgentChatOut,
     AgentChatSessionOut,
-    AgentDetectIn,
+    AgentDetectOut,
 )
+from app.services import detect_serve
 from app.services.agent_chat import chat_reply
+from app.services.agent_detect import detect_reply
+from app.services.llm import summarize_media_for_detect
 from app.utils.deps import get_current_user
 
 router = APIRouter(prefix="/agent", tags=["agent"])
+_ALLOWED_DETECT_MEDIA_TYPES = {"image", "video"}
+
+
+def _ensure_agent_session_columns() -> None:
+    if not settings.database_url.startswith("sqlite"):
+        return
+    with engine.begin() as conn:
+        rows = conn.execute(text("PRAGMA table_info(agent_chat_sessions)")).fetchall()
+        if not rows:
+            return
+        cols = {r[1] for r in rows}
+        if "mode" not in cols:
+            conn.execute(text("ALTER TABLE agent_chat_sessions ADD COLUMN mode VARCHAR(16) DEFAULT 'chat'"))
+            conn.execute(text("UPDATE agent_chat_sessions SET mode = 'chat' WHERE mode IS NULL"))
+        if "detect_stage" not in cols:
+            conn.execute(text("ALTER TABLE agent_chat_sessions ADD COLUMN detect_stage VARCHAR(32) DEFAULT 'guide'"))
+            conn.execute(text("UPDATE agent_chat_sessions SET detect_stage = 'guide' WHERE detect_stage IS NULL"))
+        if "candidate_content" not in cols:
+            conn.execute(text("ALTER TABLE agent_chat_sessions ADD COLUMN candidate_content TEXT DEFAULT ''"))
+            conn.execute(text("UPDATE agent_chat_sessions SET candidate_content = '' WHERE candidate_content IS NULL"))
+        if "candidate_materials" not in cols:
+            conn.execute(text("ALTER TABLE agent_chat_sessions ADD COLUMN candidate_materials JSON DEFAULT '[]'"))
+            conn.execute(text("UPDATE agent_chat_sessions SET candidate_materials = '[]' WHERE candidate_materials IS NULL"))
+        report_cols = {r[1] for r in conn.execute(text("PRAGMA table_info(report)")).fetchall()}
+        if report_cols and "source_materials" not in report_cols:
+            conn.execute(text("ALTER TABLE report ADD COLUMN source_materials JSON DEFAULT '[]'"))
+            conn.execute(text("UPDATE report SET source_materials = '[]' WHERE source_materials IS NULL"))
+
+
+_ensure_agent_session_columns()
+
+
+def _detect_media_type(file: UploadFile) -> str:
+    content_type = (file.content_type or "").lower()
+    suffix = Path(file.filename or "").suffix.lower()
+    if content_type.startswith("image/") or suffix in {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"}:
+        return "image"
+    if content_type.startswith("video/") or suffix in {".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv"}:
+        return "video"
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="检测模式附件仅支持图片或视频",
+    )
+
+
+async def _save_detect_upload(file: UploadFile, media_type: str) -> tuple[Path, str, int]:
+    storage = detect_serve.ensure_storage()
+    type_dir = storage / media_type
+    type_dir.mkdir(parents=True, exist_ok=True)
+    safe_name = Path(file.filename or "upload").name
+    ext = Path(safe_name).suffix[:16]
+    saved_name = f"{media_type}_{uuid4().hex}{ext}"
+    saved_path = type_dir / saved_name
+    max_bytes = settings.max_upload_mb * 1024 * 1024
+    size = 0
+    try:
+        with saved_path.open("wb") as f:
+            while True:
+                chunk = await file.read(1024 * 1024)
+                if not chunk:
+                    break
+                size += len(chunk)
+                if size > max_bytes:
+                    raise HTTPException(
+                        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                        detail=f"文件过大（超过 {settings.max_upload_mb}MB）",
+                    )
+                f.write(chunk)
+    finally:
+        await file.close()
+    return saved_path, saved_name, size
+
+
+async def _build_form_materials(files: list[UploadFile]) -> list[dict[str, str]]:
+    materials: list[dict[str, str]] = []
+    for file in files:
+        media_type = _detect_media_type(file)
+        saved_path, saved_name, _size = await _save_detect_upload(file, media_type)
+        relative_url = detect_serve.media_relative_path(media_type, saved_name)
+        summary_text = summarize_media_for_detect(
+            saved_path,
+            media_kind=media_type,
+            file_name=Path(file.filename or saved_name).name,
+        )
+        materials.append(
+            {
+                "type": media_type,
+                "url": relative_url,
+                "summary_text": summary_text,
+                "file_name": Path(file.filename or saved_name).name,
+            }
+        )
+    return materials
+
+
+async def _parse_detect_request(request: Request) -> tuple[str, str, list[dict[str, str]]]:
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "multipart/form-data" in content_type:
+        form = await request.form()
+        session_id = str(form.get("session_id") or "").strip() or "default"
+        user_text = str(form.get("text") or "")
+        files = [item for item in form.getlist("files") if isinstance(item, UploadFile) and item.filename]
+        materials = await _build_form_materials(files)
+        return session_id, user_text, materials
+
+    payload = await request.json()
+    session_id = str(payload.get("session_id") or "").strip() or "default"
+    user_text = str(payload.get("text") or "")
+    raw_materials = payload.get("materials") or []
+    if not isinstance(raw_materials, list):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="materials 必须为数组")
+    materials: list[dict[str, str]] = []
+    for item in raw_materials:
+        if not isinstance(item, dict):
+            continue
+        materials.append(
+            {
+                "type": str(item.get("type") or "").strip(),
+                "content": str(item.get("content") or "").strip(),
+                "url": str(item.get("url") or "").strip(),
+                "summary_text": str(item.get("summary_text") or "").strip(),
+                "file_name": str(item.get("file_name") or "").strip(),
+            }
+        )
+    return session_id, user_text, materials
 
 
 @router.post("/chat", response_model=AgentChatOut)
@@ -36,7 +171,10 @@ def agent_chat(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     except Exception as err:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"对话失败：{err}") from err
-    return AgentChatOut(reply=result["reply"], suggested_mode=result["suggested_mode"])
+    return AgentChatOut(
+        reply=result["reply"],
+        suggested_mode=result["suggested_mode"],
+    )
 
 
 @router.get("/chat/sessions", response_model=list[AgentChatSessionOut])
@@ -94,14 +232,61 @@ def list_chat_messages(
     return [AgentChatMessageOut(role=row.role, content=row.content, created_at=row.created_at) for row in rows]
 
 
-@router.post("/detect")
-def agent_detect(
-    payload: AgentDetectIn,
+@router.delete("/chat/sessions/{session_id}")
+def delete_chat_session(
+    session_id: str,
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    _ = (payload, db, current)
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="检测模式接口暂未实现")
+    chat_session = (
+        db.query(AgentChatSession)
+        .filter(AgentChatSession.user_id == current.id, AgentChatSession.session_id == session_id)
+        .first()
+    )
+    if not chat_session:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="会话不存在")
+
+    (
+        db.query(AgentChatMessage)
+        .filter(AgentChatMessage.chat_session_id == chat_session.id)
+        .delete(synchronize_session=False)
+    )
+    db.delete(chat_session)
+    db.commit()
+    return {"ok": True}
+
+
+@router.post("/detect", response_model=AgentDetectOut)
+async def agent_detect(
+    request: Request,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    detect_session_id, user_text, materials = await _parse_detect_request(request)
+    if not user_text.strip() and not materials:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="文本和附件不能同时为空")
+    try:
+        result = detect_reply(
+            db=db,
+            user_id=current.id,
+            session_id=detect_session_id,
+            user_message=user_text,
+            materials=materials,
+        )
+    except ValueError as err:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+    except HTTPException:
+        raise
+    except Exception as err:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"检测对话失败：{err}") from err
+    return AgentDetectOut(
+        reply=result["reply"],
+        detect_stage=result["detect_stage"],
+        candidate_content=result["candidate_content"],
+        candidate_materials=result["candidate_materials"],
+        should_run_detect=result["should_run_detect"],
+        detect_result=result["detect_result"],
+    )
 
 
 @router.post("/alert")

@@ -62,6 +62,7 @@ def _persist_report_and_detect(
     risk_index: float,
     top_case: dict | None,
     llm_result: dict | None,
+    source_materials: list[dict] | None = None,
 ) -> Detect:
     """写入 report + detect；返回 detect 行（含 id、detect_time）。"""
     now = _utc_now_naive()
@@ -79,6 +80,7 @@ def _persist_report_and_detect(
     rep = DetectionReport(
         detect_type=detect_type,
         detect_content=detect_content,
+        source_materials=source_materials or [],
         overall_judgment=rc.overall_judgment.model_dump(),
         rag_result=rc.rag_result.model_dump(),
         multimodal_fusion_recognition=rc.multimodal_fusion_recognition.model_dump(),
@@ -199,7 +201,12 @@ def run_llm_advice(
         return _fallback_llm_result(result)
 
 
-def process_text_detection(db: Session, user_id: int, text: str) -> DetectOut:
+def process_text_detection(
+    db: Session,
+    user_id: int,
+    text: str,
+    source_materials: list[dict] | None = None,
+) -> DetectOut:
     total_start = time.perf_counter()
     logger.info("[TIMER] RAG detection start for user %d", user_id)
     rag_start = time.perf_counter()
@@ -227,6 +234,7 @@ def process_text_detection(db: Session, user_id: int, text: str) -> DetectOut:
         risk_index,
         top_case,
         llm_result,
+        source_materials=source_materials,
     )
 
     total_elapsed = time.perf_counter() - total_start
@@ -292,6 +300,13 @@ def process_saved_media_detection(
         if media_type in ("image", "video", "audio")
         else original_file_name
     )
+    source_materials = [
+        {
+            "type": media_type,
+            "url": detect_content,
+            "file_name": original_file_name,
+        }
+    ]
 
     det = _persist_report_and_detect(
         db,
@@ -301,6 +316,7 @@ def process_saved_media_detection(
         risk_index,
         top_case,
         llm_result,
+        source_materials=source_materials,
     )
 
     return build_detect_response(

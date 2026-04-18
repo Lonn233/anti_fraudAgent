@@ -1,4 +1,4 @@
-import { agentAlert, agentChat, agentDetect, listAgentChatMessages, listAgentChatSessions } from "/ui/src/detect-api.js";
+import { agentAlert, agentChat, agentDetect, deleteAgentChatSession, listAgentChatMessages, listAgentChatSessions } from "/ui/src/detect-api.js";
 
 const historyListEl = document.getElementById("detect-history-list");
 const messagesEl = document.getElementById("detect-chat-messages");
@@ -9,12 +9,18 @@ const attachBtn = document.getElementById("detect-attach-btn");
 const fileInputEl = document.getElementById("detect-file-input");
 const attachmentsWrapEl = document.getElementById("detect-attachments-wrap");
 const attachmentsListEl = document.getElementById("detect-attachments-list");
+const deleteChatModalEl = document.getElementById("delete-chat-modal");
+const deleteChatModalTitleEl = document.getElementById("delete-chat-modal-title");
+const deleteChatModalMessageEl = document.getElementById("delete-chat-modal-message");
+const deleteChatConfirmBtn = document.getElementById("delete-chat-confirm-btn");
 const modeButtons = Array.from(document.querySelectorAll("[data-mode]"));
 
 let chats = [];
 let activeChatId = null;
 let currentMode = "chat";
 let pendingAttachments = [];
+let deletingChatId = null;
+let pendingDeleteChatId = null;
 
 function uid() {
   return `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -103,19 +109,22 @@ function renderHistory() {
   const items = chats
     .map((chat) => {
       const active = chat.id === activeChatId;
+      const deleting = deletingChatId === chat.id;
       const title = chat.title && chat.title !== "新对话" ? chat.title : `会话 ${String(chat.id).slice(0, 8)}`;
-      if (active) {
-        return `
-<a class="group flex items-center gap-3 px-3 py-3 bg-gradient-to-r from-[#5cbfff]/10 to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff] transition-all duration-200" href="#" data-chat-id="${chat.id}">
-  <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-  <span class="truncate">${escapeHtml(title)}</span>
-</a>`;
-      }
+      const baseClass = active
+        ? "bg-gradient-to-r from-[#5cbfff]/10 to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff]"
+        : "text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1";
       return `
-<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#" data-chat-id="${chat.id}">
-  <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
-  <span class="truncate">${escapeHtml(title)}</span>
-</a>`;
+<div class="group flex items-center gap-2 ${baseClass} transition-all duration-200">
+  <a class="flex min-w-0 flex-1 items-center gap-3 px-3 py-3" href="#" data-chat-id="${chat.id}">
+    <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+    <span class="truncate">${escapeHtml(title)}</span>
+  </a>
+  <button class="mr-2 flex h-7 w-7 items-center justify-center rounded-full text-[#e1e5f3]/0 transition-all duration-200 group-hover:text-[#ff7b7b] hover:bg-[#ff7b7b]/10 disabled:cursor-not-allowed disabled:text-[#ff7b7b]/30"
+    data-chat-delete="${chat.id}" type="button" aria-label="删除对话" ${deleting ? "disabled" : ""}>
+    <span class="material-symbols-outlined text-[18px]">close</span>
+  </button>
+</div>`;
     })
     .join("");
   historyListEl.innerHTML = header + items;
@@ -127,6 +136,72 @@ function renderHistory() {
       render();
     });
   });
+  historyListEl.querySelectorAll("[data-chat-delete]").forEach((el) => {
+    el.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openDeleteChatModal(el.getAttribute("data-chat-delete"));
+    });
+  });
+}
+
+function closeDeleteChatModal() {
+  pendingDeleteChatId = null;
+  if (!deleteChatModalEl) return;
+  deleteChatModalEl.classList.add("hidden");
+  deleteChatModalEl.classList.remove("flex");
+}
+
+function openDeleteChatModal(chatId) {
+  if (!chatId || deletingChatId) return;
+  const chat = chats.find((item) => item.id === chatId);
+  if (!chat || !deleteChatModalEl || !deleteChatModalTitleEl || !deleteChatModalMessageEl) return;
+  const title = chat.title && chat.title !== "新对话" ? chat.title : `会话 ${String(chat.id).slice(0, 8)}`;
+  pendingDeleteChatId = chatId;
+  deleteChatModalTitleEl.textContent = title;
+  deleteChatModalMessageEl.textContent = `删除后将同步清空“${title}”及其全部消息记录，此操作不可撤销。`;
+  deleteChatModalEl.classList.remove("hidden");
+  deleteChatModalEl.classList.add("flex");
+}
+
+async function handleDeleteChat(chatId) {
+  if (!chatId || deletingChatId) return;
+  const chat = chats.find((item) => item.id === chatId);
+  if (!chat) return;
+
+  deletingChatId = chatId;
+  if (deleteChatConfirmBtn) {
+    deleteChatConfirmBtn.disabled = true;
+    deleteChatConfirmBtn.textContent = "删除中...";
+  }
+  renderHistory();
+  try {
+    await deleteAgentChatSession(chatId);
+    chats = chats.filter((item) => item.id !== chatId);
+    closeDeleteChatModal();
+    if (activeChatId === chatId) {
+      activeChatId = chats[0]?.id || null;
+      if (activeChatId) {
+        await loadMessagesForActiveChat();
+      }
+    }
+    if (!chats.length) {
+      createChat();
+      return;
+    }
+    render();
+  } catch (err) {
+    if (deleteChatModalMessageEl) {
+      deleteChatModalMessageEl.textContent = `删除失败：${err?.message || "未知错误"}`;
+    }
+  } finally {
+    deletingChatId = null;
+    if (deleteChatConfirmBtn) {
+      deleteChatConfirmBtn.disabled = false;
+      deleteChatConfirmBtn.textContent = "确认删除";
+    }
+    renderHistory();
+  }
 }
 
 async function loadMessagesForActiveChat() {
@@ -248,7 +323,7 @@ function pushAssistantMessage(chat, content, suggestedMode = "none") {
   });
 }
 
-async function requestByMode(mode, content) {
+async function requestByMode(mode, content, files = []) {
   if (mode === "chat") {
     const res = await agentChat(content, activeChatId || "default");
     return {
@@ -257,7 +332,7 @@ async function requestByMode(mode, content) {
     };
   }
   if (mode === "detect") {
-    const res = await agentDetect(content);
+    const res = await agentDetect(content, activeChatId || "default", files);
     if (typeof res?.reply === "string") return { reply: res.reply, suggested_mode: "none" };
     return { reply: JSON.stringify(res ?? {}), suggested_mode: "none" };
   }
@@ -311,6 +386,7 @@ async function sendMessage() {
   if (!chat || !inputEl) return;
   const content = inputEl.value.trim();
   if (!content && pendingAttachments.length === 0) return;
+  const sendFiles = [...pendingAttachments];
   const userContent = content || "（发送了附件）";
 
   chat.messages.push({
@@ -318,7 +394,7 @@ async function sendMessage() {
     role: "user",
     content: userContent,
     mode: currentMode,
-    attachments: pendingAttachments.map((f) => ({ name: f.name })),
+    attachments: sendFiles.map((f) => ({ name: f.name })),
     created_at: new Date().toISOString(),
   });
   if (chat.title === "新对话") {
@@ -330,7 +406,7 @@ async function sendMessage() {
   sendBtn && (sendBtn.disabled = true);
   render();
   try {
-    const result = await requestByMode(currentMode, userContent);
+    const result = await requestByMode(currentMode, userContent, sendFiles);
     pushAssistantMessage(chat, result.reply || `已收到（${modeLabel}）`, result.suggested_mode || "none");
   } catch (err) {
     pushAssistantMessage(chat, `${modeLabel}请求失败：${err?.message || "未知错误"}`);
@@ -360,6 +436,27 @@ modeButtons.forEach((btn) => {
     renderModeButtons();
   });
 });
+if (deleteChatModalEl) {
+  deleteChatModalEl.querySelectorAll("[data-delete-chat-cancel]").forEach((el) => {
+    el.addEventListener("click", () => {
+      if (!deletingChatId) {
+        closeDeleteChatModal();
+      }
+    });
+  });
+}
+
+deleteChatConfirmBtn?.addEventListener("click", async () => {
+  if (!pendingDeleteChatId || deletingChatId) return;
+  await handleDeleteChat(pendingDeleteChatId);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && deleteChatModalEl && !deleteChatModalEl.classList.contains("hidden") && !deletingChatId) {
+    closeDeleteChatModal();
+  }
+});
+
 inputEl?.addEventListener("keydown", (event) => {
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();

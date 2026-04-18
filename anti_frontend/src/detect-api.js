@@ -1,4 +1,4 @@
-import { getJson, postJsonWithToken } from "/ui/src/http.js";
+import { getJson, postFormDataWithToken, postJsonWithToken, deleteJson } from "/ui/src/http.js";
 
 function tokenOrThrow() {
   const token = localStorage.getItem("access_token");
@@ -23,9 +23,15 @@ export async function agentChat(message, sessionId) {
   return postJsonWithToken("/agent/chat", { session_id: sessionId, message }, token);
 }
 
-export async function agentDetect(text) {
+export async function agentDetect(text, sessionId, files = []) {
   const token = tokenOrThrow();
-  return postJsonWithToken("/agent/detect", { text }, token);
+  const formData = new FormData();
+  formData.append("session_id", sessionId);
+  formData.append("text", text || "");
+  files.forEach((file) => {
+    formData.append("files", file);
+  });
+  return postFormDataWithToken("/agent/detect", formData, token);
 }
 
 export async function agentAlert(text, notify = true) {
@@ -44,4 +50,9 @@ export async function listAgentChatMessages(sessionId, limit = 100) {
     `/agent/chat/sessions/${encodeURIComponent(sessionId)}/messages?limit=${encodeURIComponent(limit)}`,
     token
   );
+}
+
+export async function deleteAgentChatSession(sessionId) {
+  const token = tokenOrThrow();
+  return deleteJson(`/agent/chat/sessions/${encodeURIComponent(sessionId)}`, token);
 }

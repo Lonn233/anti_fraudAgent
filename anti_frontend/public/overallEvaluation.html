@@ -1,368 +1,581 @@
 ﻿<!DOCTYPE html>
-
-<html class="dark" lang="zh-CN"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-secondary-fixed": "#36404f",
-                    "inverse-surface": "#f9f9ff",
-                    "tertiary-container": "#00e3fd",
-                    "on-tertiary-fixed-variant": "#005762",
-                    "on-tertiary-fixed": "#003840",
-                    "surface-container-high": "#19202c",
-                    "on-secondary-container": "#c7d1e4",
-                    "secondary-dim": "#cbd5e8",
-                    "primary-fixed": "#0cb3ff",
-                    "on-background": "#e1e5f3",
-                    "on-error-container": "#ffa8a3",
-                    "primary-container": "#0cb3ff",
-                    "inverse-primary": "#006593",
-                    "secondary": "#d9e3f7",
-                    "inverse-on-surface": "#505560",
-                    "surface-container-low": "#0e131d",
-                    "error-dim": "#d7383b",
-                    "surface-dim": "#090e17",
-                    "outline": "#717581",
-                    "surface-tint": "#5cbfff",
-                    "primary-dim": "#00a7f0",
-                    "primary": "#5cbfff",
-                    "on-secondary-fixed-variant": "#525c6c",
-                    "surface-container-lowest": "#000000",
-                    "tertiary": "#81ecff",
-                    "background": "#090e17",
-                    "surface-variant": "#1f2633",
-                    "on-primary-fixed-variant": "#003752",
-                    "surface": "#090e17",
-                    "on-surface-variant": "#a6abb7",
-                    "on-surface": "#e1e5f3",
-                    "error-container": "#9f0519",
-                    "on-error": "#490006",
-                    "surface-bright": "#252c3b",
-                    "tertiary-dim": "#00d4ec",
-                    "surface-container-highest": "#1f2633",
-                    "on-secondary": "#485262",
-                    "on-primary-fixed": "#000d18",
-                    "secondary-container": "#3d4757",
-                    "error": "#ff716c",
-                    "primary-fixed-dim": "#00a5ec",
-                    "outline-variant": "#434853",
-                    "on-primary": "#003854",
-                    "tertiary-fixed-dim": "#00d4ec",
-                    "on-primary-container": "#002d45",
-                    "secondary-fixed-dim": "#cbd5e8",
-                    "tertiary-fixed": "#00e3fd",
-                    "on-tertiary": "#005762",
-                    "on-tertiary-container": "#004d57",
-                    "surface-container": "#141a25",
-                    "secondary-fixed": "#d9e3f7"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Space Grotesk"],
-                    "body": ["Inter"],
-                    "label": ["Inter"]
-            }
+<html class="dark" lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>综合风险评估 · 反诈智能助手</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            background: "#090e17",
+            surface: "#090e17",
+            "surface-container": "#141a25",
+            "surface-container-low": "#0e131d",
+            "surface-container-high": "#19202c",
+            "surface-container-highest": "#1f2633",
+            "surface-variant": "#1f2633",
+            primary: "#5cbfff",
+            "primary-container": "#0cb3ff",
+            tertiary: "#81ecff",
+            error: "#ff716c",
+            outline: "#717581",
+            "outline-variant": "#434853",
+            "on-surface": "#e1e5f3",
+            "on-surface-variant": "#a6abb7",
+            "on-primary": "#003854",
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"],
           },
         },
-      }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .glass-panel {
-            background: rgba(25, 32, 44, 0.6);
-            backdrop-filter: blur(20px);
-        }
-        .data-grid-bg {
-            background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-    </style>
-</head>
-<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen data-grid-bg">
-<!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-<div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
-<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
-</div>
-</div>
-<div class="flex items-center space-x-4">
-<div class="relative group">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
-<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
-</div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
-</div>
-</nav><!-- SideNavBar -->
-<aside class="fixed left-0 w-72 h-[calc(100vh-64px)] flex flex-col py-6 gap-2 bg-[#0e131d] border-r border-outline-variant/15">
-<div class="px-6 mb-8">
-<div class="flex items-center gap-3 mb-2">
-<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center">
-<span class="material-symbols-outlined text-tertiary" data-icon="shield_person">shield_person</span>
-</div>
-<div>
-<h2 class="text-sm font-headline font-semibold text-on-surface">Personal Profile</h2>
-<p class="text-[0.65rem] font-label uppercase tracking-tighter text-tertiary/80">Account Security Level: High</p>
-</div>
-</div>
-<button class="w-full mt-4 py-2 px-4 bg-primary/10 border border-primary/20 hover:bg-primary/20 text-primary text-xs font-headline font-bold rounded transition-all">Review Security</button>
-</div>
-<nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 bg-[#1f2633] text-[#81ecff] rounded-r-full font-bold px-6 py-3 border-l-4 border-[#81ecff] translate-x-1 duration-200" href="/ui/infoSetting.html">
-<span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
-<span class="text-sm font-body">个人信息设置</span>
-</a>
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/overAllEvaluation.html">
-<span class="material-symbols-outlined" data-icon="security">security</span>
-<span class="text-sm font-body">综合风险评估</span>
-</a>
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="/ui/accountManage.html">
-<span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
-<span class="text-sm font-body">账号管理</span>
-</a>
-</nav>
-<div class="mt-auto flex flex-col gap-1">
-<a class="flex items-center gap-3 text-[#e1e5f3]/60 px-6 py-3 hover:bg-[#1f2633]/50 hover:text-white transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="help">help</span>
-<span class="text-sm font-body">Help Center</span>
-</a>
-<a class="flex items-center gap-3 text-error/60 px-6 py-3 hover:bg-error/10 hover:text-error transition-all duration-200" href="#">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
-<span class="text-sm font-body">Sign Out</span>
-</a>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="ml-72 flex-1 p-8 " style="padding-top:6rem;">
-<div class="max-w-7xl mx-auto space-y-8">
-<!-- Hero Header Section -->
-<section class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-outline-variant/15 pb-8">
-<div>
-<span class="font-['Inter'] text-[0.6875rem] uppercase tracking-[0.2em] text-tertiary mb-2 block">综合评估系统</span>
-<h1 class="font-headline text-4xl font-bold text-on-surface tracking-tight">欺诈风险全面评估</h1>
-<p class="text-on-surface-variant mt-2 max-w-xl">基于实时数据流与多维度行为模式分析，Sentinel 为您的数字资产提供毫秒级安全审计。</p>
-</div>
-<div class="flex gap-4">
-<div class="px-4 py-2 bg-surface-container-highest rounded-lg border border-outline-variant/20 flex flex-col items-end">
-<span class="text-[0.6rem] text-on-surface-variant uppercase">最后更新</span>
-<span class="font-headline font-bold text-primary">2024.05.24 14:30:02</span>
-</div>
-<button class="px-6 py-2 bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_20px_rgba(92,191,255,0.4)] transition-all">生成报告</button>
-</div>
-</section>
-<!-- Bento Grid Layout -->
-<div class="grid grid-cols-12 gap-6">
-<!-- Security Score Card -->
-<div class="col-span-12 lg:col-span-4 glass-panel rounded-2xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden group">
-<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50"></div>
-<div class="relative z-10">
-<span class="font-label text-xs tracking-widest text-on-surface-variant uppercase mb-4 block">实时安全得分</span>
-<div class="w-48 h-48 rounded-full border-[12px] border-surface-container flex items-center justify-center relative">
-<svg class="absolute inset-0 w-full h-full -rotate-90">
-<circle class="text-primary/20" cx="96" cy="96" fill="transparent" r="84" stroke="currentColor" stroke-width="12"></circle>
-<circle class="text-primary drop-shadow-[0_0_8px_rgba(92,191,255,0.8)]" cx="96" cy="96" fill="transparent" r="84" stroke="currentColor" stroke-dasharray="527" stroke-dashoffset="63" stroke-width="12"></circle>
-</svg>
-<span class="font-headline text-6xl font-bold">88</span>
-</div>
-<div class="mt-6">
-<span class="inline-flex items-center px-3 py-1 bg-tertiary/10 text-tertiary rounded-full text-xs font-bold border border-tertiary/20">
-<span class="w-2 h-2 rounded-full bg-tertiary mr-2 animate-pulse"></span>
-                                    风险等级：低
-                                </span>
-</div>
-</div>
-</div>
-<!-- Risk Breakdown Bento Cards -->
-<div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-<!-- Identity Theft -->
-<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-primary hover:bg-surface-container-high transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-primary/10 rounded-lg text-primary">
-<span class="material-symbols-outlined">fingerprint</span>
-</div>
-<span class="text-xs font-label text-on-surface-variant">威胁率 12%</span>
-</div>
-<h3 class="font-headline text-xl font-bold mb-2">身份窃取风险</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">分析检测到近期存在 2 次异地登录尝试，均已被成功拦截。</p>
-<div class="mt-4 h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-<div class="h-full bg-primary w-[12%]"></div>
-</div>
-</div>
-<!-- Financial Fraud -->
-<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-tertiary hover:bg-surface-container-high transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-tertiary/10 rounded-lg text-tertiary">
-<span class="material-symbols-outlined">payments</span>
-</div>
-<span class="text-xs font-label text-on-surface-variant">威胁率 04%</span>
-</div>
-<h3 class="font-headline text-xl font-bold mb-2">金融欺诈风险</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">交易链路完整，未发现可疑大额或异常频率的资金变动。</p>
-<div class="mt-4 h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-<div class="h-full bg-tertiary w-[4%]"></div>
-</div>
-</div>
-<!-- Social Engineering -->
-<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-error hover:bg-surface-container-high transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-error/10 rounded-lg text-error">
-<span class="material-symbols-outlined">forum</span>
-</div>
-<span class="text-xs font-label text-on-surface-variant">威胁率 28%</span>
-</div>
-<h3 class="font-headline text-xl font-bold mb-2">社交工程监测</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">发现 3 个关联账号存在钓鱼链接分发嫌疑，建议加强防护。</p>
-<div class="mt-4 h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-<div class="h-full bg-error w-[28%]"></div>
-</div>
-</div>
-<!-- Device Integrity -->
-<div class="bg-surface-container-low rounded-2xl p-6 border-l-4 border-outline hover:bg-surface-container-high transition-all">
-<div class="flex justify-between items-start mb-4">
-<div class="p-2 bg-outline/10 rounded-lg text-outline">
-<span class="material-symbols-outlined">devices</span>
-</div>
-<span class="text-xs font-label text-on-surface-variant">威胁率 08%</span>
-</div>
-<h3 class="font-headline text-xl font-bold mb-2">终端设备完整性</h3>
-<p class="text-sm text-on-surface-variant leading-relaxed">所有授权设备均处于最新补丁状态，通信信道已加密。</p>
-<div class="mt-4 h-1.5 w-full bg-surface-variant rounded-full overflow-hidden">
-<div class="h-full bg-outline w-[8%]"></div>
-</div>
-</div>
-</div>
-<!-- Historical Risk Trend Chart Container -->
-<div class="col-span-12 glass-panel rounded-2xl p-8">
-<div class="flex justify-between items-center mb-10">
-<div>
-<h3 class="font-headline text-2xl font-bold">历史风险趋势</h3>
-<p class="text-sm text-on-surface-variant">过去 30 天内账户安全性波动分析</p>
-</div>
-<div class="flex gap-2">
-<button class="px-3 py-1 bg-surface-container-highest rounded text-xs font-label">7天</button>
-<button class="px-3 py-1 bg-primary text-on-primary rounded text-xs font-label">30天</button>
-<button class="px-3 py-1 bg-surface-container-highest rounded text-xs font-label">90天</button>
-</div>
-</div>
-<div class="relative h-64 w-full flex items-end gap-2 px-4">
-<!-- Visual Chart Mockup using Tailwind Divs -->
-<div class="flex-1 bg-primary/20 h-[40%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-surface-container px-2 py-1 rounded text-[10px] whitespace-nowrap">72 pts</div>
-</div>
-<div class="flex-1 bg-primary/20 h-[45%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[55%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[50%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[65%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[80%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair">
-<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-on-primary px-2 py-1 rounded text-[10px] whitespace-nowrap">Peak: 91 pts</div>
-</div>
-<div class="flex-1 bg-primary/20 h-[75%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[70%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[85%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[90%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-<div class="flex-1 bg-primary/20 h-[88%] rounded-t-sm relative group hover:bg-primary/40 transition-all cursor-crosshair"></div>
-</div>
-<div class="flex justify-between mt-4 text-[0.6rem] font-label text-on-surface-variant uppercase tracking-widest">
-<span>05/01</span>
-<span>05/08</span>
-<span>05/15</span>
-<span>05/22</span>
-<span>今日</span>
-</div>
-</div>
-<!-- Footer Data Intelligence Section -->
-<div class="col-span-12 lg:col-span-7 space-y-6">
-<div class="p-6 rounded-2xl bg-surface-container-low border border-outline-variant/10">
-<h4 class="font-headline font-bold text-lg mb-4 flex items-center gap-2">
-<span class="material-symbols-outlined text-tertiary">analytics</span>
-                                智能防护建议
-                            </h4>
-<ul class="space-y-4">
-<li class="flex gap-4">
-<div class="mt-1 w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
-<p class="text-sm text-on-surface-variant">建议在 <b>Account Management</b> 页面开启多因子身份验证 (MFA)，以显著降低身份窃取风险。</p>
-</li>
-<li class="flex gap-4">
-<div class="mt-1 w-2 h-2 rounded-full bg-primary flex-shrink-0"></div>
-<p class="text-sm text-on-surface-variant">检测到您的常用登录地点发生变化，请确保在 <b>Profile Settings</b> 中更新您的常驻办公位置。</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="col-span-12 lg:col-span-5">
-<div class="p-6 rounded-2xl bg-surface-container-high overflow-hidden relative min-h-[160px] flex items-center justify-center">
-<div class="absolute inset-0 z-0 grayscale opacity-20">
-<img alt="Security Map" class="w-full h-full object-cover" data-alt="abstract world map with glowing blue network nodes and data connections on a deep dark navy background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsFLwkak80LSbNSHGfoRr7cJI19oxUTnjoNbFQRgUmbpEcbVYOnNndcxE2JEDN0q5bgC0I3toSM6UzUdweTYjrDN6wnxs62VnG64Is4cnl9BnwPYFUJbamrRvAvuTba2cALKJSxHygKWl7Z3vs9_SxG-uqtlgsF0N9W-IgQWnvK4W7jzruLR-8npTWwn5YLosc2iULHV9B8ohMkrCT7luIs50nHEnZHWEWK0GcGGSzEwZbpLCBhRuqGL8rtaY-Tgbixwm8XQLABSwe"/>
-</div>
-<div class="relative z-10 text-center">
-<span class="block text-3xl font-headline font-bold text-tertiary mb-1">2,481</span>
-<span class="font-label text-[0.6rem] tracking-[0.2em] text-on-surface-variant uppercase">全球活跃防御实例</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
-</div>
-<script>
-  (function () {
-    const map = {
-      "detectAgent.html": "/ui/detectAgent.html",
-      "monitor.html": "/ui/monitor.html",
-      "reportHistory.html": "/ui/reportHistory.html",
-      "detectSetting.html": "/ui/detectSetting.html",
-      "infoSetting.html": "/ui/infoSetting.html"
+      },
     };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      vertical-align: middle;
+    }
+    .glass-panel {
+      background: rgba(25, 32, 44, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(67, 72, 83, 0.35);
+    }
+    .data-grid-bg {
+      background-image: radial-gradient(rgba(92, 191, 255, 0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+    .chart-box { height: 320px; width: 100%; }
+    .chart-box-sm { height: 280px; width: 100%; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body min-h-screen data-grid-bg">
+  <nav class="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant/20 bg-[#090e17]/85 px-6 backdrop-blur-xl md:px-8">
+    <div class="flex items-center gap-6 md:gap-8">
+      <span class="font-headline text-lg font-bold tracking-tight text-primary drop-shadow-[0_0_10px_rgba(92,191,255,0.35)]">反诈智能助手</span>
+      <div class="hidden items-center gap-5 text-xs font-medium uppercase tracking-wide md:flex">
+        <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/detectAgent.html">反诈检测</a>
+        <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/monitor.html">监护人</a>
+        <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/reportHistory.html">检测历史</a>
+        <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/detectSetting.html">风险检测设置</a>
+        <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/infoSetting.html">个人信息</a>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 text-on-surface/70">
+      <span class="material-symbols-outlined cursor-pointer text-xl hover:text-tertiary">notifications</span>
+      <span class="material-symbols-outlined cursor-pointer text-xl hover:text-tertiary">shield</span>
+      <a aria-label="个人资料" class="inline-flex hover:text-tertiary" href="/ui/infoSetting.html"><span class="material-symbols-outlined text-xl">account_circle</span></a>
+    </div>
+  </nav>
 
-    const activeHref = map[window.location.pathname.split('/').pop()];
-    if (!activeHref) return;
+  <!-- SideNavBar（与 reportHistory.html 一致） -->
+  <aside class="fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] w-64 flex-col bg-[#0e131d] py-6 dark:bg-[#0e131d] lg:flex">
+    <div class="mb-8 px-6">
+      <div class="mb-2 flex items-center gap-3">
+        <div class="rounded-lg bg-surface-container-highest p-2">
+          <span class="material-symbols-outlined text-[#5cbfff]" style='font-variation-settings: "FILL" 1;'>shield</span>
+        </div>
+        <div>
+          <div class="text-lg font-black text-[#5cbfff] font-['Space_Grotesk']">ANTI-FRAUD AI</div>
+          <div class="text-[10px] font-bold tracking-[0.2em] text-tertiary">ACTIVE MONITORING</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 space-y-1">
+      <a class="flex items-center gap-3 rounded-r-full bg-[#1f2633] px-6 py-3 font-bold text-[#81ecff]" href="/ui/overallEvaluation.html">
+        <span class="material-symbols-outlined" data-icon="shield">shield</span>
+        <span class="font-['Inter']">综合风险情况</span>
+      </a>
+      <a class="group flex items-center gap-3 px-6 py-3 text-[#e1e5f3] opacity-60 transition-all hover:bg-[#1f2633] hover:text-[#5cbfff]" href="/ui/reportHistory.html">
+        <span class="material-symbols-outlined" data-icon="history">history</span>
+        <span class="font-['Inter']">检测历史</span>
+      </a>
+    </div>
+    <div class="mt-auto border-t border-outline-variant/10 px-6 py-4">
+      <button type="button" class="mb-4 w-full rounded-lg bg-gradient-to-r from-primary to-primary-container py-3 text-sm font-bold uppercase tracking-widest text-on-primary transition-all hover:brightness-110 active:scale-95">
+        Start Deep Scan
+      </button>
+      <div class="space-y-2">
+        <a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 transition-colors hover:text-primary" href="#">
+          <span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+          Support
+        </a>
+        <a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 transition-colors hover:text-primary" href="#">
+          <span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+          Logs
+        </a>
+      </div>
+    </div>
+  </aside>
 
-    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
-      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
-    );
+  <main class="min-h-screen pt-24 pb-12 pr-8 lg:pl-72">
+    <div class="mx-auto max-w-7xl space-y-8 px-4 py-8 md:px-6 lg:px-8">
+      <!-- 页头 -->
+      <header class="flex flex-col gap-4 border-b border-outline-variant/20 pb-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="mb-1 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-tertiary">综合评估系统</p>
+          <h1 class="font-headline text-3xl font-bold tracking-tight md:text-4xl">欺诈风险全面评估</h1>
+          <p class="mt-2 max-w-2xl text-sm text-on-surface-variant">以下为静态示例数据，用于展示仪表盘布局与 ECharts 图表类型；接入后端后替换数据源即可。</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="rounded-lg border border-outline-variant/30 bg-surface-container-high px-4 py-2 text-right">
+            <p class="text-[0.65rem] uppercase text-on-surface-variant">最后更新</p>
+            <p class="font-headline text-sm font-semibold text-primary">2026-04-18 14:30</p>
+          </div>
+          <button type="button" class="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-on-primary shadow-[0_0_20px_rgba(92,191,255,0.25)] transition hover:brightness-110">导出报告</button>
+        </div>
+      </header>
 
-    navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+      <!-- 一、顶部总览 -->
+      <section aria-labelledby="sec-overview">
+        <h2 id="sec-overview" class="mb-4 font-headline text-xl font-bold">一、顶部总览</h2>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div class="glass-panel relative overflow-hidden rounded-2xl p-6 xl:col-span-2">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-on-surface-variant">综合风险等级</p>
+                <div class="mt-3 flex flex-wrap items-center gap-3">
+                  <span id="risk-badge" class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-bold">中危</span>
+                  <span class="text-xs text-on-surface-variant">颜色与标签联动评分区间</span>
+                </div>
+              </div>
+              <div class="text-center sm:text-right">
+                <p class="text-xs text-on-surface-variant">风险评分（0–100，越高越危险）</p>
+                <p class="mt-1 font-headline text-5xl font-bold text-primary" id="risk-score-display">62</p>
+                <p class="text-xs text-on-surface-variant">/ 100</p>
+              </div>
+            </div>
+            <div class="mt-6 h-2 w-full overflow-hidden rounded-full bg-surface-variant">
+              <div id="risk-score-bar" class="h-full rounded-full bg-amber-400 transition-all" style="width:62%"></div>
+            </div>
+          </div>
+          <div class="glass-panel rounded-2xl p-6">
+            <p class="text-xs uppercase text-on-surface-variant">今日检测</p>
+            <p class="mt-2 font-headline text-3xl font-bold text-on-surface">24</p>
+            <p class="mt-1 text-sm text-on-surface-variant">本周累计 <span class="font-semibold text-tertiary">156</span> 次</p>
+          </div>
+          <div class="glass-panel rounded-2xl p-6">
+            <p class="text-xs uppercase text-on-surface-variant">累计报告</p>
+            <p class="mt-2 font-headline text-3xl font-bold text-on-surface">3,842</p>
+            <p class="mt-1 text-sm text-on-surface-variant">已拦截风险 <span class="font-semibold text-error">189</span> 次</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 二、风险趋势图 -->
+      <section aria-labelledby="sec-trends">
+        <h2 id="sec-trends" class="mb-4 font-headline text-xl font-bold">二、风险趋势图</h2>
+        <div class="mb-4 flex flex-wrap gap-2">
+          <button type="button" id="btn-range-7" class="rounded-lg border border-primary bg-primary/20 px-4 py-1.5 text-xs font-semibold text-primary">近 7 天</button>
+          <button type="button" id="btn-range-30" class="rounded-lg border border-outline-variant/40 bg-surface-container-high px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:border-primary/50">近 30 天</button>
+        </div>
+        <div class="grid gap-6 lg:grid-cols-12">
+          <div class="glass-panel rounded-2xl p-5 lg:col-span-7">
+            <h3 class="font-headline text-base font-semibold">风险评分趋势</h3>
+            <p class="text-xs text-on-surface-variant">折线图 · 可切换 7 / 30 天</p>
+            <div id="chart-trend-line" class="chart-box"></div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 lg:col-span-5">
+            <h3 class="font-headline text-base font-semibold">每日检测次数</h3>
+            <p class="text-xs text-on-surface-variant">柱状图</p>
+            <div id="chart-daily-bar" class="chart-box"></div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 lg:col-span-12">
+            <h3 class="font-headline text-base font-semibold">风险类型占比</h3>
+            <p class="text-xs text-on-surface-variant">饼图 · 刷单、冒充公检法、杀猪盘等</p>
+            <div id="chart-type-pie-trend" class="chart-box-sm"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 三、用户行为风险维度 -->
+      <section aria-labelledby="sec-behavior">
+        <h2 id="sec-behavior" class="mb-4 font-headline text-xl font-bold">三、用户行为风险维度</h2>
+        <div class="grid gap-6 lg:grid-cols-12">
+          <div class="glass-panel rounded-2xl p-5 lg:col-span-5">
+            <h3 class="font-headline text-base font-semibold">行为雷达</h3>
+            <p class="text-xs text-on-surface-variant">八维综合（数值为相对风险指数 0–100）</p>
+            <div id="chart-behavior-radar" class="chart-box"></div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5 lg:col-span-7">
+            <h3 class="font-headline text-base font-semibold">各维度风险条</h3>
+            <p class="text-xs text-on-surface-variant">横向条形 · 模拟「进度条」式对比</p>
+            <div id="chart-behavior-bars" class="chart-box" style="height:340px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 四、风险类型分布 -->
+      <section aria-labelledby="sec-distribution">
+        <h2 id="sec-distribution" class="mb-4 font-headline text-xl font-bold">四、风险类型分布</h2>
+        <div class="grid gap-6 lg:grid-cols-3">
+          <div class="glass-panel rounded-2xl p-5">
+            <h3 class="font-headline text-base font-semibold">诈骗类型占比</h3>
+            <div id="chart-fraud-pie" class="chart-box-sm"></div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5">
+            <h3 class="font-headline text-base font-semibold">风险来源</h3>
+            <p class="text-xs text-on-surface-variant">短信 / APP / 网址 / 社交</p>
+            <div id="chart-source-bar" class="chart-box-sm"></div>
+          </div>
+          <div class="glass-panel rounded-2xl p-5">
+            <h3 class="font-headline text-base font-semibold">风险时段</h3>
+            <p class="text-xs text-on-surface-variant">何时最易触发预警</p>
+            <div id="chart-time-bar" class="chart-box-sm"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 五、检测报告统计 -->
+      <section aria-labelledby="sec-reports">
+        <h2 id="sec-reports" class="mb-4 font-headline text-xl font-bold">五、检测报告统计</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div class="rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5">
+            <p class="text-xs text-on-surface-variant">正常</p>
+            <p class="mt-2 font-headline text-2xl font-bold text-tertiary">2,960</p>
+          </div>
+          <div class="rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5">
+            <p class="text-xs text-on-surface-variant">低风险</p>
+            <p class="mt-2 font-headline text-2xl font-bold text-primary">412</p>
+          </div>
+          <div class="rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5">
+            <p class="text-xs text-on-surface-variant">中风险</p>
+            <p class="mt-2 font-headline text-2xl font-bold text-amber-400">318</p>
+          </div>
+          <div class="rounded-2xl border border-outline-variant/25 bg-surface-container-low p-5">
+            <p class="text-xs text-on-surface-variant">高风险</p>
+            <p class="mt-2 font-headline text-2xl font-bold text-error">152</p>
+          </div>
+          <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 sm:col-span-2 lg:col-span-1">
+            <p class="text-xs text-on-surface-variant">已处理 / 未处理</p>
+            <p class="mt-2 font-headline text-2xl font-bold text-on-surface">128 <span class="text-base font-normal text-on-surface-variant">/</span> 24</p>
+          </div>
+        </div>
+        <div class="glass-panel mt-6 rounded-2xl p-5">
+          <h3 class="font-headline text-base font-semibold">报告等级分布（条形图）</h3>
+          <div id="chart-report-bar" class="chart-box-sm"></div>
+        </div>
+      </section>
+
+      <!-- 六、安全建议 -->
+      <section aria-labelledby="sec-advice">
+        <h2 id="sec-advice" class="mb-4 font-headline text-xl font-bold">六、安全建议</h2>
+        <div class="grid gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border border-primary/25 bg-primary/5 p-5">
+            <div class="mb-2 flex items-center gap-2 text-primary">
+              <span class="material-symbols-outlined">warning</span>
+              <span class="font-headline text-sm font-bold">风险行为提醒</span>
+            </div>
+            <ul class="list-inside list-disc space-y-2 text-sm text-on-surface-variant">
+              <li>夜间大额转账频次偏高，建议开启延迟到账或二次确认。</li>
+              <li>近期陌生账号私聊与可疑链接点击并存，请核验对方身份。</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-error/25 bg-error/5 p-5">
+            <div class="mb-2 flex items-center gap-2 text-error">
+              <span class="material-symbols-outlined">crisis_alert</span>
+              <span class="font-headline text-sm font-bold">高频诈骗类型预警</span>
+            </div>
+            <ul class="list-inside list-disc space-y-2 text-sm text-on-surface-variant">
+              <li>「冒充客服」与「刷单返利」类检测占比上升，警惕先垫资话术。</li>
+              <li>涉诈短信中「中奖」「贷款低息」关键词出现次数增加。</li>
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-tertiary/25 bg-tertiary/5 p-5">
+            <div class="mb-2 flex items-center gap-2 text-tertiary">
+              <span class="material-symbols-outlined">tips_and_updates</span>
+              <span class="font-headline text-sm font-bold">安全得分提升建议</span>
+            </div>
+            <ul class="list-inside list-disc space-y-2 text-sm text-on-surface-variant">
+              <li>减少屏幕共享；官方应用仅从应用商店安装。</li>
+              <li>银行卡号、验证码仅在可信页面输入，并开启来电识别与短信拦截。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="pb-8 text-center text-xs text-on-surface-variant">反诈智能助手 · 综合风险评估仪表盘（ECharts 静态数据）</footer>
+    </div>
+  </main>
+
+  <script>
+(function () {
+  const charts = [];
+  const ecTheme = {
+    backgroundColor: "transparent",
+    textStyle: { color: "#a6abb7", fontFamily: "Inter, sans-serif" },
+  };
+
+  function pushChart(dom, option) {
+    const c = echarts.init(dom, null, { renderer: "canvas" });
+    c.setOption(option);
+    charts.push(c);
+    return c;
+  }
+
+  window.addEventListener("resize", function () {
+    charts.forEach(function (c) { c.resize(); });
+  });
+
+  /* 静态数据 */
+  const days7 = ["04-12", "04-13", "04-14", "04-15", "04-16", "04-17", "04-18"];
+  const score7 = [48, 52, 45, 58, 55, 60, 62];
+  const detect7 = [18, 22, 15, 28, 24, 26, 24];
+
+  const days30 = [];
+  const score30 = [];
+  const detect30 = [];
+  for (let i = 0; i < 30; i++) {
+    days30.push((i + 1) + "日");
+    score30.push(40 + Math.round(18 * Math.sin(i / 4) + (i % 7) * 2));
+    detect30.push(12 + ((i * 3) % 20));
+  }
+
+  const typePieData = [
+    { name: "刷单诈骗", value: 26 },
+    { name: "冒充公检法", value: 14 },
+    { name: "杀猪盘", value: 18 },
+    { name: "贷款诈骗", value: 12 },
+    { name: "中奖诈骗", value: 10 },
+    { name: "仿冒客服", value: 20 },
+  ];
+
+  const behaviorNames = [
+    "可疑链接点击",
+    "陌生账号聊天",
+    "大额转账/支付",
+    "夜间异常操作",
+    "共享屏幕",
+    "非官方应用下载",
+    "涉诈短信/电话",
+    "敏感信息输入",
+  ];
+  const behaviorValues = [68, 55, 42, 72, 30, 38, 61, 48];
+
+  const basePie = {
+    ...ecTheme,
+    tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
+    legend: { bottom: 0, textStyle: { color: "#a6abb7", fontSize: 11 } },
+    series: [{
+      type: "pie",
+      radius: ["38%", "68%"],
+      center: ["50%", "46%"],
+      itemStyle: { borderRadius: 6, borderColor: "#090e17", borderWidth: 2 },
+      label: { color: "#e1e5f3" },
+      data: typePieData,
+      color: ["#5cbfff", "#81ecff", "#fbbf24", "#fb7185", "#a78bfa", "#34d399"],
+    }],
+  };
+
+  const axisCommon = {
+    axisLine: { lineStyle: { color: "#434853" } },
+    axisLabel: { color: "#a6abb7", fontSize: 11 },
+    splitLine: { lineStyle: { color: "rgba(67,72,83,0.45)" } },
+  };
+
+  const trendChart = pushChart(document.getElementById("chart-trend-line"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis" },
+    grid: { left: "3%", right: "4%", bottom: "12%", top: "14%", containLabel: true },
+    xAxis: { type: "category", data: days7, ...axisCommon },
+    yAxis: { type: "value", name: "评分", min: 0, max: 100, ...axisCommon },
+    series: [{
+      name: "风险评分",
+      type: "line",
+      smooth: true,
+      symbol: "circle",
+      symbolSize: 8,
+      lineStyle: { width: 3, color: "#5cbfff" },
+      areaStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: "rgba(92,191,255,0.35)" },
+          { offset: 1, color: "rgba(92,191,255,0)" },
+        ]),
+      },
+      data: score7,
+    }],
+  });
+
+  const dailyBarChart = pushChart(document.getElementById("chart-daily-bar"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis" },
+    grid: { left: "3%", right: "3%", bottom: "14%", top: "12%", containLabel: true },
+    xAxis: { type: "category", data: days7, ...axisCommon },
+    yAxis: { type: "value", name: "次数", ...axisCommon },
+    series: [{
+      name: "检测次数",
+      type: "bar",
+      barWidth: "52%",
+      itemStyle: {
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: "#81ecff" },
+          { offset: 1, color: "rgba(129,236,255,0.2)" },
+        ]),
+        borderRadius: [6, 6, 0, 0],
+      },
+      data: detect7,
+    }],
+  });
+
+  pushChart(document.getElementById("chart-type-pie-trend"), basePie);
+
+  pushChart(document.getElementById("chart-behavior-radar"), {
+    ...ecTheme,
+    tooltip: {},
+    radar: {
+      indicator: behaviorNames.map(function (n) { return { name: n, max: 100 }; }),
+      center: ["50%", "52%"],
+      radius: "62%",
+      axisName: { color: "#a6abb7", fontSize: 11, lineHeight: 14 },
+      splitArea: { areaStyle: { color: ["rgba(92,191,255,0.05)", "rgba(92,191,255,0.12)"] } },
+      splitLine: { lineStyle: { color: "rgba(67,72,83,0.6)" } },
+    },
+    series: [{
+      type: "radar",
+      symbolSize: 6,
+      areaStyle: { color: "rgba(92,191,255,0.25)" },
+      lineStyle: { width: 2, color: "#5cbfff" },
+      data: [{ value: behaviorValues, name: "行为风险" }],
+    }],
+  });
+
+  pushChart(document.getElementById("chart-behavior-bars"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+    grid: { left: "3%", right: "8%", bottom: "3%", top: "3%", containLabel: true },
+    xAxis: { type: "value", max: 100, ...axisCommon },
+    yAxis: {
+      type: "category",
+      data: behaviorNames,
+      axisLabel: { color: "#e1e5f3", fontSize: 11 },
+      axisLine: { show: false },
+      axisTick: { show: false },
+    },
+    series: [{
+      type: "bar",
+      data: behaviorValues,
+      barWidth: 14,
+      itemStyle: {
+        borderRadius: [0, 8, 8, 0],
+        color: function (p) {
+          const v = p.data;
+          if (v >= 65) return new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: "#f87171" }, { offset: 1, color: "#fb923c" }]);
+          if (v >= 45) return new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: "#fbbf24" }, { offset: 1, color: "#f59e0b" }]);
+          return new echarts.graphic.LinearGradient(0, 0, 1, 0, [{ offset: 0, color: "#5cbfff" }, { offset: 1, color: "#81ecff" }]);
+        },
+      },
+      label: { show: true, position: "right", color: "#e1e5f3", formatter: "{c}" },
+    }],
+  });
+
+  pushChart(document.getElementById("chart-fraud-pie"), basePie);
+
+  pushChart(document.getElementById("chart-source-bar"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis" },
+    grid: { left: "3%", right: "4%", bottom: "8%", top: "10%", containLabel: true },
+    xAxis: { type: "category", data: ["短信", "APP", "网址", "社交软件"], ...axisCommon },
+    yAxis: { type: "value", name: "占比%", ...axisCommon },
+    series: [{
+      type: "bar",
+      data: [22, 28, 18, 32],
+      barWidth: "48%",
+      itemStyle: {
+        borderRadius: [6, 6, 0, 0],
+        color: function (params) {
+          const colors = ["#5cbfff", "#81ecff", "#c4b5fd", "#34d399"];
+          return colors[params.dataIndex % colors.length];
+        },
+      },
+    }],
+  });
+
+  pushChart(document.getElementById("chart-time-bar"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis" },
+    grid: { left: "3%", right: "4%", bottom: "8%", top: "10%", containLabel: true },
+    xAxis: {
+      type: "category",
+      data: ["凌晨\n0–6", "上午\n6–12", "下午\n12–18", "傍晚\n18–22", "夜间\n22–24"],
+      axisLabel: { color: "#a6abb7", fontSize: 10 },
+      axisLine: { lineStyle: { color: "#434853" } },
+    },
+    yAxis: { type: "value", name: "事件数", ...axisCommon },
+    series: [{
+      type: "line",
+      smooth: true,
+      symbolSize: 8,
+      lineStyle: { color: "#fb923c", width: 3 },
+      areaStyle: { color: "rgba(251,146,60,0.15)" },
+      data: [28, 45, 52, 68, 61],
+    }],
+  });
+
+  pushChart(document.getElementById("chart-report-bar"), {
+    ...ecTheme,
+    tooltip: { trigger: "axis" },
+    legend: { data: ["报告数量"], textStyle: { color: "#a6abb7" }, top: 0 },
+    grid: { left: "3%", right: "4%", bottom: "8%", top: "16%", containLabel: true },
+    xAxis: { type: "value", ...axisCommon },
+    yAxis: {
+      type: "category",
+      data: ["高风险", "中风险", "低风险", "正常", "未处理", "已处理"],
+      axisLabel: { color: "#e1e5f3" },
+    },
+    series: [
+      {
+        name: "报告数量",
+        type: "bar",
+        stack: "t",
+        data: [152, 318, 412, 2960, 24, 128],
+        itemStyle: {
+          color: function (p) {
+            const i = p.dataIndex;
+            const mapColors = ["#ff716c", "#fbbf24", "#5cbfff", "#34d399", "#a78bfa", "#2dd4bf"];
+            return mapColors[i];
+          },
+          borderRadius: [0, 6, 6, 0],
+        },
+      },
+    ],
+  });
+
+  /* 7 / 30 天切换 */
+  const btn7 = document.getElementById("btn-range-7");
+  const btn30 = document.getElementById("btn-range-30");
+  function setRange(is7) {
+    btn7.className = is7
+      ? "rounded-lg border border-primary bg-primary/20 px-4 py-1.5 text-xs font-semibold text-primary"
+      : "rounded-lg border border-outline-variant/40 bg-surface-container-high px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:border-primary/50";
+    btn30.className = !is7
+      ? "rounded-lg border border-primary bg-primary/20 px-4 py-1.5 text-xs font-semibold text-primary"
+      : "rounded-lg border border-outline-variant/40 bg-surface-container-high px-4 py-1.5 text-xs font-semibold text-on-surface-variant hover:border-primary/50";
+    trendChart.setOption({
+      xAxis: { data: is7 ? days7 : days30 },
+      series: [{ data: is7 ? score7 : score30 }],
     });
+    dailyBarChart.setOption({
+      xAxis: { data: is7 ? days7 : days30 },
+      series: [{ data: is7 ? detect7 : detect30 }],
+    });
+  }
+  btn7.addEventListener("click", function () { setRange(true); });
+  btn30.addEventListener("click", function () { setRange(false); });
 
-    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
-    if (!activeLink) return;
-
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-  })();
-</script>
-</body></html>
-
-
-
-
-
-
-
-
-
+  /* 顶部风险等级样式（静态 62 分 → 中危） */
+  const badge = document.getElementById("risk-badge");
+  badge.className =
+    "inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-bold border-amber-400/50 bg-amber-500/15 text-amber-300";
+  badge.textContent = "中危";
+})();
+  </script>
+</body>
+</html>
