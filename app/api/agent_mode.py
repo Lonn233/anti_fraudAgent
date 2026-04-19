@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from starlette.datastructures import UploadFile
+import httpx
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile, status
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -19,15 +19,17 @@ from app.schemas import (
     AgentChatOut,
     AgentChatSessionOut,
     AgentDetectOut,
+    AgentSpeechTranscribeOut,
 )
 from app.services import detect_serve
 from app.services.agent_chat import chat_reply
 from app.services.agent_detect import detect_reply
-from app.services.llm import summarize_media_for_detect
+from app.services.llm import summarize_media_for_detect, transcribe_audio_with_doubao
 from app.utils.deps import get_current_user
 
 router = APIRouter(prefix="/agent", tags=["agent"])
-_ALLOWED_DETECT_MEDIA_TYPES = {"image", "video"}
+_ALLOWED_DETECT_MEDIA_TYPES = {"image", "video", "audio"}
+_AUDIO_SUFFIXES = {".mp3", ".wav", ".m4a", ".ogg", ".webm"}
 
 
 def _ensure_agent_session_columns() -> None:
@@ -66,10 +68,18 @@ def _detect_media_type(file: UploadFile) -> str:
         return "image"
     if content_type.startswith("video/") or suffix in {".mp4", ".avi", ".mov", ".mkv", ".webm", ".flv"}:
         return "video"
+    if content_type.startswith("audio/") or suffix in {".mp3", ".wav", ".m4a", ".ogg", ".webm"}:
+        return "audio"
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
-        detail="检测模式附件仅支持图片或视频",
+        detail="检测模式附件仅支持图片、视频或音频",
     )
+
+
+def _is_audio_file(file: UploadFile) -> bool:
+    content_type = (file.content_type or "").lower()
+    suffix = Path(file.filename or "").suffix.lower()
+    return content_type.startswith("audio/") or suffix in _AUDIO_SUFFIXES
 
 
 async def _save_detect_upload(file: UploadFile, media_type: str) -> tuple[Path, str, int]:
@@ -106,11 +116,17 @@ async def _build_form_materials(files: list[UploadFile]) -> list[dict[str, str]]
         media_type = _detect_media_type(file)
         saved_path, saved_name, _size = await _save_detect_upload(file, media_type)
         relative_url = detect_serve.media_relative_path(media_type, saved_name)
-        summary_text = summarize_media_for_detect(
-            saved_path,
-            media_kind=media_type,
-            file_name=Path(file.filename or saved_name).name,
-        )
+        if media_type in {"image", "video"}:
+            summary_text = summarize_media_for_detect(
+                saved_path,
+                media_kind=media_type,
+                file_name=Path(file.filename or saved_name).name,
+            )
+        else:
+            summary_text = transcribe_audio_with_doubao(
+                saved_path,
+                file_name=Path(file.filename or saved_name).name,
+            )
         materials.append(
             {
                 "type": media_type,
@@ -297,3 +313,40 @@ def agent_alert(
 ):
     _ = (payload, db, current)
     raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="预警模式接口暂未实现")
+
+
+@router.post("/speech/transcribe", response_model=AgentSpeechTranscribeOut)
+async def agent_speech_transcribe(
+    file: UploadFile = File(...),
+    session_id: str = Form(default="default"),
+    mode: str = Form(default="chat"),
+    current: User = Depends(get_current_user),
+):
+    _ = (session_id, mode, current)
+    if not _is_audio_file(file):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="仅支持音频文件")
+    saved_path, saved_name, _size = await _save_detect_upload(file, "audio")
+    relative_url = detect_serve.media_relative_path("audio", saved_name)
+    public_url = detect_serve.media_absolute_url(relative_url)
+    try:
+        text = transcribe_audio_with_doubao(
+            public_url,
+            file_name=Path(file.filename or "").name,
+            audio_path=saved_path,
+        )
+    except httpx.HTTPStatusError as err:
+        if err.response is not None and err.response.status_code == 404:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="语音识别服务端点不可用（404）。请检查 DOUBAO_ASR_SUBMIT_URL / DOUBAO_ASR_RESOURCE_ID / DOUBAO_ASR_API_KEY 配置。",
+            ) from err
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"语音识别服务请求失败：{err}",
+        ) from err
+    except Exception as err:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"语音识别失败：{err}",
+        ) from err
+    return AgentSpeechTranscribeOut(text=text)

@@ -116,31 +116,28 @@
 <a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
-<aside class="fixed h-full w-64 border-r border-white/5 bg-[#090e17] flex flex-col py-6">
+<aside class="fixed left-0 top-16 z-40 hidden h-full w-64 flex-col border-r border-slate-800/30 bg-[#090e17] pt-4 pb-20 shadow-2xl dark:bg-slate-950 lg:flex">
 <div class="px-6 mb-8">
-<h2 class="text-cyan-400 font-bold font-['Inter'] text-sm uppercase tracking-widest">SETTINGS</h2>
-<p class="text-slate-500 text-[10px] uppercase tracking-widest mt-1">Precision Control</p>
+<div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
+<div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low</div>
 </div>
-<nav class="flex-1">
-<div class="space-y-1">
-<a class="flex items-center gap-3 px-6 py-3 text-cyan-400 bg-cyan-400/10 border-r-2 border-cyan-400 transition-all duration-300 font-['Inter'] text-sm uppercase tracking-widest" href="#">
+<div class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
+<a class="flex items-center gap-3 px-6 py-4 text-[#81ecff] bg-[#1f2633] rounded-r-full font-bold" href="#">
 <span class="material-symbols-outlined" data-icon="security">security</span>
 <span>风险检测设置</span>
 </a>
 </div>
-</nav>
-<div class="px-6 mt-auto">
-<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl">
-<img alt="User Profile" class="w-8 h-8 rounded-full border border-cyan-400/20" data-alt="close-up portrait of a high-tech digital user avatar with subtle glowing blue highlights on edges" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoU98vm1PXq5zoW4Q46LP9ztwiaZr2UScNuXsttuyjozr_aVObbBWJ85hxvHwjZSMoZ6PCOZ-FO_VzITJdqGYYUHfM6dTrWswwTzyPVt9k7XUXc8YwbhaDDZF6Po5KsFR40lLF7d5XyrdXRFtaJctXMD5FsY5O67k-EmWxUL2L79mACE0jehXgbPTI20OARD_bEPz2SDto4lw_42JVbIi6tg3viMXEU4fw3RTsk97EgfGr0B1bSbCdECtJHq4dgrzMfJpru3_O2WQw"/>
-<div class="overflow-hidden">
-<p class="text-xs font-bold text-on-surface truncate">SYSTEM_ADMIN</p>
-<p class="text-[10px] text-slate-500 truncate">LVL 4 CLEARANCE</p>
-</div>
+<div class="px-4 mt-auto mb-20">
+<div class="pt-4 border-t border-slate-800/50">
+<a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>退出登录</span>
+</a>
 </div>
 </div>
 </aside>
 <!-- Main Content Canvas -->
-<main class="ml-72 overflow-y-auto p-12 bg-surface">
+<main class="ml-64 overflow-y-auto p-12 bg-surface">
 <header class="mb-12">
 <div class="flex items-center gap-3 mb-2">
 <span class="h-[1px] w-12 bg-cyan-400/30"></span>

@@ -4,6 +4,7 @@ import base64
 import json
 import logging
 import re
+import uuid
 from pathlib import Path
 from typing import Any, Literal
 
@@ -30,6 +31,13 @@ _VIDEO_SUFFIX_MIME: dict[str, str] = {
     ".mkv": "video/x-matroska",
     ".webm": "video/webm",
     ".flv": "video/x-flv",
+}
+_AUDIO_SUFFIX_MIME: dict[str, str] = {
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/wav",
+    ".m4a": "audio/mp4",
+    ".webm": "audio/webm",
+    ".ogg": "audio/ogg",
 }
 
 
@@ -142,6 +150,103 @@ def summarize_media_for_detect(
     if not content:
         raise ValueError(f"Empty media summary response: {str(body)[:300]}")
     return content
+
+
+def transcribe_audio_with_doubao(
+    audio_url: str,
+    *,
+    file_name: str = "",
+    audio_path: str | Path | None = None,
+) -> str:
+    # 优先调用自部署 ASR 微服务（如果配置了地址）
+    if settings.asr_service_base_url.strip():
+        base = settings.asr_service_base_url.rstrip("/")
+        with httpx.Client(timeout=float(settings.asr_service_timeout_sec)) as client:
+            path_obj = Path(audio_path) if audio_path else None
+            if path_obj and path_obj.exists():
+                service_url = f"{base}/transcribe_file"
+                file_bytes = path_obj.read_bytes()
+                upload_name = file_name or path_obj.name
+                mime = _AUDIO_SUFFIX_MIME.get(path_obj.suffix.lower(), "application/octet-stream")
+                files = {"file": (upload_name, file_bytes, mime)}
+                r = client.post(service_url, files=files)
+            else:
+                service_url = f"{base}/transcribe_by_url"
+                payload = {"audio_url": audio_url, "file_name": file_name or Path(audio_url).name}
+                r = client.post(service_url, json=payload)
+        if r.status_code != 200:
+            raise httpx.HTTPStatusError(
+                message=f"{r.status_code} {r.text}",
+                request=r.request,
+                response=r,
+            )
+        body = r.json()
+        text = str(body.get("text") or "").strip()
+        if not text:
+            raise ValueError(f"ASR 微服务返回为空：{str(body)[:300]}")
+        return text
+
+    api_key = settings.doubao_asr_api_key or settings.doubao_api_key
+    if not api_key:
+        raise ValueError("DOUBAO_ASR_API_KEY（或 DOUBAO_API_KEY）未配置")
+    if not audio_url.strip():
+        raise ValueError("音频 URL 不能为空")
+
+    suffix = Path(file_name or "audio.wav").suffix.lower()
+    fmt_map = {
+        ".mp3": "mp3",
+        ".wav": "wav",
+        ".ogg": "ogg",
+        ".opus": "ogg",
+        ".pcm": "raw",
+        ".raw": "raw",
+        ".m4a": "mp3",
+        ".webm": "ogg",
+    }
+    audio_format = fmt_map.get(suffix, "wav")
+    request_id = str(uuid.uuid4())
+    headers = {
+        "Content-Type": "application/json",
+        "X-Api-Key": api_key,
+        "X-Api-Resource-Id": settings.doubao_asr_resource_id,
+        "X-Api-Request-Id": request_id,
+        "X-Api-Sequence": "-1",
+    }
+    payload: dict[str, Any] = {
+        "user": {"uid": "anti_fraud_user"},
+        "audio": {
+            "url": audio_url,
+            "format": audio_format,
+            "language": "zh-CN",
+        },
+        "request": {
+            "model_name": "bigmodel",
+            "enable_itn": True,
+            "enable_punc": True,
+        },
+    }
+    with httpx.Client(timeout=180.0) as client:
+        r = client.post(settings.doubao_asr_submit_url, headers=headers, json=payload)
+    if r.status_code != 200:
+        raise httpx.HTTPStatusError(
+            message=f"{r.status_code} {r.text}",
+            request=r.request,
+            response=r,
+        )
+
+    body = r.json()
+    text_candidates = [
+        body.get("text"),
+        body.get("result"),
+        (body.get("data") or {}).get("text") if isinstance(body.get("data"), dict) else None,
+        (body.get("data") or {}).get("result") if isinstance(body.get("data"), dict) else None,
+        (body.get("utterances") or [{}])[0].get("text") if isinstance(body.get("utterances"), list) and body.get("utterances") else None,
+    ]
+    for item in text_candidates:
+        text = str(item or "").strip()
+        if text:
+            return text
+    raise ValueError(f"语音识别返回中未找到文本结果：{str(body)[:500]}")
 
 
 def generate_fraud_advice(

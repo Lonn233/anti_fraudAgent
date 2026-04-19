@@ -1,9 +1,18 @@
-import { agentAlert, agentChat, agentDetect, deleteAgentChatSession, listAgentChatMessages, listAgentChatSessions } from "/ui/src/detect-api.js";
+import {
+  agentAlert,
+  agentChat,
+  agentDetect,
+  agentSpeechTranscribe,
+  deleteAgentChatSession,
+  listAgentChatMessages,
+  listAgentChatSessions,
+} from "/ui/src/detect-api.js";
 
 const historyListEl = document.getElementById("detect-history-list");
 const messagesEl = document.getElementById("detect-chat-messages");
 const inputEl = document.getElementById("detect-chat-input");
 const sendBtn = document.getElementById("detect-send-btn");
+const micBtn = document.getElementById("detect-mic-btn");
 const newChatBtn = document.getElementById("detect-new-chat-btn");
 const attachBtn = document.getElementById("detect-attach-btn");
 const fileInputEl = document.getElementById("detect-file-input");
@@ -21,6 +30,12 @@ let currentMode = "chat";
 let pendingAttachments = [];
 let deletingChatId = null;
 let pendingDeleteChatId = null;
+let mediaRecorder = null;
+let recordingStream = null;
+let recordingChunks = [];
+let recordingStartAt = 0;
+let recordingTimer = null;
+let isRecording = false;
 
 function uid() {
   return `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
@@ -112,8 +127,8 @@ function renderHistory() {
       const deleting = deletingChatId === chat.id;
       const title = chat.title && chat.title !== "新对话" ? chat.title : `会话 ${String(chat.id).slice(0, 8)}`;
       const baseClass = active
-        ? "bg-gradient-to-r from-[#5cbfff]/10 to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff]"
-        : "text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1";
+        ? " activeLi to-transparent   "
+        : " hover:bg-[#1f2633]/30 hover:translate-x-1 normalLi";
       return `
 <div class="group flex items-center gap-2 ${baseClass} transition-all duration-200">
   <a class="flex min-w-0 flex-1 items-center gap-3 px-3 py-3" href="#" data-chat-id="${chat.id}">
@@ -272,9 +287,9 @@ function renderMessages() {
     <div class="w-6 h-6 rounded bg-tertiary/20 flex items-center justify-center border border-tertiary/40">
       <span class="material-symbols-outlined text-[14px] text-tertiary">bolt</span>
     </div>
-    <span class="text-[10px] font-bold text-tertiary uppercase tracking-wider">Sentinel AI Assistant</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider">Sentinel AI Assistant</span>
   </div>
-  <div class="glass-card px-6 py-5 rounded-2xl rounded-tl-none border border-tertiary/10 shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
+  <div class="glass-card px-6 py-5 rounded-2xl rounded-tl-none border border-tertiary/10 ">
     <p class="leading-relaxed">${escapeHtml(m.content)}</p>
     ${switchPanel}
   </div>
@@ -341,15 +356,176 @@ async function requestByMode(mode, content, files = []) {
   return { reply: JSON.stringify(res ?? {}), suggested_mode: "none" };
 }
 
+function setMicButtonState(recording) {
+  if (!micBtn) return;
+  const icon = micBtn.querySelector("span.material-symbols-outlined");
+  if (recording) {
+    micBtn.classList.add("text-error");
+    micBtn.classList.remove("text-on-surface-variant");
+    micBtn.title = "结束录音";
+    if (icon) {
+      icon.textContent = "stop_circle";
+      icon.setAttribute("data-icon", "stop_circle");
+    }
+    return;
+  }
+  micBtn.classList.remove("text-error");
+  micBtn.classList.add("text-on-surface-variant");
+  micBtn.title = "开始录音";
+  if (icon) {
+    icon.textContent = "mic";
+    icon.setAttribute("data-icon", "mic");
+  }
+}
+
+function stopRecordingStreamTracks() {
+  if (!recordingStream) return;
+  recordingStream.getTracks().forEach((track) => track.stop());
+  recordingStream = null;
+}
+
+function buildRecordedAudioFile(blob) {
+  const ext = blob.type.includes("webm") ? "webm" : blob.type.includes("ogg") ? "ogg" : "wav";
+  const stamp = new Date().toISOString().replaceAll(":", "-");
+  return new File([blob], `record_${stamp}.${ext}`, {
+    type: blob.type || "audio/webm",
+  });
+}
+
+async function sendRecordedAudio(audioFile) {
+  let chat = getActiveChat();
+  if (!chat) {
+    createChat();
+    chat = getActiveChat();
+  }
+  if (!chat) return;
+  sendBtn && (sendBtn.disabled = true);
+  try {
+    const asr = await agentSpeechTranscribe(audioFile, activeChatId || "default", currentMode);
+    const transcript = String(asr?.text || "").trim();
+    if (!transcript) {
+      throw new Error("语音识别为空，请重试");
+    }
+
+    // 对话模式：仅发送识别文本；检测模式：文本+音频附件，处理方式对齐图片附件。
+    if (currentMode === "detect") {
+      await sendMessage({
+        forcedContent: transcript,
+        forcedFiles: [audioFile],
+      });
+    } else {
+      await sendMessage({
+        forcedContent: transcript,
+        forcedFiles: [],
+      });
+    }
+  } catch (err) {
+    pushAssistantMessage(chat, `录音识别失败：${err?.message || "未知错误"}`);
+    render();
+  } finally {
+    sendBtn && (sendBtn.disabled = false);
+  }
+}
+
+async function startRecording() {
+  if (isRecording) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    const chat = getActiveChat();
+    if (chat) {
+      pushAssistantMessage(chat, "当前浏览器不支持录音功能");
+      render();
+    }
+    return;
+  }
+  try {
+    recordingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const prefer = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      ? "audio/webm;codecs=opus"
+      : "";
+    mediaRecorder = prefer ? new MediaRecorder(recordingStream, { mimeType: prefer }) : new MediaRecorder(recordingStream);
+    recordingChunks = [];
+    recordingStartAt = Date.now();
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data && event.data.size > 0) {
+        recordingChunks.push(event.data);
+      }
+    };
+    mediaRecorder.onstop = async () => {
+      clearInterval(recordingTimer);
+      recordingTimer = null;
+      isRecording = false;
+      setMicButtonState(false);
+      stopRecordingStreamTracks();
+
+      if (!recordingChunks.length) return;
+      const blob = new Blob(recordingChunks, { type: mediaRecorder?.mimeType || "audio/webm" });
+      const audioFile = buildRecordedAudioFile(blob);
+      await sendRecordedAudio(audioFile);
+    };
+    mediaRecorder.start(800);
+    isRecording = true;
+    setMicButtonState(true);
+    {
+      let chat = getActiveChat();
+      if (!chat) {
+        createChat();
+        chat = getActiveChat();
+      }
+      if (chat) {
+        pushAssistantMessage(chat, "录音已开始，请再次点击麦克风结束并提交识别。");
+        render();
+      }
+    }
+    recordingTimer = window.setInterval(() => {
+      const sec = Math.floor((Date.now() - recordingStartAt) / 1000);
+      if (inputEl && document.activeElement !== inputEl) {
+        inputEl.placeholder = `录音中 ${sec}s，点击麦克风结束并识别...`;
+      }
+      if (sec >= 180 && mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+    }, 1000);
+  } catch (err) {
+    const chat = getActiveChat();
+    if (chat) {
+      pushAssistantMessage(chat, `无法开始录音：${err?.message || "请检查麦克风权限"}`);
+      render();
+    }
+    stopRecordingStreamTracks();
+    setMicButtonState(false);
+    isRecording = false;
+  }
+}
+
+function stopRecording() {
+  if (!mediaRecorder || mediaRecorder.state === "inactive") return;
+  mediaRecorder.stop();
+  {
+    let chat = getActiveChat();
+    if (!chat) {
+      createChat();
+      chat = getActiveChat();
+    }
+    if (chat) {
+      pushAssistantMessage(chat, "录音已结束，正在识别语音内容...");
+      render();
+    }
+  }
+  if (inputEl) {
+    inputEl.placeholder = "输入短信内容、链接或上传文件进行实时风险分析...";
+  }
+}
+
 function renderModeButtons() {
   modeButtons.forEach((btn) => {
     const mode = btn.getAttribute("data-mode");
     const active = mode === currentMode;
     if (active) {
-      btn.classList.add("bg-primary", "text-on-primary", "shadow-[0_0_10px_rgba(92,191,255,0.4)]");
+      btn.classList.add("active");
+      // btn.classList.add("bg-primary", "text-on-primary", "shadow-[0_0_10px_rgba(92,191,255,0.4)]");
       btn.classList.remove("text-on-surface-variant");
     } else {
-      btn.classList.remove("bg-primary", "text-on-primary", "shadow-[0_0_10px_rgba(92,191,255,0.4)]");
+      btn.classList.remove("active");
       btn.classList.add("text-on-surface-variant");
     }
   });
@@ -381,12 +557,14 @@ function renderAttachments() {
   });
 }
 
-async function sendMessage() {
+async function sendMessage(options = {}) {
   const chat = getActiveChat();
   if (!chat || !inputEl) return;
-  const content = inputEl.value.trim();
-  if (!content && pendingAttachments.length === 0) return;
-  const sendFiles = [...pendingAttachments];
+  const forcedContent = typeof options.forcedContent === "string" ? options.forcedContent : null;
+  const forcedFiles = Array.isArray(options.forcedFiles) ? options.forcedFiles : null;
+  const content = forcedContent != null ? forcedContent.trim() : inputEl.value.trim();
+  const sendFiles = forcedFiles != null ? [...forcedFiles] : [...pendingAttachments];
+  if (!content && sendFiles.length === 0) return;
   const userContent = content || "（发送了附件）";
 
   chat.messages.push({
@@ -401,8 +579,12 @@ async function sendMessage() {
     chat.title = deriveTitleFromMessage(userContent);
   }
   const modeLabel = currentMode === "chat" ? "对话模式" : currentMode === "detect" ? "检测模式" : "预警模式";
-  inputEl.value = "";
-  pendingAttachments = [];
+  if (forcedContent == null) {
+    inputEl.value = "";
+  }
+  if (forcedFiles == null) {
+    pendingAttachments = [];
+  }
   sendBtn && (sendBtn.disabled = true);
   render();
   try {
@@ -420,6 +602,13 @@ newChatBtn?.addEventListener("click", () => {
   createChat();
 });
 sendBtn?.addEventListener("click", sendMessage);
+micBtn?.addEventListener("click", async () => {
+  if (isRecording) {
+    stopRecording();
+    return;
+  }
+  await startRecording();
+});
 attachBtn?.addEventListener("click", () => {
   fileInputEl?.click();
 });

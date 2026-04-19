@@ -76,41 +76,27 @@
     </div>
   </nav>
 
-  <!-- SideNavBar（与 reportHistory.html 一致） -->
-  <aside class="fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] w-64 flex-col bg-[#0e131d] py-6 dark:bg-[#0e131d] lg:flex">
+  <!-- SideNavBar -->
+  <aside class="fixed left-0 top-16 z-40 hidden h-full w-64 flex-col border-r border-slate-800/30 bg-[#090e17] pt-4 pb-20 shadow-2xl dark:bg-slate-950 lg:flex">
     <div class="mb-8 px-6">
-      <div class="mb-2 flex items-center gap-3">
-        <div class="rounded-lg bg-surface-container-highest p-2">
-          <span class="material-symbols-outlined text-[#5cbfff]" style='font-variation-settings: "FILL" 1;'>shield</span>
-        </div>
-        <div>
-          <div class="text-lg font-black text-[#5cbfff] font-['Space_Grotesk']">ANTI-FRAUD AI</div>
-          <div class="text-[10px] font-bold tracking-[0.2em] text-tertiary">ACTIVE MONITORING</div>
-        </div>
-      </div>
+      <div class="font-['Space_Grotesk'] text-lg font-black tracking-widest text-[#5cbfff]">SENTINEL CORE</div>
+      <div class="mt-1 text-[10px] font-label uppercase tracking-widest text-tertiary/70">Vulnerability Level: Low</div>
     </div>
-    <div class="flex-1 space-y-1">
-      <a class="flex items-center gap-3 rounded-r-full bg-[#1f2633] px-6 py-3 font-bold text-[#81ecff]" href="/ui/overallEvaluation.html">
+    <div class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
+      <a class="flex items-center gap-3 rounded-r-full bg-[#1f2633] px-6 py-4 font-bold text-[#81ecff]" href="/ui/overallEvaluation.html">
         <span class="material-symbols-outlined" data-icon="shield">shield</span>
-        <span class="font-['Inter']">综合风险情况</span>
+        <span>综合风险情况</span>
       </a>
-      <a class="group flex items-center gap-3 px-6 py-3 text-[#e1e5f3] opacity-60 transition-all hover:bg-[#1f2633] hover:text-[#5cbfff]" href="/ui/reportHistory.html">
+      <a class="group flex items-center gap-3 px-6 py-4 text-[#e1e5f3] opacity-60 transition-all hover:bg-[#1f2633] hover:text-[#5cbfff]" href="/ui/reportHistory.html">
         <span class="material-symbols-outlined" data-icon="history">history</span>
-        <span class="font-['Inter']">检测历史</span>
+        <span>检测历史</span>
       </a>
     </div>
-    <div class="mt-auto border-t border-outline-variant/10 px-6 py-4">
-      <button type="button" class="mb-4 w-full rounded-lg bg-gradient-to-r from-primary to-primary-container py-3 text-sm font-bold uppercase tracking-widest text-on-primary transition-all hover:brightness-110 active:scale-95">
-        Start Deep Scan
-      </button>
-      <div class="space-y-2">
-        <a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 transition-colors hover:text-primary" href="#">
-          <span class="material-symbols-outlined text-sm" data-icon="help">help</span>
-          Support
-        </a>
-        <a class="flex items-center gap-3 text-xs text-[#e1e5f3] opacity-60 transition-colors hover:text-primary" href="#">
-          <span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
-          Logs
+    <div class="px-4 mt-auto mb-20">
+      <div class="pt-4 border-t border-slate-800/50">
+        <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
+          <span class="material-symbols-outlined">logout</span>
+          <span>退出登录</span>
         </a>
       </div>
     </div>

@@ -17,7 +17,7 @@ MAX_CONTEXT_MESSAGES = 20
 GUIDE_STAGE = "guide"
 AWAITING_CONFIRM_STAGE = "awaiting_confirm"
 VALID_STAGES = {GUIDE_STAGE, AWAITING_CONFIRM_STAGE}
-VALID_MATERIAL_TYPES = {"text", "image", "video"}
+VALID_MATERIAL_TYPES = {"text", "image", "video", "audio"}
 
 
 def _extract_json_object(text: str) -> dict[str, Any]:
@@ -93,8 +93,9 @@ def _materials_to_prompt_text(materials: list[dict[str, str]]) -> str:
             if text:
                 lines.append(f"{i}. 文本：{text}")
             continue
+        label = "音频" if item["type"] == "audio" else item["type"]
         lines.append(
-            f"{i}. {item['type']}：文件名={item['file_name'] or '（无）'}；URL={item['url'] or '（无）'}；识别摘要={item['summary_text'] or '（暂无）'}"
+            f"{i}. {label}：文件名={item['file_name'] or '（无）'}；URL={item['url'] or '（无）'}；识别摘要={item['summary_text'] or '（暂无）'}"
         )
     return "\n".join(lines) if lines else "（无补充材料）"
 

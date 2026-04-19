@@ -33,6 +33,15 @@ class Settings(BaseSettings):
     doubao_embedding_model: str = "doubao-embedding-vision-251215"
     # 对话（文本与带图/带视频请求共用同一端点模型 ID）
     doubao_chat_model: str = "doubao-seed-2-0-mini-260215"
+    # 语音识别（OpenAI 兼容音频转写端点）
+    doubao_asr_model: str = "doubao-seed-asr-1-0"
+    # 语音识别（OpenSpeech 大模型录音识别提交接口）
+    doubao_asr_submit_url: str = "https://openspeech.bytedance.com/api/v3/auc/bigmodel/submit"
+    doubao_asr_resource_id: str = "volc.seedasr.auc"
+    doubao_asr_api_key: str = ""
+    # 可选：本地/内网 ASR 微服务（配置后优先使用）
+    asr_service_base_url: str = ""
+    asr_service_timeout_sec: int = 180
 
     # Milvus（Docker 部署）
     milvus_uri: str = "http://127.0.0.1:19530"

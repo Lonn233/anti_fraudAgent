@@ -34,6 +34,15 @@ export async function agentDetect(text, sessionId, files = []) {
   return postFormDataWithToken("/agent/detect", formData, token);
 }
 
+export async function agentSpeechTranscribe(file, sessionId = "default", mode = "chat") {
+  const token = tokenOrThrow();
+  const formData = new FormData();
+  formData.append("session_id", sessionId);
+  formData.append("mode", mode);
+  formData.append("file", file);
+  return postFormDataWithToken("/agent/speech/transcribe", formData, token);
+}
+
 export async function agentAlert(text, notify = true) {
   const token = tokenOrThrow();
   return postJsonWithToken("/agent/alert", { text, notify }, token);

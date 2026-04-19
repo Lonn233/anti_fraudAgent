@@ -144,7 +144,7 @@ class AgentChatOut(BaseModel):
 
 
 class AgentDetectMaterialIn(BaseModel):
-    type: Literal["text", "image", "video"]
+    type: Literal["text", "image", "video", "audio"]
     content: str | None = Field(default=None, max_length=20000)
     url: str | None = Field(default=None, max_length=2048)
     summary_text: str | None = Field(default=None, max_length=20000)
@@ -152,7 +152,7 @@ class AgentDetectMaterialIn(BaseModel):
 
 
 class AgentDetectMaterialOut(BaseModel):
-    type: Literal["text", "image", "video"]
+    type: Literal["text", "image", "video", "audio"]
     content: str | None = None
     url: str | None = None
     summary_text: str | None = None
@@ -190,6 +190,10 @@ class AgentDetectIn(BaseModel):
 class AgentAlertIn(BaseModel):
     text: str = Field(min_length=1, max_length=20000)
     notify: bool = True
+
+
+class AgentSpeechTranscribeOut(BaseModel):
+    text: str
 
 
 class DetectMetaDataOut(BaseModel):

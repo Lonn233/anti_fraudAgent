@@ -79,3 +79,20 @@ uvicorn app.main:app --host 0.0.0.0 --port 8010
 - ReDoc：`http://127.0.0.1:8010/redoc`
 
 如果部署到服务器，请将 `127.0.0.1:8010` 替换为你的实际域名或服务器地址。
+
+## 可选：本地 ASR 微服务（替代豆包语音识别）
+
+如果你不想依赖豆包录音识别，可以单独启动本地 ASR 微服务：
+
+```bash
+uvicorn asr_microservice:app --host 0.0.0.0 --port 8020
+```
+
+然后在 `.env` 配置：
+
+```env
+ASR_SERVICE_BASE_URL="http://127.0.0.1:8020"
+ASR_SERVICE_TIMEOUT_SEC=180
+```
+
+配置后，主后端会优先调用该微服务转写音频（`/transcribe_by_url`），不再走豆包 ASR。
