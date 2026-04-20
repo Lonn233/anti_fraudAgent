@@ -46,7 +46,7 @@ function renderItem(item) {
 <div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
   <div class="absolute left-0 top-0 bottom-0 w-1 ${risk.bar}"></div>
   <div class="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
-    <div class="flex items-start gap-5">
+    <div class="flex items-start gap-5 max—widthLi">
       <div class="p-4 ${risk.iconBg} rounded-xl">
         <span class="material-symbols-outlined ${risk.iconText}" style='font-variation-settings: "FILL" 1;'>${risk.icon}</span>
       </div>

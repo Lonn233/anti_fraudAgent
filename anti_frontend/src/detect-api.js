@@ -43,9 +43,17 @@ export async function agentSpeechTranscribe(file, sessionId = "default", mode = 
   return postFormDataWithToken("/agent/speech/transcribe", formData, token);
 }
 
-export async function agentAlert(text, notify = true) {
+export async function agentAlert(text, sessionId = "default", files = []) {
   const token = tokenOrThrow();
-  return postJsonWithToken("/agent/alert", { text, notify }, token);
+  const formData = new FormData();
+  formData.append("session_id", sessionId);
+  formData.append("text", text || "");
+  if (Array.isArray(files)) {
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+  }
+  return postFormDataWithToken("/agent/alert/upload", formData, token);
 }
 
 export async function listAgentChatSessions(limit = 50) {

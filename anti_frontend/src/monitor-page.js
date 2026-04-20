@@ -1,4 +1,4 @@
-import { applyGuardianRequest, decideGuardianRequest, deleteRelation, listGuardianRequests, listRelations, updateRelation } from "/ui/src/guardian-api.js";
+import { applyGuardianRequest, decideGuardianRequest, deleteRelation, listGuardianAlerts, listGuardianRequests, listRelations, markGuardianAlertsRead, updateRelation } from "/ui/src/guardian-api.js";
 import { showAlertModal, showPromptModal } from "/ui/src/modal-one.js";
 
 const tbody = document.querySelector("table tbody");
@@ -34,6 +34,94 @@ let totalPages = 1;
 let totalItems = 0;
 let allRelations = [];
 let filteredRelations = [];
+let guardianAlertTimer = null;
+
+const _alertLevelCfg = {
+  high: { label: "高风险", color: "#ef4444", bg: "rgba(239,68,68,0.08)" },
+  medium: { label: "中风险", color: "#f59e0b", bg: "rgba(245,158,11,0.08)" },
+  low: { label: "低风险", color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
+  none: { label: "无风险", color: "#22c55e", bg: "rgba(34,197,94,0.08)" },
+};
+
+function escapeHtml(text) {
+  return String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function _renderAlertCard(alert) {
+  const cfg = _alertLevelCfg[alert.risk_level] || _alertLevelCfg.none;
+  const time = alert.created_at ? new Date(alert.created_at).toLocaleString("zh-CN") : "";
+  return `
+<div class="flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer hover:brightness-110"
+  style="border-color:${cfg.color}40;background:${cfg.bg};"
+  data-alert-id="${alert.id}" data-report="${alert.detect_report_id || ""}">
+  <span class="material-symbols-outlined text-[20px] mt-0.5 shrink-0" style="color:${cfg.color}">crisis_alert</span>
+  <div class="flex-1 min-w-0">
+    <div class="flex items-center gap-2 mb-1">
+      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:${cfg.color}">${cfg.label}</span>
+      <span class="text-[11px] font-mono" style="color:${cfg.color}">${Number(alert.risk_index || 0).toFixed(1)}/10</span>
+      <span class="text-[11px] text-on-surface-variant ml-auto">${time}</span>
+    </div>
+    <p class="text-[12px] text-on-surface leading-relaxed line-clamp-2">${escapeHtml(alert.content)}</p>
+    <p class="text-[11px] text-on-surface-variant mt-1">来自：${escapeHtml(alert.ward_username || "未知用户")}</p>
+  </div>
+  ${!alert.is_read ? '<span class="shrink-0 w-2 h-2 rounded-full bg-error shadow-[0_0_6px_#ff716c]"></span>' : ""}
+</div>`;
+}
+
+async function loadGuardianAlerts() {
+  const alertsPanel = document.getElementById("guardian-alerts-panel");
+  const alertsList = document.getElementById("alerts-list");
+  const alertsEmpty = document.getElementById("alerts-empty");
+  const badge = document.getElementById("alerts-unread-badge");
+  if (!alertsPanel) return;
+  try {
+    const data = await listGuardianAlerts();
+    const alerts = Array.isArray(data?.alerts) ? data.alerts : [];
+    const unread = data?.unread_count || 0;
+    if (badge) {
+      badge.textContent = `${unread} 条未读`;
+      badge.style.display = unread > 0 ? "inline-flex" : "none";
+    }
+    updateMonitorNavBadge(unread);
+    if (!alerts.length) {
+      alertsPanel.classList.add("hidden");
+      return;
+    }
+    alertsPanel.classList.remove("hidden");
+    if (alertsEmpty) alertsEmpty.classList.toggle("hidden", alerts.length > 0);
+    if (alertsList) {
+      alertsList.innerHTML = alerts.map(_renderAlertCard).join("");
+      alertsList.querySelectorAll("[data-alert-id]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const reportId = el.getAttribute("data-report");
+          if (reportId) {
+            window.location.href = `/ui/reportDetail.html?detect_id=${encodeURIComponent(reportId)}`;
+          }
+        });
+      });
+    }
+  } catch (_) {
+    // silently fail
+  }
+}
+
+function startAlertPolling() {
+  loadGuardianAlerts();
+  if (guardianAlertTimer) clearInterval(guardianAlertTimer);
+  guardianAlertTimer = setInterval(loadGuardianAlerts, 10000);
+}
+
+function updateMonitorNavBadge(unreadCount) {
+  const dot = document.getElementById("sidebar-monitor-dot");
+  if (dot) dot.classList.toggle("hidden", unreadCount === 0);
+}
+
+document.getElementById("alerts-mark-read-btn")?.addEventListener("click", async () => {
+  try {
+    await markGuardianAlertsRead(null, true);
+    await loadGuardianAlerts();
+  } catch (_) {}
+});
 
 function showError(message) {
   showAlertModal(message);
@@ -143,13 +231,26 @@ function renderCurrentPage() {
   if (!tbody) return;
   const startIndex = (currentPage - 1) * pageSize;
   const pageList = filteredRelations.slice(startIndex, startIndex + pageSize);
+  if (!pageList.length) {
+    tbody.innerHTML = "";
+    renderPagination(0);
+    return;
+  }
   tbody.innerHTML = "";
   pageList.forEach((item) => tbody.appendChild(createRow(item)));
   renderPagination(pageList.length);
 }
 
 async function loadRelations() {
-  const result = await listRelations("monitor", 1, 100);
+  let result;
+  try {
+    result = await listRelations("monitor", 1, 100);
+  } catch (err) {
+    showError("加载监护人列表失败：" + (err.message || err));
+    allRelations = [];
+    applyFilters();
+    return;
+  }
   allRelations = Array.isArray(result?.items) ? result.items : [];
   applyFilters();
 }
@@ -240,16 +341,22 @@ function renderRequests(requests) {
 }
 
 async function loadAll() {
-  const [incomingAll, outgoingAll] = await Promise.all([
-    listGuardianRequests("incoming", "all"),
-    listGuardianRequests("outgoing", "all"),
-  ]);
-  const requests = [
-    ...incomingAll.map((r) => ({ ...r, _box: "incoming" })),
-    ...outgoingAll.map((r) => ({ ...r, _box: "outgoing" })),
-  ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  await loadRelations();
+  let requests = [];
+  try {
+    const [incomingAll, outgoingAll] = await Promise.all([
+      listGuardianRequests("incoming", "all"),
+      listGuardianRequests("outgoing", "all"),
+    ]);
+    requests = [
+      ...incomingAll.map((r) => ({ ...r, _box: "incoming" })),
+      ...outgoingAll.map((r) => ({ ...r, _box: "outgoing" })),
+    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  } catch (err) {
+    // 申请列表加载失败不影响主列表
+    console.warn("加载申请列表失败:", err);
+  }
   renderRequests(requests);
+  await loadRelations();
 }
 
 async function submitApply() {
@@ -319,3 +426,4 @@ form?.addEventListener("submit", async (event) => {
 });
 
 loadAll().catch((err) => showError(err.message || "加载失败"));
+startAlertPolling();

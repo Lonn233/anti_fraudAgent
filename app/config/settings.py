@@ -47,7 +47,11 @@ class Settings(BaseSettings):
     milvus_uri: str = "http://127.0.0.1:19530"
     milvus_token: str = ""
     milvus_collection: str = "anti_fraud_text_kb"
-    milvus_embedding_dim: int = 2048
+    milvus_embedding_dim: int = 512
+
+    # Embedding 后端配置
+    embedding_backend: Literal["sentence_transformers", "doubao"] = "sentence_transformers"
+    sentence_transformer_model: str = "BAAI/bge-small-zh-v1.5"
 
     # 知识库文本分段（字符级，粗略适合中英混排）
     kb_chunk_max_chars: int = 500

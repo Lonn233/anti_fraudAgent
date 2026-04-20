@@ -159,6 +159,12 @@ class AgentDetectMaterialOut(BaseModel):
     file_name: str | None = None
 
 
+class DetectResultOut(BaseModel):
+    report_id: str = ""
+    risk_index: float = 0.0
+    risk_level: Literal["none", "low", "medium", "high"] = "none"
+
+
 class AgentDetectOut(BaseModel):
     mode: Literal["detect"] = "detect"
     reply: str
@@ -166,7 +172,7 @@ class AgentDetectOut(BaseModel):
     candidate_content: str = ""
     candidate_materials: list[AgentDetectMaterialOut] = Field(default_factory=list)
     should_run_detect: bool = False
-    detect_result: DetectOut | None = None
+    detect_result: DetectResultOut | None = None
 
 
 class AgentChatSessionOut(BaseModel):
@@ -178,6 +184,7 @@ class AgentChatSessionOut(BaseModel):
 class AgentChatMessageOut(BaseModel):
     role: str
     content: str
+    materials: list[dict[str, Any]] = Field(default_factory=list)
     created_at: datetime
 
 
@@ -190,6 +197,24 @@ class AgentDetectIn(BaseModel):
 class AgentAlertIn(BaseModel):
     text: str = Field(min_length=1, max_length=20000)
     notify: bool = True
+    session_id: str = Field(default="default", max_length=128)
+    materials: list[dict[str, Any]] | None = Field(default=None)
+
+
+class GuardianNotifyInfo(BaseModel):
+    """本次预警触达监护人的信息"""
+    notified: bool = False
+    guardians_count: int = 0
+    alerts_created: int = 0
+
+
+class AlertResultOut(BaseModel):
+    """预警模式结果（包含检测结果+监护人通知）"""
+    report_id: str = ""
+    risk_index: float = 0.0
+    risk_level: Literal["none", "low", "medium", "high"] = "none"
+    content: str = ""  # AI 预警回复
+    guardian_notify: GuardianNotifyInfo = Field(default_factory=GuardianNotifyInfo)
 
 
 class AgentSpeechTranscribeOut(BaseModel):

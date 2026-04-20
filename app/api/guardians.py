@@ -3,11 +3,12 @@ from __future__ import annotations
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.db.models import Guardian, GuardianLinkRequest, User, UserProfile
+from app.db.models import Guardian, GuardianAlert, GuardianLinkRequest, User, UserProfile
 from app.db.session import get_db
 from app.schemas import (
     GuardianPageOut,
@@ -18,6 +19,7 @@ from app.schemas import (
     GuardianRequestOut,
     GuardianUpdateIn,
 )
+from app.services.guardian_notify import get_all_alerts, get_unread_alerts, mark_alerts_read
 from app.utils.deps import get_current_user
 
 
@@ -438,3 +440,82 @@ def update_guardian(
         role=role,
     )
 
+
+# --------------------------------------------------------------------------- #
+# 预警相关
+# --------------------------------------------------------------------------- #
+
+class AlertItemOut(BaseModel):
+    id: int
+    ward_id: int
+    ward_username: str | None = None
+    guardian_id: int
+    detect_report_id: int | None = None
+    content: str
+    risk_level: str
+    risk_index: float
+    is_read: bool
+    created_at: str
+
+
+class AlertListOut(BaseModel):
+    alerts: list[AlertItemOut]
+    unread_count: int
+
+
+def _alert_to_out(db: Session, alert: GuardianAlert) -> dict:
+    ward = db.query(User).filter(User.id == alert.ward_id).first()
+    # 查关系
+    guardian_rel = db.query(Guardian).filter(Guardian.monitor_id == alert.guardian_id, Guardian.ward_id == alert.ward_id).first()
+    return {
+        "id": alert.id,
+        "ward_id": alert.ward_id,
+        "ward_username": ward.username if ward else None,
+        "guardian_id": alert.guardian_id,
+        "detect_report_id": alert.detect_report_id,
+        "content": alert.content,
+        "relationship": guardian_rel.relationship if guardian_rel else None,
+        "risk_level": alert.risk_level,
+        "risk_index": alert.risk_index,
+        "risk_level_label": {"high": "高风险", "medium": "中风险", "low": "低风险", "none": "无风险"}.get(alert.risk_level, "未知"),
+        "is_read": alert.is_read,
+        "created_at": alert.created_at.isoformat() if alert.created_at else None,
+    }
+
+
+@router.get("/alerts", response_model=AlertListOut)
+def list_alerts(
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    """监护人获取所有预警列表（包含未读数，供轮询）"""
+    guardians = db.query(Guardian).filter(Guardian.monitor_id == current.id).all()
+    if not guardians:
+        return AlertListOut(alerts=[], unread_count=0)
+    # alert.guardian_id 存的是监护人的用户 ID（monitor_id），直接用当前用户的 ID 查
+    rows = (
+        db.query(GuardianAlert)
+        .filter(GuardianAlert.guardian_id == current.id)
+        .order_by(GuardianAlert.created_at.desc())
+        .limit(200)
+        .all()
+    )
+    alerts = [_alert_to_out(db, r) for r in rows]
+    unread_count = sum(1 for r in alerts if not r["is_read"])
+    return AlertListOut(alerts=alerts, unread_count=unread_count)
+
+
+@router.post("/alerts/read")
+def mark_alerts(
+    alert_ids: list[int] | None = None,
+    mark_all: bool = Query(default=False),
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    """标记预警为已读。传入 alert_ids 标记指定记录；mark_all=true 时标记全部。"""
+    q = db.query(GuardianAlert).filter(GuardianAlert.guardian_id == current.id)
+    if not mark_all and alert_ids:
+        q = q.filter(GuardianAlert.id.in_(alert_ids))
+    count = q.update({"is_read": True}, synchronize_session=False)
+    db.commit()
+    return {"marked": count}

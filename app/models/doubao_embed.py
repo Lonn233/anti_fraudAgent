@@ -7,6 +7,7 @@ from pathlib import Path
 import httpx
 
 from app.config.settings import settings
+from app.models.local_embed import embed_texts_local
 
 logger = logging.getLogger(__name__)
 
@@ -16,17 +17,37 @@ logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    """对多条文本逐一调用多模态嵌入接口，返回向量列表。"""
+    """根据配置选择后端进行向量化。
+
+    - embedding_backend == "sentence_transformers"：使用本地 SentenceTransformer
+    - embedding_backend == "doubao"：使用豆包 API
+    """
+    backend = settings.embedding_backend
+    import time; _t = time.perf_counter()
+    if backend == "sentence_transformers":
+        result = embed_texts_local(texts)
+        print(f"[embed] 使用 sentence_transformers 本地嵌入, 耗时 {time.perf_counter()-_t:.3f}s")
+        return result
+    elif backend == "doubao":
+        result = _embed_texts_doubao(texts)
+        print(f"[embed] 使用 doubao API 嵌入, 耗时 {time.perf_counter()-_t:.3f}s")
+        return result
+    else:
+        raise ValueError(f"Unknown embedding_backend: {backend}")
+
+
+# --------------------------------------------------------------------------- #
+# 豆包 API 实现
+# --------------------------------------------------------------------------- #
+
+def _embed_texts_doubao(texts: list[str]) -> list[list[float]]:
+    """对多条文本调用豆包多模态嵌入接口，返回向量列表。"""
     if not settings.doubao_api_key:
         raise ValueError("DOUBAO_API_KEY is not configured")
-    return [_embed_single(t) for t in texts]
+    return [_call_doubao_embed_api([{"text": t, "type": "text"}]) for t in texts]
 
 
-# --------------------------------------------------------------------------- #
-# 内部实现
-# --------------------------------------------------------------------------- #
-
-def _call_embed_api(input_items: list[dict]) -> list[float]:
+def _call_doubao_embed_api(input_items: list[dict]) -> list[float]:
     """通用请求方法：向火山方舟多模态嵌入接口发送请求并解析向量。
 
     Args:
@@ -86,7 +107,7 @@ def _call_embed_api(input_items: list[dict]) -> list[float]:
 
 def _embed_single(text: str) -> list[float]:
     """对单条文本调用多模态嵌入接口，返回向量。"""
-    return _call_embed_api([{"text": text, "type": "text"}])
+    return _call_doubao_embed_api([{"text": text, "type": "text"}])
 
 
 def _embed_image(image_path: str | Path) -> list[float]:
@@ -124,7 +145,7 @@ def _embed_image(image_path: str | Path) -> list[float]:
 
     logger.info("Embedding image: path=%s size=%d bytes", path.name, len(raw))
 
-    return _call_embed_api([{"type": "image_url", "image_url": {"url": image_url}}])
+    return _call_doubao_embed_api([{"type": "image_url", "image_url": {"url": image_url}}])
 
 
 def _embed_video(video_path: str | Path) -> list[float]:
@@ -164,4 +185,4 @@ def _embed_video(video_path: str | Path) -> list[float]:
 
     logger.info("Embedding video: path=%s size=%d bytes", path.name, len(raw))
 
-    return _call_embed_api([{"type": "video_url", "video_url": {"url": video_url}}])
+    return _call_doubao_embed_api([{"type": "video_url", "video_url": {"url": video_url}}])

@@ -167,6 +167,7 @@ def _fallback_llm_result(result: dict) -> dict:
         },
         "rag_result": {"retrival_reason": ""},
         "personal_info_analysis": {"conclusion": ""},
+        "max_similarity": result.get("max_similarity", 0.0),
     }
 
 
@@ -210,7 +211,9 @@ def process_text_detection(
     total_start = time.perf_counter()
     logger.info("[TIMER] RAG detection start for user %d", user_id)
     rag_start = time.perf_counter()
+    print("[detect_serve] A1: 开始 embed_texts")
     result = detect_fraud_by_rag(text)
+    print("[detect_serve] A2: rag 检测完成")
     rag_elapsed = time.perf_counter() - rag_start
     logger.info(
         "[TIMER] RAG detection done: %.3fs (risk_score=%d, cases=%d)",
@@ -225,7 +228,8 @@ def process_text_detection(
     llm_elapsed = time.perf_counter() - llm_start
 
     top_case = result["retrieved_cases"][0] if result["retrieved_cases"] else None
-    risk_index = round(result["risk_score"] / 10, 1)
+    max_sim = result.get("max_similarity", 0.0)
+    risk_index = round(max_sim * 4.5 + 2.5 * 0.55, 1)
     det = _persist_report_and_detect(
         db,
         user_id,
@@ -239,10 +243,12 @@ def process_text_detection(
 
     total_elapsed = time.perf_counter() - total_start
     logger.info(
-        "[TIMER] detect/text total: %.3fs (rag=%.3fs, llm=%.3fs)",
+        "[TIMER] detect/text total: %.3fs (rag=%.3fs, llm=%.3fs, sim=%.3f, risk=%.1f)",
         total_elapsed,
         rag_elapsed,
         llm_elapsed,
+        max_sim,
+        risk_index,
     )
 
     return build_detect_response(
@@ -294,7 +300,8 @@ def process_saved_media_detection(
     )
 
     top_case = result["retrieved_cases"][0] if result["retrieved_cases"] else None
-    risk_index = round(result["risk_score"] / 10, 1)
+    max_sim = result.get("max_similarity", 0.0)
+    risk_index = round(max_sim * 4.5 + 2.5 * 0.55, 1)
     detect_content = (
         media_relative_path(media_type, stored_name)
         if media_type in ("image", "video", "audio")

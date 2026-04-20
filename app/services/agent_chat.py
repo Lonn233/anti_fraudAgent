@@ -77,6 +77,8 @@ def chat_reply(db: Session, user_id: int, session_id: str, user_message: str) ->
     }
     with httpx.Client(timeout=120.0) as client:
         resp = client.post(url, headers=headers, json=payload)
+    if resp.status_code == 429:
+        raise ValueError("AI 模型调用频率已达上限，请稍后再试（账号配额用尽）")
     if resp.status_code != 200:
         raise httpx.HTTPStatusError(
             message=f"{resp.status_code} {resp.text}",
@@ -106,6 +108,7 @@ def chat_reply(db: Session, user_id: int, session_id: str, user_message: str) ->
             chat_session_id=chat_session.id,
             role="user",
             content=user_message,
+            materials=[],
         )
     )
     db.add(
@@ -113,6 +116,7 @@ def chat_reply(db: Session, user_id: int, session_id: str, user_message: str) ->
             chat_session_id=chat_session.id,
             role="assistant",
             content=reply_text,
+            materials=[],
         )
     )
     chat_session.mode = "chat"

@@ -42,6 +42,10 @@ class User(Base):
         cascade="all, delete-orphan",
         foreign_keys="GuardianLinkRequest.ward_id",
     )
+    guardian_alerts: Mapped[list["GuardianAlert"]] = orm_relationship(
+        back_populates="ward",
+        foreign_keys="GuardianAlert.ward_id",
+    )
     detections: Mapped[list["Detect"]] = orm_relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
@@ -94,6 +98,7 @@ class Guardian(Base):
         back_populates="ward_guardians",
         foreign_keys=[ward_id],
     )
+    alerts: Mapped[list["GuardianAlert"]] = orm_relationship(back_populates="guardian")
 
 
 class GuardianLinkRequest(Base):
@@ -116,6 +121,36 @@ class GuardianLinkRequest(Base):
     ward: Mapped["User"] = orm_relationship(
         back_populates="incoming_guardian_requests",
         foreign_keys=[ward_id],
+    )
+
+
+class GuardianAlert(Base):
+    """被监护人触发的高风险预警记录"""
+    __tablename__ = "guardian_alerts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    # 预警触发者（被监护人）
+    ward_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    # 预警关联的监护人
+    guardian_id: Mapped[int] = mapped_column(ForeignKey("guardians.id"), index=True)
+    # 关联的检测报告 ID（可为 null）
+    detect_report_id: Mapped[int | None] = mapped_column(ForeignKey("report.id"), nullable=True)
+    # 预警内容摘要（从 AI 回复中提取）
+    content: Mapped[str] = mapped_column(String(512))
+    # 风险等级
+    risk_level: Mapped[str] = mapped_column(String(16), default="medium")
+    risk_index: Mapped[float] = mapped_column(default=0.0)
+    # 是否已读
+    is_read: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+    ward: Mapped["User"] = orm_relationship(
+        back_populates="guardian_alerts",
+        foreign_keys=[ward_id],
+    )
+    guardian: Mapped["Guardian"] = orm_relationship(
+        back_populates="alerts",
+        foreign_keys=[guardian_id],
     )
 
 
@@ -181,4 +216,5 @@ class AgentChatMessage(Base):
     chat_session_id: Mapped[int] = mapped_column(ForeignKey("agent_chat_sessions.id"), index=True)
     role: Mapped[str] = mapped_column(String(16), index=True)
     content: Mapped[str] = mapped_column(Text, default="")
+    materials: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)

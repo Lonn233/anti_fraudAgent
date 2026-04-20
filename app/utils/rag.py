@@ -21,17 +21,13 @@ class RetrievedCase(TypedDict):
     """检索到的诈骗案例"""
     doc_id: str
     content: str
-    fraud_type: str
-    fraud_amount: float | None
-    age: int | None
-    job: str | None
-    region: str | None
     similarity: float
 
 
 class DetectionResult(TypedDict):
     """检测结果"""
     risk_score: int
+    max_similarity: float
     reasons: list[str]
     retrieved_cases: list[RetrievedCase]
 
@@ -51,73 +47,60 @@ def _search_and_score(input_vector: list[float]) -> DetectionResult:
     Returns:
         DetectionResult
     """
+    import time as _t; _s0 = _t.perf_counter()
     logger.info("Searching Milvus for similar cases")
     _ensure_connection()
     col = Collection(settings.milvus_collection)
 
     search_results = col.search(
         data=[input_vector],
-        anns_field="embedding",
+        anns_field="vector",
         param={"metric_type": "COSINE", "params": {"nprobe": 10}},
         limit=5,
-        output_fields=[
-            "user_id",
-            "doc_id",
-            "content",
-            "age",
-            "job",
-            "region",
-            "fraud_type",
-            "fraud_amount",
-        ],
+        output_fields=["content"],
     )
+    print(f"[rag] Milvus search 耗时 {_t.perf_counter()-_s0:.3f}s")
 
     reasons: list[str] = []
     retrieved_cases: list[RetrievedCase] = []
     risk_score = 0
+    max_similarity = 0.0
 
     if search_results and len(search_results) > 0:
         for hit in search_results[0]:
             # COSINE 距离范围 [-1, 1]，越接近 1 越相似
             similarity = (hit.distance + 1) / 2  # 转换为 [0, 1]
+            max_similarity = max(max_similarity, similarity)
 
             entity = hit.entity
+            content = entity.get("content", "") or ""
             case_info: RetrievedCase = {
-                "doc_id": entity.get("doc_id", "unknown"),
-                "content": entity.get("content", "")[:100],
-                "fraud_type": entity.get("fraud_type", "未知"),
-                "fraud_amount": entity.get("fraud_amount"),
-                "age": entity.get("age"),
-                "job": entity.get("job"),
-                "region": entity.get("region"),
+                "doc_id": str(hit.id),
+                "content": content,
                 "similarity": round(similarity, 3),
             }
             retrieved_cases.append(case_info)
 
             if similarity > 0.7:
                 risk_score = max(risk_score, 85)
-                reasons.append(
-                    f"高度相似案例（相似度 {similarity:.1%}）：{case_info['fraud_type']}"
-                )
+                reasons.append(f"高度相似案例（相似度 {similarity:.1%}）")
             elif similarity > 0.5:
                 risk_score = max(risk_score, 60)
-                reasons.append(
-                    f"中等相似案例（相似度 {similarity:.1%}）：{case_info['fraud_type']}"
-                )
+                reasons.append(f"中等相似案例（相似度 {similarity:.1%}）")
             else:
                 risk_score = max(risk_score, 30)
-                reasons.append(
-                    f"低相似案例（相似度 {similarity:.1%}）：{case_info['fraud_type']}"
-                )
+                reasons.append(f"低相似案例（相似度 {similarity:.1%}）")
 
     if not reasons:
         risk_score = 10
+        max_similarity = 0.0
         reasons = ["未发现相似诈骗案例，风险较低"]
 
-    logger.info("Search completed: risk_score=%d, cases=%d", risk_score, len(retrieved_cases))
+    logger.info("Search completed: risk_score=%d, cases=%d, max_similarity=%.3f", risk_score, len(retrieved_cases), max_similarity)
 
     return {
         "risk_score": risk_score,
+        "max_similarity": round(max_similarity, 3),
         "reasons": reasons,
         "retrieved_cases": retrieved_cases,
     }
@@ -140,7 +123,9 @@ def detect_fraud_by_rag(text: str) -> DetectionResult:
     logger.info("RAG detect: text")
 
     embed_start = time.perf_counter()
+    print("[rag] A1a: 开始 embed_texts")
     vectors = embed_texts([text])
+    print(f"[rag] A1a: embed_texts 完成, 耗时 {time.perf_counter() - embed_start:.3f}s")
     embed_elapsed = time.perf_counter() - embed_start
     logger.info("[TIMER] embed_texts: %.3fs", embed_elapsed)
 

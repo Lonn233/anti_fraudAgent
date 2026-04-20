@@ -74,3 +74,14 @@ export async function updateRelation(guardianId, note) {
   const token = tokenOrThrow();
   return putJson(`/guardians/${guardianId}`, { note }, token);
 }
+
+export async function listGuardianAlerts() {
+  const token = tokenOrThrow();
+  return getJson("/guardians/alerts", token);
+}
+
+export async function markGuardianAlertsRead(alertIds = null, markAll = false) {
+  const token = tokenOrThrow();
+  const body = markAll ? { mark_all: true } : { alert_ids: alertIds || [] };
+  return postJsonWithToken("/guardians/alerts/read", body, token);
+}

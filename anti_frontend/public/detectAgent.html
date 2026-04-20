@@ -1,347 +1,288 @@
 ﻿<!DOCTYPE html>
-
-<html class="dark" lang="zh-CN"><head>
+<html class="dark" lang="zh-CN">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        /* CSS Variables - Theme System */
-        :root {
-            /*黑色字体*/
-            --text-black:#040404；
-            /* 白天模式变量 - 参考白色主题 */
-            --bg-primary: #f5f5f5;
-            --bg-secondary: #0e131d;
-            --bg-card: #ffffff;
-            --bg-card-secondary: rgba(255, 255, 255, 0.8);
-            --bg-container: #f8f9fa;
-            --bg-container-lowest: #ffffff;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --text-tertiary: #5cbfff;
-            --border-color: #e0e0e0;
-            --border-light: rgba(0, 0, 0, 0.1);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
-            --glow-primary: rgba(92, 191, 255, 0.15);
-            --glow-tertiary: rgba(0, 227, 253, 0.2);
-        }
-
-        .dark {
-            /* 黑夜模式变量 - 保持原有样式 */
-            --bg-primary: #090e17;
-            --bg-secondary: #0e131d;
-            --bg-card: rgba(25, 32, 44, 0.6);
-            --bg-card-secondary: rgba(30, 40, 60, 0.5);
-            --bg-container: #141a25;
-            --bg-container-lowest: #000000;
-            --bg-active-button:#17B4FF;
-            --bg-active-li:linear-gradient(to right, rgba(110, 0, 184, 0.1), rgba(92, 191, 255, 0));
-            --border-active-li:4px solid #17B4FF;
-            --text-active-button:#003D5C;
-            --text-primary: #e1e5f3;
-            --text-secondary: #a0a8c0;
-            --text-tertiary: #81ecff;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-light: rgba(255, 255, 255, 0.05);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
-            --glow-primary: rgba(92, 191, 255, 0.15);
-            --glow-tertiary: rgba(0, 227, 253, 0.2);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .headline-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .active{
-            color:var(--text-active-button);
-            background-color: var(--bg-active-button);
-        }
-        .activeLi{
-           background:var(--bg-active-li);
-           border-left: var(--border-active-li);
-           font-weight: 1000;
-           /* background-color: transparent; */
-        }
-        .data-grid-overlay {
-            background-image: radial-gradient(var(--border-color) 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            opacity: 0.03;
-        }
-
-        .glass-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-md);
-            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        /* Theme Toggle Button */
-        .theme-toggle {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 999px;
-            box-shadow: var(--shadow-lg);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            color: var(--text-primary);
-        }
-
-        .theme-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg), 0 0 20px var(--glow-primary);
-        }
-
-        .theme-toggle:active {
-            transform: translateY(0);
-        }
-
-        .theme-icon {
-            font-size: 20px;
-        }
-    </style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #090e17;
+        color: #e1e5f3;
+    }
+    .headline-font {
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    .data-grid-overlay {
+        background-image: radial-gradient(#434853 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+        opacity: 0.03;
+    }
+    .glass-card {
+        background: rgba(25, 32, 44, 0.6);
+        backdrop-filter: blur(20px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #1f2633;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #434853;
+    }
+    /* 模式切换按钮激活状态 - 参考对话模式初始选中样式 */
+    .active {
+        background-color: #5cbfff !important;
+        color: #003854 !important;
+        box-shadow: 0 0 10px rgba(92, 191, 255, 0.4) !important;
+        border-radius: 0.375rem !important;
+        padding: 0.375rem 1rem !important;
+    }
+    /* 对话列表激活项 */
+    .activeLi {
+        background: linear-gradient(to right, rgba(110, 0, 184, 0.1), rgba(92, 191, 255, 0));
+        border-left: 4px solid #17B4FF;
+        font-weight: 1000;
+    }
+    .normalLi {
+        color: rgba(225, 229, 243, 0.4);
+    }
+</style>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-container-low": "#0e131d",
-                        "error-container": "#9f0519",
-                        "primary-dim": "#00a7f0",
-                        "on-tertiary-container": "#004d57",
-                        "on-secondary-fixed": "#36404f",
-                        "outline-variant": "#434853",
-                        "tertiary-dim": "#00d4ec",
-                        "on-tertiary-fixed": "#003840",
-                        "primary-container": "#0cb3ff",
-                        "secondary-fixed-dim": "#cbd5e8",
-                        "surface": "#090e17",
-                        "primary-fixed-dim": "#00a5ec",
-                        "background": "#090e17",
-                        "on-surface-variant": "#a6abb7",
-                        "on-primary": "#003854",
-                        "on-primary-fixed": "#000d18",
-                        "inverse-primary": "#006593",
-                        "error-dim": "#d7383b",
-                        "inverse-on-surface": "#505560",
-                        "secondary-dim": "#cbd5e8",
-                        "tertiary-container": "#00e3fd",
-                        "error": "#ff716c",
-                        "on-background": "#e1e5f3",
-                        "on-primary-fixed-variant": "#003752",
-                        "outline": "#717581",
-                        "on-secondary-container": "#c7d1e4",
-                        "surface-bright": "#252c3b",
-                        "on-tertiary-fixed-variant": "#005762",
-                        "on-primary-container": "#002d45",
-                        "on-secondary": "#485262",
-                        "surface-dim": "#090e17",
-                        "on-secondary-fixed-variant": "#525c6c",
-                        "primary-fixed": "#0cb3ff",
-                        "surface-container": "#141a25",
-                        "on-tertiary": "#005762",
-                        "surface-variant": "#1f2633",
-                        "surface-container-lowest": "#000000",
-                        "on-error": "#490006",
-                        "on-error-container": "#ffa8a3",
-                        "inverse-surface": "#f9f9ff",
-                        "surface-tint": "#5cbfff",
-                        "secondary-container": "#3d4757",
-                        "tertiary-fixed": "#00e3fd",
-                        "primary": "#5cbfff",
-                        "on-surface": "#e1e5f3",
-                        "surface-container-high": "#19202c",
-                        "secondary": "#d9e3f7",
-                        "surface-container-highest": "#1f2633",
-                        "tertiary": "#81ecff",
-                        "tertiary-fixed-dim": "#00d4ec",
-                        "secondary-fixed": "#d9e3f7"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Inter"],
-                        "label": ["Inter"]
-                    }
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "surface-container-low": "#0e131d",
+                    "error-container": "#9f0519",
+                    "primary-dim": "#00a7f0",
+                    "on-tertiary-container": "#004d57",
+                    "on-secondary-fixed": "#36404f",
+                    "outline-variant": "#434853",
+                    "tertiary-dim": "#00d4ec",
+                    "on-tertiary-fixed": "#003840",
+                    "primary-container": "#0cb3ff",
+                    "secondary-fixed-dim": "#cbd5e8",
+                    "surface": "#090e17",
+                    "primary-fixed-dim": "#00a5ec",
+                    "background": "#090e17",
+                    "on-surface-variant": "#a6abb7",
+                    "on-primary": "#003854",
+                    "on-primary-fixed": "#000d18",
+                    "inverse-primary": "#006593",
+                    "error-dim": "#d7383b",
+                    "inverse-on-surface": "#505560",
+                    "secondary-dim": "#cbd5e8",
+                    "tertiary-container": "#00e3fd",
+                    "error": "#ff716c",
+                    "on-background": "#e1e5f3",
+                    "on-primary-fixed-variant": "#003752",
+                    "outline": "#717581",
+                    "on-secondary-container": "#c7d1e4",
+                    "surface-bright": "#252c3b",
+                    "on-tertiary-fixed-variant": "#005762",
+                    "on-primary-container": "#002d45",
+                    "on-secondary": "#485262",
+                    "surface-dim": "#090e17",
+                    "on-secondary-fixed-variant": "#525c6c",
+                    "primary-fixed": "#0cb3ff",
+                    "surface-container": "#141a25",
+                    "on-tertiary": "#005762",
+                    "surface-variant": "#1f2633",
+                    "surface-container-lowest": "#000000",
+                    "on-error": "#490006",
+                    "on-error-container": "#ffa8a3",
+                    "inverse-surface": "#f9f9ff",
+                    "surface-tint": "#5cbfff",
+                    "secondary-container": "#3d4757",
+                    "tertiary-fixed": "#00e3fd",
+                    "primary": "#5cbfff",
+                    "on-surface": "#e1e5f3",
+                    "surface-container-high": "#19202c",
+                    "secondary": "#d9e3f7",
+                    "surface-container-highest": "#1f2633",
+                    "tertiary": "#81ecff",
+                    "tertiary-fixed-dim": "#00d4ec",
+                    "secondary-fixed": "#d9e3f7"
                 },
+                "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+                },
+                "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+                }
             },
         }
-    </script>
+    }
+</script>
 </head>
-<body class="bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-tertiary/30">
+<body class="bg-surface text-on-surface selection:bg-tertiary/30">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[var(--bg-secondary)] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[var(--shadow-md)]">
+<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[var(--text-black)] drop-shadow-[0_0_8px_var(--glow-primary)] font-headline">反诈智能助手</span>
-<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
-<a class="text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[var(--text-tertiary)] border-b-2 border-[var(--text-tertiary)] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
-<span class="material-symbols-outlined text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
-<span class="material-symbols-outlined text-[var(--text-primary)] opacity-70 hover:text-[var(--text-tertiary)] transition-all cursor-pointer">shield</span>
-<a aria-label="个人资料" class="inline-flex text-[var(--text-primary)] opacity-70 transition-all hover:text-[var(--text-tertiary)]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
+<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
 </div>
-</nav><!-- SideNavBar -->
-<aside class="flex flex-col pt-20 pb-8 px-4 border-r border-[var(--border-color)] h-screen w-72 left-0 top-0 fixed bg-[var(--bg-secondary)] font-['Inter'] text-sm antialiased">
+</nav>
+
+<!-- SideNavBar -->
+<aside class="flex flex-col pt-20 pb-8 px-4 border-r border-[#434853]/15 h-screen w-72 left-0 top-0 fixed bg-[#0e131d] font-['Inter'] text-sm antialiased">
 <div class="mb-6 px-2">
-<div class="headline-font font-bold text-[var(--text-tertiary)] text-lg uppercase tracking-widest mb-1">SENTINEL COMMAND</div>
-<div class="text-[10px] uppercase tracking-[0.2em] text-[var(--text-tertiary)] opacity-70">Threat Level: Low</div>
+<div class="headline-font font-bold text-[#81ecff] text-lg uppercase tracking-widest mb-1">SENTINEL COMMAND</div>
+<div class="text-[10px] uppercase tracking-[0.2em] text-[#5cbfff] opacity-70">Threat Level: Low</div>
 </div>
-<button class="mb-8 w-full py-3 px-4 bg-gradient-to-r to-primary-container from-[var(--text-tertiary)] to-[var(--text-tertiary)] text-[var(--text-primary)] font-bold rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[var(--glow-primary)]" id="detect-new-chat-btn" type="button">
+<button class="mb-8 w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(92,191,255,0.2)]" id="detect-new-chat-btn" type="button">
 <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-            新建对话
-        </button>
+新建对话
+</button>
 <div class="flex-1 overflow-y-auto space-y-1 custom-scrollbar" id="detect-history-list">
 <div class="px-2 mb-2">
 <span class="text-[10px] font-bold text-outline uppercase tracking-wider">对话历史</span>
 </div>
-<a class="group flex items-center gap-3 px-3 py-3 bg-gradient-to-r from-[var(--text-tertiary)]/10 to-transparent text-[var(--text-tertiary)] border-l-4 border-[var(--text-tertiary)] transition-all duration-200" href="#">
+<a class="group flex items-center gap-3 px-3 py-3 bg-gradient-to-r from-[#5cbfff]/10 to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff] transition-all duration-200" href="#">
 <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span>
 <span class="truncate">疑似刷单短信分析</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[var(--text-primary)]/40 hover:bg-[var(--bg-card-secondary)]/30 hover:translate-x-1 transition-all duration-200" href="#">
-    <span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
-    <span class="truncate">恶意链接检测记录</span>
+<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
+<span class="truncate">恶意链接检测记录</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[var(--text-primary)]/40 hover:bg-[var(--bg-card-secondary)]/30 hover:translate-x-1 transition-all duration-200" href="#">
-    <span class="material-symbols-outlined text-[18px]" data-icon="phone_disabled">phone_disabled</span>
-    <span class="truncate">电话拦截记录</span>
+<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="phone_disabled">phone_disabled</span>
+<span class="truncate">电话拦截记录</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[var(--text-primary)]/40 hover:bg-[var(--bg-card-secondary)]/30 hover:translate-x-1 transition-all duration-200" href="#">
-    <span class="material-symbols-outlined text-[18px]" data-icon="archive">archive</span>
-    <span class="truncate">历史存档</span>
+<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="archive">archive</span>
+<span class="truncate">历史存档</span>
 </a>
 </div>
-<div class="mt-auto pt-4 border-t border-[var(--border-color)] flex items-center gap-3 px-2">
-<div class="w-8 h-8 rounded-full bg-[var(--bg-container)] overflow-hidden border border-[var(--text-tertiary)]/30">
+<div class="mt-auto pt-4 border-t border-[#434853]/15 flex items-center gap-3 px-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-[#5cbfff]/30">
 <img alt="User Intelligence Profile" data-alt="Cyberpunk style digital avatar of a security analyst with blue neon highlights and minimalist tech features" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBntmoNVd9j0p26IyAK7PoupOLB7dDY8-zz9USsjv58_S3MjVdBLXQX2i0JdfwLbrBRYACFTo-iyqJoiO9JYfy3niLcaseQ3AI9nQCTENM2LSOIvHSxrNgEgdA-V4um9rmSaVQRZPqWSqvb7J44GJmDb77k0ZKIWAnQHFrzY_zpP_9prArPLrMogVEfwgTCF1lIXd79LF0i7FGYaZPXpZ-wpf6zro3tvEOOTr60MTU4lz6XZcAl52RcuJgoBOs3LSo5UIyMet0G8IpS"/>
 </div>
 <div>
-<div class="text-xs font-bold text-[var(--text-primary)]">Admin Sentinel</div>
-    <div class="text-[10px] text-[var(--text-tertiary)]">Verified Node</div>
+<div class="text-xs font-bold text-on-surface">Admin Sentinel</div>
+<div class="text-[10px] text-tertiary">Verified Node</div>
 </div>
 </div>
 </aside>
+
 <!-- Main Content Canvas -->
 <main class="ml-72 pt-16 h-screen flex flex-col relative overflow-hidden">
 <div class="absolute inset-0 data-grid-overlay pointer-events-none"></div>
+
 <!-- Header Info -->
-<header class="px-8 py-6 flex justify-between items-end border-b border-[var(--border-color)] relative z-10">
+<header class="px-8 py-6 flex justify-between items-end border-b border-outline-variant/10 relative z-10">
 <div>
-<h1 class="text-3xl font-bold headline-font tracking-tight text-[var(--text-primary)]">反诈智能对话中心</h1>
-    <p class="text-xs text-[var(--text-secondary)] uppercase tracking-widest mt-1">Real-time Neural Fraud Analysis Node 0-7</p>
+<h1 class="text-3xl font-bold headline-font tracking-tight text-on-surface">反诈智能对话中心</h1>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Real-time Neural Fraud Analysis Node 0-7</p>
 </div>
 <div class="flex gap-4">
-<div class="px-3 py-1 bg-[var(--text-tertiary)]/10 border border-[var(--text-tertiary)]/20 rounded-full flex items-center gap-2">
-    <span class="w-2 h-2 rounded-full bg-[var(--text-tertiary)] animate-pulse"></span>
-    <span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-tighter">AI Core Active</span>
+<div class="px-3 py-1 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-tighter">AI Core Active</span>
 </div>
 </div>
 </header>
+
 <!-- Chat Display Area -->
 <section class="flex-1 overflow-y-auto px-8 py-8 space-y-8 relative z-10 custom-scrollbar" id="detect-chat-messages">
 <!-- System Timestamp -->
 <div class="flex justify-center">
-<span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.3em]">Session Initialized: 2023-11-24 14:32:10</span>
+<span class="text-[10px] font-bold text-outline-variant uppercase tracking-[0.3em]">Session Initialized: 2023-11-24 14:32:10</span>
 </div>
+
 <!-- User Message -->
 <div class="flex flex-col items-end gap-2 max-w-[80%] ml-auto">
 <div class="flex items-center gap-2 mb-1">
-    <span class="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">User Terminal</span>
+<span class="text-[10px] font-bold text-outline-variant uppercase tracking-wider">User Terminal</span>
 </div>
-<div class="px-5 py-3 bg-[var(--bg-card)] rounded-2xl rounded-tr-none text-[var(--text-primary)] border-l border-[var(--text-tertiary)]/20 shadow-[var(--shadow-md)]">
-                    帮我分析一下这条短信："您的账户存在异常，请点击链接 www.safety-bank-check.com 验证身份，否则将被冻结。"
-                </div>
+<div class="px-5 py-3 bg-surface-container-high rounded-2xl rounded-tr-none text-on-surface border-l border-primary/20 shadow-xl">
+帮我分析一下这条短信："您的账户存在异常，请点击链接 www.safety-bank-check.com 验证身份，否则将被冻结。"
 </div>
+</div>
+
 <!-- AI Message -->
 <div class="flex flex-col items-start gap-2 max-w-[85%]">
 <div class="flex items-center gap-2 mb-1">
-<div class="w-6 h-6 rounded bg-[var(--text-tertiary)]/20 flex items-center justify-center border border-[var(--text-tertiary)]/40">
-<span class="material-symbols-outlined text-[14px] text-[var(--text-tertiary)]" data-icon="bolt">bolt</span>
+<div class="w-6 h-6 rounded bg-tertiary/20 flex items-center justify-center border border-tertiary/40">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="bolt">bolt</span>
 </div>
-<span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Sentinel AI Assistant</span>
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-wider">Sentinel AI Assistant</span>
 </div>
-<div class="glass-card px-6 py-5 rounded-2xl rounded-tl-none border border-[var(--text-tertiary)]/10 shadow-[var(--shadow-md)]">
+<div class="glass-card px-6 py-5 rounded-2xl rounded-tl-none border border-tertiary/10 shadow-[0_10px_40px_rgba(0,0,0,0.3)]">
 <div class="space-y-4">
 <p class="leading-relaxed">分析完成。该信息包含典型欺诈特征：</p>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="p-3 bg-error/10 border border-error/20 rounded-lg">
-    <div class="flex items-center gap-2 mb-1">
-        <span class="material-symbols-outlined text-error text-sm" data-icon="warning">warning</span>
-        <span class="text-xs font-bold text-error uppercase">高风险链接</span>
-    </div>
-    <p class="text-xs text-[var(--text-secondary)]">域名 "safety-bank-check.com" 并非官方银行域名，注册时间不足24小时。</p>
+<div class="p-3 bg-error-container/10 border border-error/20 rounded-lg">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-error text-sm" data-icon="warning">warning</span>
+<span class="text-xs font-bold text-error uppercase">高风险链接</span>
+</div>
+<p class="text-xs text-on-surface-variant">域名 "safety-bank-check.com" 并非官方银行域名，注册时间不足24小时。</p>
 </div>
 <div class="p-3 bg-tertiary/5 border border-tertiary/20 rounded-lg">
 <div class="flex items-center gap-2 mb-1">
 <span class="material-symbols-outlined text-tertiary text-sm" data-icon="psychology">psychology</span>
 <span class="text-xs font-bold text-tertiary uppercase">心理博弈分析</span>
 </div>
-<p class="text-xs text-on-surface-variant">利用“账户冻结”制造焦虑感，迫使用户在未思考前进行操作。</p>
+<p class="text-xs text-on-surface-variant">利用"账户冻结"制造焦虑感，迫使用户在未思考前进行操作。</p>
 </div>
 </div>
 <div class="pt-2">
-    <span class="text-xs font-bold text-[var(--text-primary)]">核心建议：</span>
-    <span class="text-xs text-[var(--text-tertiary)] ml-2">切勿点击链接。建议通过官方APP或拨打银行官方客服电话核实。</span>
+<span class="text-xs font-bold text-on-surface">核心建议：</span>
+<span class="text-xs text-tertiary ml-2">切勿点击链接。建议通过官方APP或拨打银行官方客服电话核实。</span>
 </div>
 </div>
 </div>
 </div>
+
 <!-- AI Message Thinking -->
 <div class="flex flex-col items-start gap-2">
 <div class="flex items-center gap-2 mb-1">
-<div class="w-6 h-6 rounded bg-[var(--text-tertiary)]/20 flex items-center justify-center border border-[var(--text-tertiary)]/40">
-<span class="material-symbols-outlined text-[14px] text-[var(--text-tertiary)]" data-icon="bolt">bolt</span>
+<div class="w-6 h-6 rounded bg-tertiary/20 flex items-center justify-center border border-tertiary/40">
+<span class="material-symbols-outlined text-[14px] text-tertiary" data-icon="bolt">bolt</span>
 </div>
-<span class="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider">Sentinel AI Assistant</span>
+<span class="text-[10px] font-bold text-tertiary uppercase tracking-wider">Sentinel AI Assistant</span>
 </div>
-<div class="flex gap-1.5 px-4 py-3 bg-[var(--bg-container)] rounded-full border border-[var(--border-color)]">
-<div class="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce"></div>
-<div class="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-<div class="w-1.5 h-1.5 bg-[var(--text-tertiary)] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+<div class="flex gap-1.5 px-4 py-3 bg-surface-container rounded-full border border-outline-variant/10">
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full animate-bounce"></div>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
 </div>
 </div>
 </section>
+
 <!-- Input Area -->
 <footer class="p-8 relative z-20">
 <div class="max-w-4xl mx-auto">
@@ -365,21 +306,21 @@
 </div>
 <input class="hidden" id="detect-file-input" multiple type="file"/>
 <div class="mt-3 px-2 hidden" id="detect-attachments-wrap">
-  <div class="text-[10px] text-outline uppercase tracking-widest mb-2">已粘贴文件</div>
-  <div class="flex flex-wrap gap-2" id="detect-attachments-list"></div>
+<div class="text-[10px] text-outline uppercase tracking-widest mb-2">已粘贴文件</div>
+<div class="flex flex-wrap gap-2" id="detect-attachments-list"></div>
 </div>
 <div class="mt-4 flex flex-wrap items-center justify-between gap-4 px-2">
 <!-- Mode Selection (Segmented Control) -->
 <div class="flex bg-surface-container-highest/50 p-1 rounded-lg border border-outline-variant/20">
-<button class="px-4 py-1.5 text-xs font-bold rounded-md bg-primary text-on-primary shadow-[0_0_10px_rgba(92,191,255,0.4)] transition-all" data-mode="chat" type="button">
-      对话模式
-    </button>
-<button class="px-4 py-1.5 rounded-md text-xs font-bold text-on-surface-variant hover:text-tertiary transition-all" data-mode="detect" type="button">
-      检测模式
-    </button>
+<button class="px-4 py-1.5 text-xs font-bold hover:text-tertiary transition-all active" data-mode="chat" type="button">
+对话模式
+</button>
+<button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-tertiary transition-all" data-mode="detect" type="button">
+检测模式
+</button>
 <button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-tertiary transition-all" data-mode="alert" type="button">
-      预警模式
-    </button>
+预警模式
+</button>
 </div>
 <!-- Detection Specific Settings (Visible when Detection Mode active) -->
 <div class="flex items-center gap-6">
@@ -416,30 +357,23 @@
 </div>
 </footer>
 </main>
-<!-- Delete Chat Modal -->
-<div class="fixed inset-0 z-[80] hidden items-center justify-center px-4" id="delete-chat-modal">
-<div class="absolute inset-0 bg-[#090e17]/80 backdrop-blur-sm" data-delete-chat-cancel="overlay"></div>
-<div class="relative w-full max-w-md glass-card rounded-2xl border border-outline-variant/20 shadow-[0_20px_80px_rgba(0,0,0,0.55)] overflow-hidden">
-<div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-error/0 via-error to-error/0"></div>
-<div class="p-6 md:p-7 space-y-6">
-<div class="flex items-start gap-4">
-<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-error/10 border border-error/20 shadow-[0_0_24px_rgba(255,113,108,0.18)]">
-<span class="material-symbols-outlined text-error text-[24px]">delete_forever</span>
+
+<!-- Delete Chat Confirmation Modal -->
+<div class="fixed inset-0 z-[100] hidden" id="delete-chat-modal">
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-delete-chat-cancel="overlay"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md glass-card rounded-2xl p-8 border border-tertiary/10 shadow-2xl">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center border border-error/20">
+<span class="material-symbols-outlined text-error" data-icon="delete">delete</span>
 </div>
-<div class="space-y-2">
-<p class="text-[10px] font-bold uppercase tracking-[0.28em] text-error/80">Deletion Protocol</p>
-<h3 class="headline-font text-2xl font-bold tracking-tight text-on-surface">删除对话记录</h3>
-<p class="text-sm leading-relaxed text-on-surface-variant" id="delete-chat-modal-message">删除后将同步清空该会话及全部消息记录，此操作不可撤销。</p>
+<div>
+<h3 class="text-lg font-bold text-on-surface" id="delete-chat-modal-title">确认删除对话</h3>
+<p class="text-sm text-on-surface-variant" id="delete-chat-modal-message">此操作不可撤销</p>
 </div>
 </div>
-<div class="rounded-xl border border-outline-variant/15 bg-surface-container-low/80 px-4 py-3">
-<p class="text-[10px] font-bold uppercase tracking-[0.22em] text-outline">Target Session</p>
-<p class="mt-2 text-sm font-medium text-on-surface truncate" id="delete-chat-modal-title">--</p>
-</div>
-<div class="flex items-center justify-end gap-3">
+<div class="flex justify-end gap-3">
 <button class="px-5 py-2.5 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-outline/40 transition-all" data-delete-chat-cancel="button" type="button">取消</button>
 <button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-error to-[#ff8a7e] text-on-error font-bold shadow-[0_0_20px_rgba(255,113,108,0.22)] hover:brightness-110 active:scale-[0.98] transition-all disabled:cursor-not-allowed disabled:opacity-60" id="delete-chat-confirm-btn" type="button">确认删除</button>
-</div>
 </div>
 </div>
 </div>
@@ -447,49 +381,36 @@
 <!-- Visual Accents -->
 <div class="fixed top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none z-0"></div>
 <div class="fixed bottom-0 left-0 w-64 h-64 bg-tertiary/5 blur-[120px] pointer-events-none z-0"></div>
-<style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #1f2633;
-            border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #434853;
-        }
-    </style>
+
 <script>
-  (function () {
-    const map = {
-      "detectAgent.html": "/ui/detectAgent.html",
-      "monitor.html": "/ui/monitor.html",
-      "reportHistory.html": "/ui/reportHistory.html",
-      "detectSetting.html": "/ui/detectSetting.html",
-      "infoSetting.html": "/ui/infoSetting.html"
-    };
+(function () {
+const map = {
+"detectAgent.html": "/ui/detectAgent.html",
+"monitor.html": "/ui/monitor.html",
+"reportHistory.html": "/ui/reportHistory.html",
+"detectSetting.html": "/ui/detectSetting.html",
+"infoSetting.html": "/ui/infoSetting.html"
+};
 
-    const activeHref = map[window.location.pathname.split('/').pop()];
-    if (!activeHref) return;
+const activeHref = map[window.location.pathname.split('/').pop()];
+if (!activeHref) return;
 
-    const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
-      ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
-    );
+const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a) =>
+["/ui/detectAgent.html", "/ui/monitor.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html"].includes(a.getAttribute('href'))
+);
 
-    navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
-    });
+navLinks.forEach((a) => {
+a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+a.classList.add('text-[#e1e5f3]', 'opacity-70');
+});
 
-    const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
-    if (!activeLink) return;
+const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
+if (!activeLink) return;
 
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-  })();
+activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
+activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+})();
 </script>
 <script src="/ui/src/detect-agent-page.js" type="module"></script>
-</body></html>
+</body>
+</html>

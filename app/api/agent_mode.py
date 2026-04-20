@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from uuid import uuid4
 
@@ -20,14 +21,18 @@ from app.schemas import (
     AgentChatSessionOut,
     AgentDetectOut,
     AgentSpeechTranscribeOut,
+    DetectResultOut,
+    GuardianNotifyInfo,
+    AlertResultOut,
 )
-from app.services import detect_serve
 from app.services.agent_chat import chat_reply
-from app.services.agent_detect import detect_reply
+from app.services.agent_detect import alert_reply, detect_reply
+from app.services import detect_serve
 from app.services.llm import summarize_media_for_detect, transcribe_audio_with_doubao
 from app.utils.deps import get_current_user
 
 router = APIRouter(prefix="/agent", tags=["agent"])
+logger = logging.getLogger(__name__)
 _ALLOWED_DETECT_MEDIA_TYPES = {"image", "video", "audio"}
 _AUDIO_SUFFIXES = {".mp3", ".wav", ".m4a", ".ogg", ".webm"}
 
@@ -112,21 +117,28 @@ async def _save_detect_upload(file: UploadFile, media_type: str) -> tuple[Path, 
 
 async def _build_form_materials(files: list[UploadFile]) -> list[dict[str, str]]:
     materials: list[dict[str, str]] = []
+    print("hahha")
     for file in files:
+        print("hahha2")
         media_type = _detect_media_type(file)
         saved_path, saved_name, _size = await _save_detect_upload(file, media_type)
         relative_url = detect_serve.media_relative_path(media_type, saved_name)
-        if media_type in {"image", "video"}:
-            summary_text = summarize_media_for_detect(
-                saved_path,
-                media_kind=media_type,
-                file_name=Path(file.filename or saved_name).name,
-            )
-        else:
-            summary_text = transcribe_audio_with_doubao(
-                saved_path,
-                file_name=Path(file.filename or saved_name).name,
-            )
+        try:
+            if media_type in {"image", "video"}:
+                summary_text = summarize_media_for_detect(
+                    saved_path,
+                    media_kind=media_type,
+                    file_name=Path(file.filename or saved_name).name,
+                )
+                print(f"summary_text: {summary_text}")
+            else:
+                summary_text = transcribe_audio_with_doubao(
+                    saved_path,
+                    file_name=Path(file.filename or saved_name).name,
+                )
+        except Exception as e:
+            logger.error(f"Failed to process {media_type} file {saved_name}: {e}")
+            summary_text = f"（{media_type}文件识别失败：{str(e)[:100]}）"
         materials.append(
             {
                 "type": media_type,
@@ -135,39 +147,53 @@ async def _build_form_materials(files: list[UploadFile]) -> list[dict[str, str]]
                 "file_name": Path(file.filename or saved_name).name,
             }
         )
+       
     return materials
 
 
-async def _parse_detect_request(request: Request) -> tuple[str, str, list[dict[str, str]]]:
+async def _parse_detect_request(
+    request: Request, db: Session, user_id: int
+) -> tuple[AgentChatSession, str, list[dict[str, str]]]:
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" in content_type:
         form = await request.form()
         session_id = str(form.get("session_id") or "").strip() or "default"
         user_text = str(form.get("text") or "")
-        files = [item for item in form.getlist("files") if isinstance(item, UploadFile) and item.filename]
+        files = [item for item in form.getlist("files") if item.filename]
         materials = await _build_form_materials(files)
-        return session_id, user_text, materials
+    else:
+        payload = await request.json()
+        session_id = str(payload.get("session_id") or "").strip() or "default"
+        user_text = str(payload.get("text") or "")
+        raw_materials = payload.get("materials") or []
+        if not isinstance(raw_materials, list):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="materials 必须为数组")
+        materials = []
+        for item in raw_materials:
+            if not isinstance(item, dict):
+                continue
+            materials.append(
+                {
+                    "type": str(item.get("type") or "").strip(),
+                    "content": str(item.get("content") or "").strip(),
+                    "url": str(item.get("url") or "").strip(),
+                    "summary_text": str(item.get("summary_text") or "").strip(),
+                    "file_name": str(item.get("file_name") or "").strip(),
+                }
+            )
 
-    payload = await request.json()
-    session_id = str(payload.get("session_id") or "").strip() or "default"
-    user_text = str(payload.get("text") or "")
-    raw_materials = payload.get("materials") or []
-    if not isinstance(raw_materials, list):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="materials 必须为数组")
-    materials: list[dict[str, str]] = []
-    for item in raw_materials:
-        if not isinstance(item, dict):
-            continue
-        materials.append(
-            {
-                "type": str(item.get("type") or "").strip(),
-                "content": str(item.get("content") or "").strip(),
-                "url": str(item.get("url") or "").strip(),
-                "summary_text": str(item.get("summary_text") or "").strip(),
-                "file_name": str(item.get("file_name") or "").strip(),
-            }
-        )
-    return session_id, user_text, materials
+    chat_session = db.query(AgentChatSession).filter(
+        AgentChatSession.user_id == user_id, AgentChatSession.session_id == session_id
+    ).first()
+    if not chat_session:
+        chat_session = AgentChatSession(user_id=user_id, session_id=session_id)
+        db.add(chat_session)
+        db.flush()
+
+    user_content = user_text.strip() or "（发送了附件）"
+    db.add(AgentChatMessage(chat_session_id=chat_session.id, role="user", content=user_content, materials=materials))
+
+    return chat_session, user_text, materials
 
 
 @router.post("/chat", response_model=AgentChatOut)
@@ -245,7 +271,7 @@ def list_chat_messages(
         .limit(limit)
         .all()
     )
-    return [AgentChatMessageOut(role=row.role, content=row.content, created_at=row.created_at) for row in rows]
+    return [AgentChatMessageOut(role=row.role, content=row.content, materials=row.materials or [], created_at=row.created_at) for row in rows]
 
 
 @router.delete("/chat/sessions/{session_id}")
@@ -278,14 +304,14 @@ async def agent_detect(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    detect_session_id, user_text, materials = await _parse_detect_request(request)
+    chat_session, user_text, materials = await _parse_detect_request(request, db, current.id)
     if not user_text.strip() and not materials:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="文本和附件不能同时为空")
     try:
         result = detect_reply(
             db=db,
             user_id=current.id,
-            session_id=detect_session_id,
+            session_id=chat_session.session_id,
             user_message=user_text,
             materials=materials,
         )
@@ -295,13 +321,23 @@ async def agent_detect(
         raise
     except Exception as err:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"检测对话失败：{err}") from err
+    if result is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="检测服务异常，返回为空")
+    dr_out = None
+    dr = result.get("detect_result")
+    if dr is not None:
+        dr_out = DetectResultOut(
+            report_id=str(dr.get("report_id") or ""),
+            risk_index=float(dr.get("risk_index") or 0.0),
+            risk_level=str(dr.get("risk_level") or "none"),
+        )
     return AgentDetectOut(
         reply=result["reply"],
         detect_stage=result["detect_stage"],
         candidate_content=result["candidate_content"],
         candidate_materials=result["candidate_materials"],
         should_run_detect=result["should_run_detect"],
-        detect_result=result["detect_result"],
+        detect_result=dr_out,
     )
 
 
@@ -311,8 +347,98 @@ def agent_alert(
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    _ = (payload, db, current)
-    raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="预警模式接口暂未实现")
+    """预警模式（已废弃，请使用 /agent/alert/upload）。
+
+    请在前端预警模式下统一调用 /agent/alert/upload 接口，该接口支持图片/视频/音频文件上传和 AI 内容识别。
+    """
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="此接口已废弃，预警模式请改用 /agent/alert/upload（支持文件上传和 AI 内容识别）",
+    )
+
+
+@router.post("/alert/upload")
+async def agent_alert_upload(
+    request: Request,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user),
+):
+    """预警模式（支持文件上传）：与 /alert 逻辑一致，但可通过 multipart/form-data 上传图片/视频/音频文件。
+
+    图片和视频会自动调用 AI 识别其中的文字和内容，音频会自动转写，识别的文本会作为补充材料一起发给预警大模型。
+    """
+    content_type = request.headers.get("content-type", "").lower()
+    if "multipart/form-data" in content_type:
+        form = await request.form()
+        session_id = str(form.get("session_id") or "").strip() or "default"
+        user_text = str(form.get("text") or "")
+        files = [item for item in form.getlist("files") if item.filename]
+        materials = await _build_form_materials(files)
+    else:
+        payload = await request.json()
+        session_id = str(payload.get("session_id") or "").strip() or "default"
+        user_text = str(payload.get("text") or "")
+        raw_materials = payload.get("materials") or []
+        materials = []
+        for item in raw_materials:
+            if not isinstance(item, dict):
+                continue
+            materials.append({
+                "type": str(item.get("type") or "").strip(),
+                "content": str(item.get("content") or "").strip(),
+                "url": str(item.get("url") or "").strip(),
+                "summary_text": str(item.get("summary_text") or "").strip(),
+                "file_name": str(item.get("file_name") or "").strip(),
+            })
+
+    if not user_text.strip() and not materials:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="文本和附件不能同时为空",
+        )
+
+    # 获取或创建会话，保存用户消息
+    chat_session = db.query(AgentChatSession).filter(
+        AgentChatSession.user_id == current.id, AgentChatSession.session_id == session_id
+    ).first()
+    if not chat_session:
+        chat_session = AgentChatSession(user_id=current.id, session_id=session_id)
+        db.add(chat_session)
+        db.flush()
+
+    user_content = user_text.strip() or "（发送了附件）"
+    db.add(AgentChatMessage(
+        chat_session_id=chat_session.id,
+        role="user",
+        content=user_content,
+        materials=materials,
+    ))
+    db.commit()
+
+    result = alert_reply(
+        db=db,
+        user_id=current.id,
+        session_id=session_id,
+        user_message=user_text,
+        materials=materials,
+    )
+    dr = result.get("detect_result")
+    ri = dr.get("risk_index", 0) if dr else 0.0
+    level_key = dr.get("risk_level", "none") if dr else "none"
+    report_id = dr.get("report_id", "") if dr else ""
+    gn = dr.get("guardian_notify", {}) if dr else {}
+    return {
+        "reply": result.get("reply", ""),
+        "detect_stage": result.get("detect_stage", "guide"),
+        "candidate_content": result.get("candidate_content", ""),
+        "should_run_detect": result.get("should_run_detect", False),
+        "detect_result": dr,
+        "report_id": report_id,
+        "risk_index": ri,
+        "risk_level": level_key,
+        "content": result.get("reply", ""),
+        "guardian_notify": GuardianNotifyInfo(**gn) if gn.get("notified") else GuardianNotifyInfo(),
+    }
 
 
 @router.post("/speech/transcribe", response_model=AgentSpeechTranscribeOut)

@@ -15,7 +15,7 @@ async function requestJson(url, options = {}) {
   return data ?? {};
 }
 
-function normalizeErrorDetail(detail, statusCode) {
+functionnormalizeErrorDetail(detail, statusCode) {
   if (typeof detail === "string" && detail.trim()) {
     return detail;
   }

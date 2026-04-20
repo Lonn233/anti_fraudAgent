@@ -147,6 +147,7 @@ def summarize_media_for_detect(
         raise ValueError(f"Unexpected media summary response: {str(body)[:300]}")
     message = choices[0].get("message", {})
     content = (message.get("content") or "").strip()
+    print(f"content: {content}")
     if not content:
         raise ValueError(f"Empty media summary response: {str(body)[:300]}")
     return content
@@ -266,50 +267,45 @@ def generate_fraud_advice(
 
     cases_text = ""
     for i, case in enumerate(retrieved_cases[:3], 1):
-        cases_text += f"\n案例 {i}：\n"
-        cases_text += f"  doc_id：{case.get('doc_id', '')}\n"
-        cases_text += f"  诈骗类型：{case.get('fraud_type', '未知')}\n"
-        cases_text += f"  诈骗金额：{case.get('fraud_amount', 0)}\n"
-        cases_text += f"  相似度：{case.get('similarity', 0)}\n"
-        cases_text += f"  年龄：{case.get('age', '')}\n"
-        cases_text += f"  职业：{case.get('job', '')}\n"
-        cases_text += f"  地区：{case.get('region', '')}\n"
-        cases_text += f"  案例内容：{case.get('content', '')}\n"
+        cases_text += f"\n参考案例 {i}（相似度 {case.get('similarity', 0):.1%}）：\n"
+        cases_text += f"  {case.get('content', '')}\n"
 
-    system_prompt = """你是一个专业的反诈咨询顾问。你的任务是根据提供的真实诈骗案例，为用户提供针对性的反诈建议。
+    system_prompt = """你是一个专业的反诈咨询顾问。你的任务是根据用户提供的情况描述和参考案例，独立分析判断诈骗类型并给出建议。
 ####################################
 重要规则：
-1. 你只能基于以下提供的三个真实诈骗案例来回答用户的问题
-2. 不要编造或引用案例之外的信息
-3. 分析用户的情况与案例的相似之处
+1. 你需要根据案例描述和用户输入，自己判断诈骗类型（如：刷单诈骗、冒充公检法、虚假投资、杀猪盘、网购诈骗等）
+2. 不要直接使用参考案例中的诈骗类型标签，要根据案例内容特征自行判断
+3. 分析用户的情况与案例的相似之处和风险点
 4. 提供具体、可行的防范建议
-5. 如果用户的情况与案例不相关，请明确说明
-提供的参考案例：""" + cases_text
+5. 如果用户的情况与案例完全不相关，也要基于反诈专业知识给出建议
+6.提出总字数不超过200字
+参考案例：""" + cases_text
 
     user_message = f"""用户的情况描述：
 {user_input}
 ####################################
-请根据上述案例，为用户提供反诈建议。包括：
-1. 识别可能的诈骗风险
-2. 与参考案例的相似之处
-3. 具体的防范措施
-4. 如果已经被骗，应该采取的行动
+请根据上述案例分析并回答：
+1. 识别用户面临的具体诈骗风险
+2. 你的诈骗类型判断及依据（不要使用案例中的标签，要根据内容特征判断）
+3. 与参考案例的相似之处和独特风险点
+4. 具体的防范措施
+5. 如果已经被骗，应该采取的行动
 
 ####################################
 你必须严格生成以下json格式：
 {{
   "overall_judgment":{{
-    "conclusion":"",
-    "fraud_type_rag":"",
-    "prevention_measures":"",
-    "post_fraud_actions":""
+    "conclusion":"基于案例分析和专业知识，给出综合判断结论",
+    "fraud_type_rag":"根据案例内容特征自行判断的诈骗类型（如：刷单诈骗、冒充公检法、虚假投资、杀猪盘、网购诈骗、注销校园贷等）",
+    "prevention_measures":"具体可行的防范建议",
+    "post_fraud_actions":"如果已被骗，应该采取的行动"
   }},
   "rag_result":{{
-    "retrieved_case":"",
-    "retrival_reason":""
+    "retrieved_case":"简要描述参考案例的核心特征",
+    "retrival_reason":"案例与用户情况的关联分析"
   }},
   "personal_info_analysis":{{
-    "conclusion":""
+    "conclusion":"对用户个人信息的风险评估"
   }}
 }}"""
 
@@ -337,8 +333,11 @@ def generate_fraud_advice(
     }
 
     logger.info("Calling Doubao LLM for structured fraud advice")
+    import time as _time_lib; _llm_start = _time_lib.perf_counter()
+    print(f"[llm] LLM advice 开始调用")
     with httpx.Client(timeout=120.0) as client:
         r = client.post(url, headers=headers, json=payload)
+    print(f"[llm] LLM advice 响应收到, 耗时 {_time_lib.perf_counter()-_llm_start:.3f}s, status={r.status_code}")
 
     logger.info("Doubao LLM response: status=%s", r.status_code)
     if r.status_code != 200:
