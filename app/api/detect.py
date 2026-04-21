@@ -32,7 +32,7 @@ def detect_text(
         logger.exception("Text detection error")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"检测失败：{e11111}",
+            detail=f"检测失败：{e}",
         ) from e
 
 
