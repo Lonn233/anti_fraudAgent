@@ -1,5 +1,15 @@
-import { applyGuardianRequest, decideGuardianRequest, deleteRelation, listGuardianAlerts, listGuardianRequests, listRelations, markGuardianAlertsRead, updateRelation } from "/ui/src/guardian-api.js";
+import { applyGuardianRequest, decideGuardianRequest, deleteRelation, listGuardianRequests, listRelations, updateRelation } from "/ui/src/guardian-api.js";
 import { showAlertModal, showPromptModal } from "/ui/src/modal-one.js";
+
+const REVERSE_RELATION = {
+  父亲: "子女", 母亲: "子女",
+  儿子: "父亲", 女儿: "母亲",
+  丈夫: "妻子", 妻子: "丈夫",
+  家属: "家属", 朋友: "朋友",
+};
+function reverseRelationship(rel) {
+  return rel ? (REVERSE_RELATION[rel] || rel) : null;
+}
 
 const tbody = document.querySelector("table tbody");
 const form = document.getElementById("guardian-modal-form");
@@ -34,94 +44,10 @@ let totalPages = 1;
 let totalItems = 0;
 let allRelations = [];
 let filteredRelations = [];
-let guardianAlertTimer = null;
-
-const _alertLevelCfg = {
-  high: { label: "高风险", color: "#ef4444", bg: "rgba(239,68,68,0.08)" },
-  medium: { label: "中风险", color: "#f59e0b", bg: "rgba(245,158,11,0.08)" },
-  low: { label: "低风险", color: "#3b82f6", bg: "rgba(59,130,246,0.08)" },
-  none: { label: "无风险", color: "#22c55e", bg: "rgba(34,197,94,0.08)" },
-};
 
 function escapeHtml(text) {
   return String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
-
-function _renderAlertCard(alert) {
-  const cfg = _alertLevelCfg[alert.risk_level] || _alertLevelCfg.none;
-  const time = alert.created_at ? new Date(alert.created_at).toLocaleString("zh-CN") : "";
-  return `
-<div class="flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer hover:brightness-110"
-  style="border-color:${cfg.color}40;background:${cfg.bg};"
-  data-alert-id="${alert.id}" data-report="${alert.detect_report_id || ""}">
-  <span class="material-symbols-outlined text-[20px] mt-0.5 shrink-0" style="color:${cfg.color}">crisis_alert</span>
-  <div class="flex-1 min-w-0">
-    <div class="flex items-center gap-2 mb-1">
-      <span class="text-[11px] font-bold uppercase tracking-wider" style="color:${cfg.color}">${cfg.label}</span>
-      <span class="text-[11px] font-mono" style="color:${cfg.color}">${Number(alert.risk_index || 0).toFixed(1)}/10</span>
-      <span class="text-[11px] text-on-surface-variant ml-auto">${time}</span>
-    </div>
-    <p class="text-[12px] text-on-surface leading-relaxed line-clamp-2">${escapeHtml(alert.content)}</p>
-    <p class="text-[11px] text-on-surface-variant mt-1">来自：${escapeHtml(alert.ward_username || "未知用户")}</p>
-  </div>
-  ${!alert.is_read ? '<span class="shrink-0 w-2 h-2 rounded-full bg-error shadow-[0_0_6px_#ff716c]"></span>' : ""}
-</div>`;
-}
-
-async function loadGuardianAlerts() {
-  const alertsPanel = document.getElementById("guardian-alerts-panel");
-  const alertsList = document.getElementById("alerts-list");
-  const alertsEmpty = document.getElementById("alerts-empty");
-  const badge = document.getElementById("alerts-unread-badge");
-  if (!alertsPanel) return;
-  try {
-    const data = await listGuardianAlerts();
-    const alerts = Array.isArray(data?.alerts) ? data.alerts : [];
-    const unread = data?.unread_count || 0;
-    if (badge) {
-      badge.textContent = `${unread} 条未读`;
-      badge.style.display = unread > 0 ? "inline-flex" : "none";
-    }
-    updateMonitorNavBadge(unread);
-    if (!alerts.length) {
-      alertsPanel.classList.add("hidden");
-      return;
-    }
-    alertsPanel.classList.remove("hidden");
-    if (alertsEmpty) alertsEmpty.classList.toggle("hidden", alerts.length > 0);
-    if (alertsList) {
-      alertsList.innerHTML = alerts.map(_renderAlertCard).join("");
-      alertsList.querySelectorAll("[data-alert-id]").forEach((el) => {
-        el.addEventListener("click", () => {
-          const reportId = el.getAttribute("data-report");
-          if (reportId) {
-            window.location.href = `/ui/reportDetail.html?detect_id=${encodeURIComponent(reportId)}`;
-          }
-        });
-      });
-    }
-  } catch (_) {
-    // silently fail
-  }
-}
-
-function startAlertPolling() {
-  loadGuardianAlerts();
-  if (guardianAlertTimer) clearInterval(guardianAlertTimer);
-  guardianAlertTimer = setInterval(loadGuardianAlerts, 10000);
-}
-
-function updateMonitorNavBadge(unreadCount) {
-  const dot = document.getElementById("sidebar-monitor-dot");
-  if (dot) dot.classList.toggle("hidden", unreadCount === 0);
-}
-
-document.getElementById("alerts-mark-read-btn")?.addEventListener("click", async () => {
-  try {
-    await markGuardianAlertsRead(null, true);
-    await loadGuardianAlerts();
-  } catch (_) {}
-});
 
 function showError(message) {
   showAlertModal(message);
@@ -180,7 +106,7 @@ function createRow(item) {
   </div>
 </td>
 <td class="px-8 py-6 text-on-surface-variant">${item.relationship || "-"}</td>
-<td class="px-8 py-6 font-mono text-sm text-tertiary">${item.ward_username || item.ward_id}</td>
+<td class="px-8 py-6 font-mono text-sm text-tertiary">${item.monitor_username || item.monitor_id}</td>
 <td class="px-8 py-6 text-on-surface-variant">${item.phone || "--"}</td>
 <td class="px-8 py-6 text-right">
   <div class="flex justify-end gap-2">
@@ -215,7 +141,7 @@ function applyFilters() {
   const filters = getSearchFilters();
   filteredRelations = allRelations.filter((item) => {
     const noteMatched = matchesFilter(item.note, filters.note);
-    const usernameMatched = matchesFilter(item.ward_username || item.ward_id, filters.username);
+    const usernameMatched = matchesFilter(item.monitor_username || item.monitor_id, filters.username);
     const relationMatched = !filters.relation || String(item.relationship || "").toLowerCase() === filters.relation;
     const phoneMatched = matchesFilter(item.phone, filters.phone);
     return noteMatched && usernameMatched && relationMatched && phoneMatched;
@@ -244,7 +170,7 @@ function renderCurrentPage() {
 async function loadRelations() {
   let result;
   try {
-    result = await listRelations("monitor", 1, 100);
+    result = await listRelations("ward", 1, 100);
   } catch (err) {
     showError("加载监护人列表失败：" + (err.message || err));
     allRelations = [];
@@ -319,22 +245,33 @@ function renderRequests(requests) {
 
   requestsPanel.innerHTML = requests
     .map(
-      (req) => `
+      (req) => {
+        const isIncoming = req._box === "incoming";
+        const mainMsg = isIncoming
+          ? `${req.monitor_username} 申请成为您的监护人`
+          : `您申请 ${req.ward_username} 成为您的监护人`;
+        const relText = req.relationship
+          ? isIncoming
+            ? `对方身份：${reverseRelationship(req.relationship)}`
+            : `您将其设为：${req.relationship}`
+          : "";
+        return `
 <div class="py-3 border-b border-outline-variant/10 last:border-0">
   <div class="flex items-center justify-between gap-2">
-    <div class="text-sm">${req.monitor_username} → ${req.ward_username}</div>
-    <span class="text-xs px-2 py-1 rounded border border-outline-variant/20">${requestStatusLabel(req, req._box === "incoming")}</span>
+    <div class="text-sm">${mainMsg}</div>
+    <span class="text-xs px-2 py-1 rounded border border-outline-variant/20">${requestStatusLabel(req, isIncoming)}</span>
   </div>
-  <div class="text-xs text-on-surface-variant mt-1">${req.relationship || "未填写关系"} · ${req._box === "incoming" ? "收到的申请" : "我发出的申请"}</div>
+  <div class="text-xs text-on-surface-variant mt-1">${relText}</div>
   ${
-    req.status === "pending" && req._box === "incoming"
+    req.status === "pending" && isIncoming
       ? `<div class="flex gap-2 mt-2">
            <button class="accept-request-btn px-3 py-1 bg-primary text-on-primary rounded text-xs" data-id="${req.id}" type="button">确认</button>
            <button class="reject-request-btn px-3 py-1 bg-surface-container-highest text-on-surface rounded text-xs border border-outline-variant/20" data-id="${req.id}" type="button">拒绝</button>
          </div>`
       : ""
   }
-</div>`
+</div>`;
+      }
     )
     .join("");
   bindRequestButtons();
@@ -366,7 +303,7 @@ async function submitApply() {
   if (!targetUsername || !name || !relationship) {
     throw new Error("请填写完整申请信息");
   }
-  await applyGuardianRequest("monitor", targetUsername, name, relationship);
+  await applyGuardianRequest("ward", targetUsername, name, relationship);
 }
 
 async function submitDelete() {
@@ -426,4 +363,3 @@ form?.addEventListener("submit", async (event) => {
 });
 
 loadAll().catch((err) => showError(err.message || "加载失败"));
-startAlertPolling();

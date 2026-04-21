@@ -4,6 +4,16 @@ function escapeHtml(text) {
   return String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+const REVERSE_RELATION = {
+  父亲: "子女", 母亲: "子女",
+  儿子: "父亲", 女儿: "母亲",
+  丈夫: "妻子", 妻子: "丈夫",
+  家属: "家属", 朋友: "朋友",
+};
+function reverseRelationship(rel) {
+  return rel ? (REVERSE_RELATION[rel] || rel) : null;
+}
+
 const _alertLevelCfg = {
   high: { label: "高风险", color: "#ef4444", bg: "rgba(239,68,68,0.08)", badge_color: "error" },
   medium: { label: "中风险", color: "#f59e0b", bg: "rgba(245,158,11,0.08)", badge_color: "primary" },
@@ -31,9 +41,7 @@ let totalPages = 1;
 let totalItems = 0;
 let alertPollTimer = null;
 
-function escapeHtml(text) {
-  return String(text || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
+
 
 function _timeAgo(isoStr) {
   if (!isoStr) return "";
@@ -160,7 +168,8 @@ function updateStats() {
 
 async function loadAlerts() {
   try {
-    const data = await listGuardianAlerts();
+    const data = await listGuardianAlerts("monitor");
+    console.log(data);
     allAlerts = Array.isArray(data?.alerts) ? data.alerts : [];
     totalItems = allAlerts.length;
     totalPages = Math.max(Math.ceil(totalItems / pageSize), 1);
@@ -215,7 +224,7 @@ nextBtn?.addEventListener("click", () => {
 
 markAllBtn?.addEventListener("click", async () => {
   try {
-    await markGuardianAlertsRead(null, true);
+    await markGuardianAlertsRead(null, true, "monitor");
     allAlerts.forEach((a) => (a.is_read = true));
     renderPage();
     updateNavBadge();

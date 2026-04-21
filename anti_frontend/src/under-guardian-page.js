@@ -1,6 +1,16 @@
 import { applyGuardianRequest, decideGuardianRequest, deleteRelation, listGuardianRequests, listRelations, updateRelation } from "/ui/src/guardian-api.js";
 import { showAlertModal, showPromptModal } from "/ui/src/modal-one.js";
 
+const REVERSE_RELATION = {
+  父亲: "子女", 母亲: "子女",
+  儿子: "父亲", 女儿: "母亲",
+  丈夫: "妻子", 妻子: "丈夫",
+  家属: "家属", 朋友: "朋友",
+};
+function reverseRelationship(rel) {
+  return rel ? (REVERSE_RELATION[rel] || rel) : null;
+}
+
 const tbody = document.querySelector("table tbody");
 const openBtn = document.getElementById("open-ward-modal-btn");
 const summaryEl = document.getElementById("ward-pagination-summary");
@@ -94,8 +104,8 @@ function createRelationRow(item, index) {
     <span class="text-sm font-medium text-on-surface">${item.note || "-"}</span>
   </div>
 </td>
-<td class="px-6 py-5"><span class="text-xs text-on-surface-variant">${item.relationship || "-"}</span></td>
-<td class="px-6 py-5"><span class="text-xs font-mono text-on-surface-variant">${item.monitor_username || item.monitor_id}</span></td>
+<td class="px-6 py-5"><span class="text-xs text-on-surface-variant">${reverseRelationship(item.relationship) || "-"}</span></td>
+<td class="px-6 py-5"><span class="text-xs font-mono text-on-surface-variant">${item.ward_username || item.ward_id}</span></td>
 <td class="px-6 py-5"><span class="text-xs text-on-surface-variant">${item.phone || "--"}</span></td>
 <td class="px-6 py-5 text-right">
   <button class="ward-edit-btn p-2 text-primary hover:bg-primary/10 rounded-md transition-colors" title="编辑备注" type="button">
@@ -147,7 +157,7 @@ function applyFilters() {
   const filters = getSearchFilters();
   filteredRelations = allRelations.filter((item) => {
     const noteMatched = matchesFilter(item.note, filters.note);
-    const usernameMatched = matchesFilter(item.monitor_username || item.monitor_id, filters.username);
+    const usernameMatched = matchesFilter(item.ward_username || item.ward_id, filters.username);
     const relationMatched = !filters.relation || String(item.relationship || "").toLowerCase() === filters.relation;
     const phoneMatched = matchesFilter(item.phone, filters.phone);
     return noteMatched && usernameMatched && relationMatched && phoneMatched;
@@ -182,22 +192,31 @@ function renderRequests(requests) {
 
   box.innerHTML = requests
     .map(
-      (req) => `
+      (req) => {
+        const isIncoming = req._box === "incoming";
+        const mainMsg = isIncoming
+          ? `${req.ward_username} 申请成为您的被监护人`
+          : `您申请监护 ${req.monitor_username}`;
+        const relText = req.relationship
+          ? isIncoming
+            ? `对方身份：${reverseRelationship(req.relationship)}`
+            : `您将其设为：${req.relationship}`
+          : "";
+        return `
 <div class="py-3 border-b border-outline-variant/10 last:border-0">
   <div class="flex items-center justify-between gap-2">
-    <div class="text-sm">${req.monitor_username} → ${req.ward_username}</div>
-    <span class="text-xs px-2 py-1 rounded border border-outline-variant/20">${requestStatusLabel(req, req._box === "incoming")}</span>
+    <div class="text-sm">${mainMsg}</div>
+    <span class="text-xs px-2 py-1 rounded border border-outline-variant/20">${requestStatusLabel(req, isIncoming)}</span>
   </div>
-  <div class="text-xs text-on-surface-variant mt-1">${req.relationship || "未填写关系"} · ${req._box === "incoming" ? "收到的申请" : "我发出的申请"}</div>
-  <div class="flex gap-2 mt-2">
-    ${
-      req.status === "pending" && req._box === "incoming"
-        ? `<button class="accept-request-btn px-3 py-1 bg-primary text-on-primary rounded text-xs" data-id="${req.id}" type="button">确认</button>
-           <button class="reject-request-btn px-3 py-1 bg-surface-container-highest text-on-surface rounded text-xs border border-outline-variant/20" data-id="${req.id}" type="button">拒绝</button>`
-        : ""
-    }
-  </div>
-</div>`
+  <div class="text-xs text-on-surface-variant mt-1">${relText}</div>
+  ${
+    req.status === "pending" && isIncoming
+      ? `<button class="accept-request-btn px-3 py-1 bg-primary text-on-primary rounded text-xs" data-id="${req.id}" type="button">确认</button>
+         <button class="reject-request-btn px-3 py-1 bg-surface-container-highest text-on-surface rounded text-xs border border-outline-variant/20" data-id="${req.id}" type="button">拒绝</button>`
+      : ""
+  }
+</div>`;
+      }
     )
     .join("");
   box.querySelectorAll(".accept-request-btn").forEach((btn) => {
@@ -229,7 +248,7 @@ function renderRequests(requests) {
 async function loadAll() {
   if (!tbody) return;
   const [relationsPage, incomingAll, outgoingAll] = await Promise.all([
-    listRelations("ward", 1, 100),
+    listRelations("monitor", 1, 100),
     listGuardianRequests("incoming", "all"),
     listGuardianRequests("outgoing", "all"),
   ]);
@@ -285,7 +304,7 @@ function bindModal() {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
-      await applyGuardianRequest("ward", usernameInput.value.trim(), nameInput.value.trim(), relationSelect.value);
+      await applyGuardianRequest("monitor", usernameInput.value.trim(), nameInput.value.trim(), relationSelect.value);
       backdrop?.classList.add("hidden");
       form.reset();
       currentPage = 1;

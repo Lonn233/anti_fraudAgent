@@ -25,6 +25,23 @@ from app.utils.deps import get_current_user
 
 router = APIRouter(prefix="/guardians", tags=["guardians"])
 
+_REVERSE_RELATION = {
+    "父亲": "子女",
+    "母亲": "子女",
+    "儿子": "父亲",
+    "女儿": "母亲",
+    "丈夫": "妻子",
+    "妻子": "丈夫",
+    "家属": "家属",
+    "朋友": "朋友",
+}
+
+
+def _reverse_relation(rel: str | None) -> str | None:
+    if not rel:
+        return None
+    return _REVERSE_RELATION.get(rel, rel)
+
 
 def _to_guardian_out(
     item: Guardian,
@@ -454,6 +471,7 @@ class AlertItemOut(BaseModel):
     content: str
     risk_level: str
     risk_index: float
+    relationship: str | None = None
     is_read: bool
     created_at: str
 
@@ -463,10 +481,31 @@ class AlertListOut(BaseModel):
     unread_count: int
 
 
-def _alert_to_out(db: Session, alert: GuardianAlert) -> dict:
+def _alert_to_out(db: Session, alert: GuardianAlert, role: str = "monitor") -> dict:
     ward = db.query(User).filter(User.id == alert.ward_id).first()
-    # 查关系
-    guardian_rel = db.query(Guardian).filter(Guardian.monitor_id == alert.guardian_id, Guardian.ward_id == alert.ward_id).first()
+    guardian_user = db.query(User).filter(User.id == alert.guardian_id).first()
+    guardian_rel = (
+        db.query(Guardian)
+        .filter(Guardian.monitor_id == alert.guardian_id, Guardian.ward_id == alert.ward_id)
+        .first()
+    )
+    if role == "ward":
+        # 被监护人视角：显示监护人信息，关系反转
+        return {
+            "id": alert.id,
+            "ward_id": alert.ward_id,
+            "ward_username": guardian_user.username if guardian_user else None,
+            "guardian_id": alert.guardian_id,
+            "detect_report_id": alert.detect_report_id,
+            "content": alert.content,
+            "relationship": _reverse_relation(guardian_rel.relationship) if guardian_rel else None,
+            "risk_level": alert.risk_level,
+            "risk_index": alert.risk_index,
+            "risk_level_label": {"high": "高风险", "medium": "中风险", "low": "低风险", "none": "无风险"}.get(alert.risk_level, "未知"),
+            "is_read": alert.is_read,
+            "created_at": alert.created_at.isoformat() if alert.created_at else None,
+        }
+    # 监护人视角：显示被监护人信息
     return {
         "id": alert.id,
         "ward_id": alert.ward_id,
@@ -485,22 +524,43 @@ def _alert_to_out(db: Session, alert: GuardianAlert) -> dict:
 
 @router.get("/alerts", response_model=AlertListOut)
 def list_alerts(
+    role: str | None = Query(default=None, pattern="^(monitor|ward)$"),
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    """监护人获取所有预警列表（包含未读数，供轮询）"""
-    guardians = db.query(Guardian).filter(Guardian.monitor_id == current.id).all()
-    if not guardians:
-        return AlertListOut(alerts=[], unread_count=0)
-    # alert.guardian_id 存的是监护人的用户 ID（monitor_id），直接用当前用户的 ID 查
-    rows = (
-        db.query(GuardianAlert)
-        .filter(GuardianAlert.guardian_id == current.id)
-        .order_by(GuardianAlert.created_at.desc())
-        .limit(200)
-        .all()
-    )
-    alerts = [_alert_to_out(db, r) for r in rows]
+    """获取预警列表。
+
+    role 参数不传时后端自动判断：优先取 monitor 角色（有监护关系则显示监护人视角），
+    否则取 ward 角色。
+    - role=monitor: 查询自己收到的预警（guardian_id == current.id）
+    - role=ward:   查询自己触发的预警（ward_id == current.id）
+    """
+    if role is None:
+        # 自动判断：优先 monitor 视角（因为该页面主要服务于监护人）
+        has_guardians = (
+            db.query(Guardian)
+            .filter(Guardian.monitor_id == current.id)
+            .first()
+        )
+        role = "monitor" if has_guardians else "ward"
+
+    if role == "ward":
+        rows = (
+            db.query(GuardianAlert)
+            .filter(GuardianAlert.ward_id == current.id)
+            .order_by(GuardianAlert.created_at.desc())
+            .limit(200)
+            .all()
+        )
+    else:
+        rows = (
+            db.query(GuardianAlert)
+            .filter(GuardianAlert.guardian_id == current.id)
+            .order_by(GuardianAlert.created_at.desc())
+            .limit(200)
+            .all()
+        )
+    alerts = [_alert_to_out(db, r, role=role) for r in rows]
     unread_count = sum(1 for r in alerts if not r["is_read"])
     return AlertListOut(alerts=alerts, unread_count=unread_count)
 
@@ -509,11 +569,23 @@ def list_alerts(
 def mark_alerts(
     alert_ids: list[int] | None = None,
     mark_all: bool = Query(default=False),
+    role: str | None = Query(default=None, pattern="^(monitor|ward)$"),
     db: Session = Depends(get_db),
     current: User = Depends(get_current_user),
 ):
-    """标记预警为已读。传入 alert_ids 标记指定记录；mark_all=true 时标记全部。"""
-    q = db.query(GuardianAlert).filter(GuardianAlert.guardian_id == current.id)
+    """标记预警为已读。传入 alert_ids 标记指定记录；mark_all=true 时标记全部。role 不传时自动判断。"""
+    if role is None:
+        has_guardians = (
+            db.query(Guardian)
+            .filter(Guardian.monitor_id == current.id)
+            .first()
+        )
+        role = "monitor" if has_guardians else "ward"
+
+    if role == "ward":
+        q = db.query(GuardianAlert).filter(GuardianAlert.ward_id == current.id)
+    else:
+        q = db.query(GuardianAlert).filter(GuardianAlert.guardian_id == current.id)
     if not mark_all and alert_ids:
         q = q.filter(GuardianAlert.id.in_(alert_ids))
     count = q.update({"is_read": True}, synchronize_session=False)

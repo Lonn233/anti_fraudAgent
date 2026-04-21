@@ -126,11 +126,11 @@
 <nav class="flex-1 space-y-1 font-['Inter'] text-[16px] font-medium tracking-wide">
 <a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/monitor.html">
 <span class="material-symbols-outlined">admin_panel_settings</span>
-<span>监护人管理</span>
+<span>管理监护人</span>
 <span id="sidebar-monitor-dot" class="hidden w-2 h-2 rounded-full bg-error shadow-[0_0_6px_#ff716c]"></span></a>
 <a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/under_guardian.html">
 <span class="material-symbols-outlined">supervisor_account</span>
-<span>被监护人管理</span>
+<span>管理被监护人</span>
 </a>
 <a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/monitor_msg.html">
 <span class="material-symbols-outlined">hub</span>
@@ -174,7 +174,7 @@
 </div>
 <div class="relative w-full">
 <select class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-lg px-4 py-2 text-sm text-on-surface focus:outline-none focus:border-primary/40 focus:ring-0 appearance-none transition-all" id="monitor-search-relation">
-<option value="">关系</option>
+<option value="">对方身份</option>
 <option value="儿子">儿子</option>
 <option value="女儿">女儿</option>
 <option value="父亲">父亲</option>
@@ -198,7 +198,7 @@
 </button>
 <button class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2 bg-primary text-on-primary font-bold rounded-lg hover:shadow-[0_0_15px_rgba(92,191,255,0.4)] active:scale-95 transition-all text-sm" id="open-guardian-modal-btn" type="button">
 <span class="material-symbols-outlined text-lg">person_add</span>
-<span>添加新联系人</span>
+<span>添加监护人</span>
 </button>
 </div>
 </section>
@@ -209,7 +209,7 @@
 <thead>
 <tr class="bg-surface-container-high/50 border-b border-outline-variant/10 font-headline text-[10px] uppercase tracking-widest text-on-surface-variant">
 <th class="px-8 py-5">备注</th>
-<th class="px-8 py-5">关系</th>
+<th class="px-8 py-5">对方身份</th>
 <th class="px-8 py-5">用户名</th>
 <th class="px-8 py-5">联系方式（手机号）</th>
 <th class="px-8 py-5 text-right">操作</th>
@@ -377,9 +377,9 @@
         <input id="guardian-name-input" placeholder="请输入监护人备注" type="text"/>
       </div>
       <div id="guardian-relation-field">
-        <label for="guardian-relation-select">关系</label>
+        <label for="guardian-relation-select">对方身份</label>
         <select id="guardian-relation-select">
-          <option value="">请选择关系</option>
+          <option value="">请选择对方身份</option>
           <option value="儿子">儿子</option>
           <option value="女儿">女儿</option>
           <option value="父亲">父亲</option>

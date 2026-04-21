@@ -71,7 +71,7 @@ def notify_guardians(
     for g in guardians:
         alert = GuardianAlert(
             ward_id=ward_user_id,
-            guardian_id=g.id,
+            guardian_id=g.monitor_id,
             detect_report_id=detect_report_id,
             content=content[:512],
             risk_level=risk_level,

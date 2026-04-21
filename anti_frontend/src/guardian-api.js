@@ -75,13 +75,15 @@ export async function updateRelation(guardianId, note) {
   return putJson(`/guardians/${guardianId}`, { note }, token);
 }
 
-export async function listGuardianAlerts() {
+export async function listGuardianAlerts(role = "monitor") {
   const token = tokenOrThrow();
-  return getJson("/guardians/alerts", token);
+  return getJson(`/guardians/alerts?role=${encodeURIComponent(role)}`, token);
 }
 
-export async function markGuardianAlertsRead(alertIds = null, markAll = false) {
+export async function markGuardianAlertsRead(alertIds = null, markAll = false, role = "monitor") {
   const token = tokenOrThrow();
-  const body = markAll ? { mark_all: true } : { alert_ids: alertIds || [] };
+  const body = markAll
+    ? { mark_all: true, role }
+    : { alert_ids: alertIds || [], role };
   return postJsonWithToken("/guardians/alerts/read", body, token);
 }
