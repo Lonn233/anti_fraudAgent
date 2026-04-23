@@ -1,0 +1,140 @@
+/* ============================================================
+   Top Navigation Bar — all pages share this base structure
+   Uses CSS variables from /ui/src/common/theme.css
+   ============================================================ */
+
+/* ---- TopNav (top nav bar) ---- */
+aside.topNav { /* placeholder marker — nav.topNav in HTML */ }
+nav.topNav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+    background: var(--color-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    height: 4rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+nav.topNav > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+nav.topNav > div:first-child > span {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-title);
+    font-family: 'Space Grotesk', sans-serif;
+}
+nav.topNav > div:first-child > div {
+    display: none;
+    font-family: 'Space Grotesk', sans-serif;
+}
+@media (min-width: 768px) {
+    nav.topNav > div:first-child > div {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+}
+nav.topNav > div:first-child > div a {
+    color: var(--color-on-surface);
+    opacity: 0.7;
+    transition: all 0.3s;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+nav.topNav > div:first-child > div a:hover {
+    color: var(--color-tertiary);
+    opacity: 1;
+}
+nav.topNav > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+nav.topNav > div:last-child .material-symbols-outlined {
+    color: var(--color-on-surface);
+    opacity: 0.7;
+    transition: all;
+    cursor: pointer;
+}
+nav.topNav > div:last-child .material-symbols-outlined:hover {
+    color: var(--color-tertiary);
+}
+nav.topNav > div:last-child .relative {
+    position: relative;
+}
+nav.topNav > div:last-child .relative > span:last-child {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--color-error);
+    border-radius: 50%;
+}
+
+/* overallEvaluation topNav variant */
+nav.topNav_oe {
+    position: fixed;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    height: 4rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(var(--rgb-outline-variant), 0.2);
+    background: var(--color-surface-container-low);
+    padding: 0 1.5rem;
+    backdrop-filter: blur(20px);
+}
+@media (min-width: 768px) {
+    nav.topNav_oe { padding: 0 2rem; }
+}
+nav.topNav_oe > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+@media (min-width: 768px) { nav.topNav_oe > div:first-child { gap: 2rem; } }
+nav.topNav_oe > div:first-child > span {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-title);
+}
+nav.topNav_oe > div:first-child > div {
+    display: none;
+    align-items: center;
+    gap: 1.25rem;
+}
+@media (min-width: 768px) {
+    nav.topNav_oe > div:first-child > div { display: flex; }
+}
+nav.topNav_oe > div:first-child > div a {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+}
+nav.topNav_oe > div:first-child > div a:hover { color: var(--color-tertiary); }
+nav.topNav_oe > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+nav.topNav_oe > div:last-child .material-symbols-outlined {
+    cursor: pointer;
+    font-size: 1.25rem;
+}
+nav.topNav_oe > div:last-child .material-symbols-outlined:hover { color: var(--color-tertiary); }

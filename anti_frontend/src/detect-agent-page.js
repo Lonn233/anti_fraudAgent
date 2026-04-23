@@ -305,7 +305,7 @@ function renderMessages() {
     <div class="w-6 h-6 rounded bg-tertiary/20 flex items-center justify-center border border-tertiary/40">
       <span class="material-symbols-outlined text-[14px] text-tertiary">bolt</span>
     </div>
-    <span class="text-[10px] font-bold uppercase tracking-wider">Sentinel AI Assistant</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider">小天</span>
   </div>
   <div class="glass-card px-6 py-5 rounded-2xl rounded-tl-none border border-tertiary/10 ">
     <p class="leading-relaxed">${escapeHtml(m.content)}</p>

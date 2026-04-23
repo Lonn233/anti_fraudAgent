@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
 
-<html class="dark" lang="zh"><head>
+<html class="dark" lang="zh-CN"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="/ui/src/common/theme.css" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -15,63 +16,63 @@
         theme: {
           extend: {
             "colors": {
-                    "on-secondary-fixed": "#36404f",
-                    "inverse-surface": "#f9f9ff",
-                    "tertiary-container": "#00e3fd",
-                    "on-tertiary-fixed-variant": "#005762",
-                    "on-tertiary-fixed": "#003840",
-                    "surface-container-high": "#19202c",
-                    "on-secondary-container": "#c7d1e4",
-                    "secondary-dim": "#cbd5e8",
-                    "primary-fixed": "#0cb3ff",
-                    "on-background": "#e1e5f3",
-                    "on-error-container": "#ffa8a3",
-                    "primary-container": "#0cb3ff",
-                    "inverse-primary": "#006593",
-                    "secondary": "#d9e3f7",
-                    "inverse-on-surface": "#505560",
-                    "surface-container-low": "#0e131d",
-                    "error-dim": "#d7383b",
-                    "surface-dim": "#090e17",
-                    "outline": "#717581",
-                    "surface-tint": "#5cbfff",
-                    "primary-dim": "#00a7f0",
-                    "primary": "#5cbfff",
-                    "on-secondary-fixed-variant": "#525c6c",
-                    "surface-container-lowest": "#000000",
-                    "tertiary": "#81ecff",
-                    "background": "#090e17",
-                    "surface-variant": "#1f2633",
-                    "on-primary-fixed-variant": "#003752",
-                    "surface": "#090e17",
-                    "on-surface-variant": "#a6abb7",
-                    "on-surface": "#e1e5f3",
-                    "error-container": "#9f0519",
-                    "on-error": "#490006",
-                    "surface-bright": "#252c3b",
-                    "tertiary-dim": "#00d4ec",
-                    "surface-container-highest": "#1f2633",
-                    "on-secondary": "#485262",
-                    "on-primary-fixed": "#000d18",
-                    "secondary-container": "#3d4757",
-                    "error": "#ff716c",
-                    "primary-fixed-dim": "#00a5ec",
-                    "outline-variant": "#434853",
-                    "on-primary": "#003854",
-                    "tertiary-fixed-dim": "#00d4ec",
-                    "on-primary-container": "#002d45",
-                    "secondary-fixed-dim": "#cbd5e8",
-                    "tertiary-fixed": "#00e3fd",
-                    "on-tertiary": "#005762",
-                    "on-tertiary-container": "#004d57",
-                    "surface-container": "#141a25",
-                    "secondary-fixed": "#d9e3f7"
+                    "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                    "inverse-surface": "var(--color-inverse-surface)",
+                    "tertiary-container": "var(--color-tertiary-container)",
+                    "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                    "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                    "surface-container-high": "var(--color-surface-container-high)",
+                    "on-secondary-container": "var(--color-on-secondary-container)",
+                    "secondary-dim": "var(--color-secondary-dim)",
+                    "primary-fixed": "var(--color-primary-fixed)",
+                    "on-background": "var(--color-on-background)",
+                    "on-error-container": "var(--color-on-error-container)",
+                    "primary-container": "var(--color-primary-container)",
+                    "inverse-primary": "var(--color-inverse-primary)",
+                    "secondary": "var(--color-secondary)",
+                    "inverse-on-surface": "var(--color-inverse-on-surface)",
+                    "surface-container-low": "var(--color-surface-container-low)",
+                    "error-dim": "var(--color-error-dim)",
+                    "surface-dim": "var(--color-surface-dim)",
+                    "outline": "var(--color-outline)",
+                    "surface-tint": "var(--color-surface-tint)",
+                    "primary-dim": "var(--color-primary-dim)",
+                    "primary": "var(--color-primary)",
+                    "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                    "surface-container-lowest": "var(--color-surface-container-lowest)",
+                    "tertiary": "var(--color-tertiary)",
+                    "background": "var(--color-background)",
+                    "surface-variant": "var(--color-surface-variant)",
+                    "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                    "surface": "var(--color-surface)",
+                    "on-surface-variant": "var(--color-on-surface-variant)",
+                    "on-surface": "var(--color-on-surface)",
+                    "error-container": "var(--color-error-container)",
+                    "on-error": "var(--color-on-error)",
+                    "surface-bright": "var(--color-surface-bright)",
+                    "tertiary-dim": "var(--color-tertiary-dim)",
+                    "surface-container-highest": "var(--color-surface-container-highest)",
+                    "on-secondary": "var(--color-on-secondary)",
+                    "on-primary-fixed": "var(--color-on-primary-fixed)",
+                    "secondary-container": "var(--color-secondary-container)",
+                    "error": "var(--color-error)",
+                    "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                    "outline-variant": "var(--color-outline-variant)",
+                    "on-primary": "var(--color-on-primary)",
+                    "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                    "on-primary-container": "var(--color-on-primary-container)",
+                    "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                    "tertiary-fixed": "var(--color-tertiary-fixed)",
+                    "on-tertiary": "var(--color-on-tertiary)",
+                    "on-tertiary-container": "var(--color-on-tertiary-container)",
+                    "surface-container": "var(--color-surface-container)",
+                    "secondary-fixed": "var(--color-secondary-fixed)"
             },
             "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
+                    "DEFAULT": "var(--radius-default)",
+                    "lg": "var(--radius-lg)",
+                    "xl": "var(--radius-xl)",
+                    "full": "var(--radius-full)"
             },
             "fontFamily": {
                     "headline": ["Space Grotesk"],
@@ -83,53 +84,54 @@
       }
     </script>
 <style>
-        body { font-family: 'Inter', sans-serif; background-color: #090e17; color: #e1e5f3; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--color-surface); color: var(--color-on-surface); }
         .font-headline { font-family: 'Space Grotesk', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-panel { background: rgba(25, 32, 44, 0.6); backdrop-filter: blur(20px); }
-        .data-grid-bg { background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 1px); background-size: 24px 24px; }
-   </style>
+        .glass-panel { background: var(--color-glass-bg); backdrop-filter: blur(20px); }
+        .data-grid-bg { background-image: radial-gradient(rgba(var(--rgb-primary), 0.05) 1px, transparent 1px); background-size: 24px 24px; }
+    </style>
+<link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 <body class="min-h-screen selection:bg-primary/30 selection:text-primary">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
-<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<span class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+<div id="theme-switcher-mount" class="flex items-center"></div>
+<a aria-label="个人资料" class="inline-flex text-[var(--color-on-surface)] opacity-70 transition-all hover:text-[var(--color-tertiary)]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
-<aside class="fixed left-0 top-16 z-40 hidden h-full w-64 flex-col border-r border-slate-800/30 bg-[#090e17] pt-4 pb-20 shadow-2xl dark:bg-slate-950 lg:flex">
+<aside class="leftAside_lg">
 <div class="px-6 mb-8">
-<div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
-<div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low</div>
 </div>
 <div class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
-<a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/infoSetting.html">
+<a class="bg-[var(--color-surface-variant)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] px-6 py-4 flex items-center gap-3 activeNavLink" href="/ui/infoSetting.html">
 <span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
 <span>个人信息设置</span>
 </a>
-<a class="text-[#e1e5f3] opacity-70 hover:bg-[#1f2633] hover:text-[#5cbfff] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all" href="/ui/accountManage.html">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:bg-[var(--color-surface-variant)] hover:text-[var(--color-primary)] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all" href="/ui/accountManage.html">
 <span class="material-symbols-outlined" data-icon="shield_person">shield_person</span>
 <span>账号管理</span>
 </a>
 </div>
 <div class="px-4 mt-auto mb-20">
 <div class="pt-4 border-t border-slate-800/50">
-<a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
+<a class="text-on-surface-variant px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
 <span class="material-symbols-outlined">logout</span>
 <span>退出登录</span>
 </a>
@@ -170,7 +172,6 @@
 <h3 class="text-lg font-headline font-bold text-on-surface">基础身份识别</h3>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<!-- Username -->
 <div class="space-y-2">
 <label class="flex items-center gap-2 text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant px-1">
 <span>用户名</span>
@@ -181,7 +182,6 @@
 <span class="absolute right-4 top-3 text-on-surface-variant/40 material-symbols-outlined text-sm" data-icon="fingerprint">fingerprint</span>
 </div>
 </div>
-<!-- Profession -->
 <div class="space-y-2">
 <label class="flex items-center gap-2 text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant px-1">
 <span>职业</span>
@@ -203,7 +203,6 @@
 <span class="absolute right-4 top-3 text-on-surface-variant/40 material-symbols-outlined text-sm" data-icon="work_history">work_history</span>
 </div>
 </div>
-<!-- Phone -->
 <div class="space-y-2">
 <label class="text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant px-1">联系电话</label>
 <div class="relative">
@@ -211,7 +210,6 @@
 <span class="absolute right-4 top-3 text-on-surface-variant/40 material-symbols-outlined text-sm" data-icon="call">call</span>
 </div>
 </div>
-<!-- Region -->
 <div class="space-y-2">
 <label class="flex items-center gap-2 text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant px-1">
 <span>所属地区</span>
@@ -233,7 +231,6 @@
 <span class="absolute right-4 top-3 text-on-surface-variant/40 material-symbols-outlined text-sm" data-icon="location_city">location_city</span>
 </div>
 </div>
-<!-- Birth Date -->
 <div class="space-y-2">
 <label class="flex items-center gap-2 text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant px-1">
 <span>出生日期</span>
@@ -253,29 +250,29 @@
 </div>
 </div>
 <div class="mt-4 flex justify-end gap-4">
-<button class="px-8 py-3 text-primary text-sm font-headline font-bold border border-primary/20 hover:bg-primary/5 rounded-lg transition-all" id="profile-cancel-btn">取消更改</button>
-<button class="px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-headline font-bold rounded-lg shadow-[0_0_20px_rgba(12,179,255,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all" id="profile-save-btn">保存更改</button>
+<button class="glass-panel px-8 py-3 text-primary text-sm font-headline font-bold border border-primary/20 hover:bg-primary/5 rounded-lg transition-all" id="profile-cancel-btn" >取消更改</button>
+<button class="px-8 py-3 bg-gradient-to-r from-primary to-primary-container text-on-primary text-sm font-headline font-bold rounded-lg shadow-[0_0_20px_rgba(var(--rgb-primary),0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all" id="profile-save-btn">保存更改</button>
 </div>
 <p class="text-sm text-green-400 mt-3 min-h-5 text-right" id="profile-save-success"></p>
 <p class="text-sm text-error mt-3 min-h-5 text-right" id="profile-save-error"></p>
 </section>
-<!-- Advanced Bio / Age Section -->
-<section class=" selfSection md:col-span-12 bg-surface-container-low rounded-xl p-8 relative overflow-hidden">
+<!-- Advanced Bio Section -->
+<section class="md:col-span-12 bg-surface-container-low rounded-xl p-8 relative overflow-hidden">
 <div class="absolute top-0 right-0 w-32 h-32 bg-tertiary/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
 <div class="flex items-center gap-2 mb-6">
 <span class="w-1.5 h-6 bg-primary rounded-full"></span>
 <h3 class="text-lg font-headline font-bold text-on-surface">个人特征</h3>
 </div>
 <div>
-<div class="p-4 bg-black/20 rounded-lg border border-outline-variant/10">
+<div class="glass-panel p-4 bg-black/20 rounded-lg border border-outline-variant/10">
 <p class="text-xs font-label uppercase tracking-tighter text-tertiary mb-2">个人所属群体</p>
 <p class="text-sm text-on-surface-variant leading-relaxed" id="profile-group">-</p>
 </div>
-<div class="p-4 bg-black/20 rounded-lg border border-outline-variant/10">
+<div class=" glass-panel p-4 bg-black/20 rounded-lg border border-outline-variant/10">
 <p class="text-xs font-label uppercase tracking-tighter text-tertiary mb-2">个人职业类型</p>
 <p class="text-sm text-on-surface-variant leading-relaxed" id="profile-occupation-display">-</p>
 </div>
-<div class="p-4 bg-black/20 rounded-lg border border-outline-variant/10">
+<div class=" glass-panel p-4 bg-black/20 rounded-lg border border-outline-variant/10">
 <p class="text-xs font-label uppercase tracking-tighter text-tertiary mb-2">个人易受诈骗类型</p>
 <p class="text-sm text-on-surface-variant leading-relaxed" id="profile-fraud-risk-type">待完善</p>
 </div>
@@ -289,6 +286,12 @@
 <div class="fixed bottom-0 left-0 w-full h-1/2 pointer-events-none z-[-1] opacity-20">
 <div class="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-primary/10 to-transparent"></div>
 </div>
+<script type="module">
+  import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+  initTheme();
+  const mount = document.getElementById("theme-switcher-mount");
+  if (mount) mountThemeSwitcher(mount);
+</script>
 <script src="/ui/src/info-setting-page.js" type="module"></script>
 <script>
   (function () {
@@ -312,23 +315,16 @@
     );
 
     navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+      a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+      a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
     });
 
     const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
     if (!activeLink) return;
 
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+    activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+    activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
   })();
-</script>
-</body></html>
-
-
-
-
-
-
-
-
+  </script>
+</body>
+</html>

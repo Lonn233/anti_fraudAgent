@@ -3,73 +3,76 @@
 <html class="dark" lang="zh-CN"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="/ui/src/common/theme.css" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
+            darkMode: "clasSystem Sentinels",
             theme: {
                 extend: {
                     "colors": {
-                        "error-container": "#9f0519",
-                        "on-tertiary": "#005762",
-                        "primary-dim": "#00a7f0",
-                        "on-background": "#e1e5f3",
-                        "on-secondary-container": "#c7d1e4",
-                        "on-error-container": "#ffa8a3",
-                        "on-secondary": "#485262",
-                        "surface-container-highest": "#1f2633",
-                        "secondary-container": "#3d4757",
-                        "surface-container-lowest": "#000000",
-                        "tertiary-fixed": "#00e3fd",
-                        "tertiary": "#81ecff",
-                        "on-primary-fixed": "#000d18",
-                        "error-dim": "#d7383b",
-                        "surface-tint": "#5cbfff",
-                        "secondary-fixed": "#d9e3f7",
-                        "on-surface": "#e1e5f3",
-                        "surface-bright": "#252c3b",
-                        "outline": "#717581",
-                        "on-tertiary-container": "#004d57",
-                        "surface": "#090e17",
-                        "secondary-fixed-dim": "#cbd5e8",
-                        "on-tertiary-fixed": "#003840",
-                        "surface-container-low": "#0e131d",
-                        "secondary": "#d9e3f7",
-                        "tertiary-fixed-dim": "#00d4ec",
-                        "primary-fixed-dim": "#00a5ec",
-                        "primary": "#5cbfff",
-                        "tertiary-dim": "#00d4ec",
-                        "surface-container-high": "#19202c",
-                        "tertiary-container": "#00e3fd",
-                        "on-error": "#490006",
-                        "on-primary-container": "#002d45",
-                        "secondary-dim": "#cbd5e8",
-                        "inverse-surface": "#f9f9ff",
-                        "on-primary-fixed-variant": "#003752",
-                        "primary-fixed": "#0cb3ff",
-                        "surface-container": "#141a25",
-                        "background": "#090e17",
-                        "inverse-primary": "#006593",
-                        "on-tertiary-fixed-variant": "#005762",
-                        "surface-dim": "#090e17",
-                        "primary-container": "#0cb3ff",
-                        "on-secondary-fixed-variant": "#525c6c",
-                        "outline-variant": "#434853",
-                        "error": "#ff716c",
-                        "on-secondary-fixed": "#36404f",
-                        "on-primary": "#003854",
-                        "inverse-on-surface": "#505560",
-                        "on-surface-variant": "#a6abb7",
-                        "surface-variant": "#1f2633"
+                        "error-container": "var(--color-error-container)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "primary-dim": "var(--color-primary-dim)",
+                        "on-background": "var(--color-on-background)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "error-dim": "var(--color-error-dim)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "on-surface": "var(--color-on-surface)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "outline": "var(--color-outline)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "surface": "var(--color-surface)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "secondary": "var(--color-secondary)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                        "primary": "var(--color-primary)",
+                        "tertiary-dim": "var(--color-tertiary-dim)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "on-error": "var(--color-on-error)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "secondary-dim": "var(--color-secondary-dim)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "surface-container": "var(--color-surface-container)",
+                        "background": "var(--color-background)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "primary-container": "var(--color-primary-container)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "error": "var(--color-error)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "on-primary": "var(--color-on-primary)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "surface-variant": "var(--color-surface-variant)"
                     },
                     "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "DEFAULT": "var(--radius-default)",
+                        "lg": "var(--radius-lg)",
+                        "xl": "var(--radius-xl)",
+                        "full": "var(--radius-full)"
                     },
                     "fontFamily": {
                         "headline": ["Space Grotesk"],
@@ -87,86 +90,79 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .data-grid-bg {
-            background-image: radial-gradient(rgba(92, 191, 255, 0.1) 1px, transparent 1px);
+            background-image: radial-gradient(rgba(var(--rgb-primary), 0.1) 1px, transparent 1px);
             background-size: 24px 24px;
         }
     </style>
+    <link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 <body class="bg-background text-on-background antialiased selection:bg-tertiary/30">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
-<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<span class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+<div id="theme-switcher-mount" class="flex items-center"></div>
+<a aria-label="个人资料" class="inline-flex text-[var(--color-on-surface)] opacity-70 transition-all hover:text-[var(--color-tertiary)]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
-<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-[#0e131d] shadow-2xl flex flex-col py-6 space-y-2 font-['Inter'] font-medium text-sm hidden lg:flex">
-<div class="px-6 mb-6">
-<div class="flex items-center space-x-3 mb-4">
-<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center border border-outline-variant/20">
-<img alt="Analyst" class="w-8 h-8" data-alt="Avatar of a digital security analyst wearing a high-tech headset with subtle glowing UI interfaces in the background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxaq23QD4v2YaQHa0mXl5TX6PmBFtoRNkac7tyVF0F7rAlYLRFZuWzOrdRCEHOMe5NyIQkUKCnLQAN4qiRHHgzMySzbEPMeYtbvh6UsU87XaC7mkd5Fbqs0wv-ZGuBIACMpVWUk11h7KRz5Yqs7frMNTd1uqM5_N9Z8-vtQl1LI0rwKFFnQwQG96Pf0poeM9_3ulXtVP66evybpmG4IzDTVYVYnsku0bmRx-0DTQ603W5HmaDLlCno8iSzXhknu09jAT-W7gS-0ERr"/>
-</div>
+<aside class="leftAside">
 <div>
-<p class="text-on-surface font-bold">System Sentinel</p>
-<p class="text-on-surface-variant text-[10px] uppercase tracking-widest">Anti-Fraud Unit</p>
 </div>
-</div>
-<button class="w-full py-2 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-lg font-bold flex items-center justify-center space-x-2 shadow-lg shadow-primary/20 active:scale-95 transition-all">
-<span class="material-symbols-outlined text-sm">radar</span>
-<span>开始扫描</span>
-</button>
-</div>
-<nav class="flex-1 px-4 space-y-1">
-<a class="flex items-center space-x-3 px-4 py-3 text-[#e1e5f3] opacity-60 hover:bg-[#1f2633] hover:opacity-100 transition-all rounded-lg group" href="#">
-<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">monitor_heart</span>
-<span>实时监控</span>
+<nav class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-variant)] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all" href="/ui/overallEvaluation.html">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<span>综合风险情况</span>
 </a>
-<a class="flex items-center space-x-3 px-4 py-3 bg-gradient-to-r from-[#5cbfff15] to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff] shadow-[inset_0_0_10px_rgba(92,191,255,0.1)] rounded-r-lg group" href="#">
-<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">warning</span>
-<span>风险预警</span>
-</a>
-<a class="flex items-center space-x-3 px-4 py-3 text-[#e1e5f3] opacity-60 hover:bg-[#1f2633] hover:opacity-100 transition-all rounded-lg group" href="#">
-<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">block</span>
-<span>智能拦截</span>
-</a>
-<a class="flex items-center space-x-3 px-4 py-3 text-[#e1e5f3] opacity-60 hover:bg-[#1f2633] hover:opacity-100 transition-all rounded-lg group" href="#">
-<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">analytics</span>
-<span>数据报告</span>
-</a>
-<a class="flex items-center space-x-3 px-4 py-3 text-[#e1e5f3] opacity-60 hover:bg-[#1f2633] hover:opacity-100 transition-all rounded-lg group" href="#">
-<span class="material-symbols-outlined group-hover:translate-x-1 duration-200">verified_user</span>
-<span>安全中心</span>
+<a class="bg-[var(--color-surface-variant)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] px-6 py-4 flex items-center gap-3 activeNavLink" href="/ui/reportHistory.html">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>检测历史</span>
 </a>
 </nav>
-<div class="px-4 pt-4 border-t border-outline-variant/10">
-<a class="flex items-center space-x-3 px-4 py-2 text-[#e1e5f3] opacity-60 hover:text-primary transition-all group" href="#">
-<span class="material-symbols-outlined text-sm">settings_input_component</span>
-<span>系统状态</span>
-</a>
-<a class="flex items-center space-x-3 px-4 py-2 text-[#e1e5f3] opacity-60 hover:text-primary transition-all group" href="#">
-<span class="material-symbols-outlined text-sm">support_agent</span>
-<span>技术支持</span>
+<div>
+<div class="pt-4 border-t border-slate-800/50">
+<a class="text-on-surface-variant px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>退出登录</span>
 </a>
 </div>
+</div>
 </aside>
+<!-- Action Bar (outside PDF content so it won't be exported) -->
+<div class="ml-0 lg:ml-64 px-8 pt-28 pb-4 flex justify-end">
+<div class="flex space-x-3">
+  <a href="/ui/reportHistory.html" class="px-5 py-2.5 bg-surface-container-highest border border-outline-variant/20 rounded-lg text-sm font-semibold hover:bg-surface-bright transition-all flex items-center gap-2 text-on-surface">
+    <span class="material-symbols-outlined text-sm">arrow_back</span>
+    返回
+  </a>
+  <button id="btn-export-pdf" onclick="exportReportPdf()" class="px-6 py-2.5 bg-surface-container-highest border border-outline-variant/20 rounded-lg text-sm font-semibold hover:bg-surface-bright transition-all flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm">download</span>
+    导出PDF
+  </button>
+  <button class="px-6 py-2.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+    <span class="material-symbols-outlined text-sm">share</span>
+    分享报告
+  </button>
+</div>
+</div>
 <!-- Main Content Canvas -->
-<main class="ml-0 lg:ml-64 pt-24 pb-12 px-8 min-h-screen data-grid-bg">
+<main class="ml-0 lg:ml-64 pt-4 pb-12 px-8 min-h-screen data-grid-bg" id="pdf-content">
 <div class="max-w-6xl mx-auto">
-<!-- Header Section -->
+<!-- Header -->
 <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
 <div class="space-y-2">
 <div class="flex items-center space-x-2 text-tertiary">
@@ -176,20 +172,10 @@
 <h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">高级风险检测报告</h1>
 <p class="text-on-surface-variant font-body">报告编号: <span class="font-headline tracking-wider" id="report-detail-report-id">-</span> | 生成时间: <span id="report-detail-time">-</span></p>
 </div>
-<div class="flex space-x-3">
-<button class="px-6 py-2.5 bg-surface-container-highest border border-outline-variant/20 rounded-lg text-sm font-semibold hover:bg-surface-bright transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">download</span>
-                        导出PDF
-                    </button>
-<button class="px-6 py-2.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">share</span>
-                        分享报告
-                    </button>
 </div>
-</div>
-<!-- Bento Grid Layout -->
+<!-- Bento Grid -->
 <div class="grid grid-cols-12 gap-6">
-<!-- Section 1: Comprehensive Judgment (Hero Card) -->
+<!-- 综合判断 -->
 <section class="col-span-12 lg:col-span-8 bg-surface-container-low/80 backdrop-blur-md rounded-xl p-8 border-l-4 border-error relative overflow-hidden group">
 <div class="absolute top-0 right-0 w-64 h-64 bg-error/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-error/10 transition-colors"></div>
 <div class="flex items-center gap-2 mb-6 text-error">
@@ -199,7 +185,7 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
 <div class="flex flex-col items-center justify-center bg-surface-container-highest/40 rounded-2xl p-6 border border-outline-variant/10 backdrop-blur-sm">
 <span class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-2">风险指数</span>
-<div class="text-6xl font-headline font-bold text-error drop-shadow-[0_0_15px_rgba(255,113,108,0.4)]" id="report-detail-risk-index">0.00</div>
+<div class="text-6xl font-headline font-bold text-error drop-shadow-[0_0_15px_rgba(var(--rgb-error),0.4)]" id="report-detail-risk-index">0.00</div>
 <div class="mt-4 px-4 py-1 bg-error-container/20 rounded-full border border-error/20">
 <span class="text-xs font-bold text-error uppercase">高风险级别</span>
 </div>
@@ -232,7 +218,7 @@
 </div>
 </div>
 </section>
-<!-- Section 4: Combined Personal Info (Side Card) -->
+<!-- 个人信息 -->
 <section class="col-span-12 lg:col-span-4 bg-surface-container-low/80 backdrop-blur-md rounded-xl p-8 border border-outline-variant/10 flex flex-col">
 <div class="flex items-center gap-2 mb-8 text-primary">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_search</span>
@@ -240,7 +226,7 @@
 </div>
 <div class="flex-1 flex flex-col justify-center items-center text-center space-y-6">
 <div class="w-24 h-24 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center p-2 relative">
-<img alt="User Data Avatar" class="w-full h-full rounded-full opacity-60" data-alt="A futuristic digital representation of user persona data, showing geometric nodes and glowing connections in a network pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2XhYTzfHrICMiDWizLWK9N1ZMGsrY6ZKNAgO6GomeDDVLW1xMOXWQoN9cKVgg4mNAyHWOr1e8GyvBeX7KQxC3rWUdbqNciA0dK0a6labulZZFaKtyio436oWJhn2sQRfK2_puM7nqgysearD0bURWx8JEXGVN1Ju89Kwuyznx4d5Lo-Jyysaj1gC1mufVYN2Q2UNxUDej7Bv6juKnPi5bzi6BfI9jmB4b05-ADVVw-OFQhnfq058U71cpxLQO1ti5BUZmoAUFUwSD"/>
+<img alt="User Data Avatar" class="w-full h-full rounded-full opacity-60" data-alt="Data avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2XhYTzfHrICMiDWizLWK9N1ZMGsrY6ZKNAgO6GomeDDVLW1xMOXWQoN9cKVgg4mNAyHWOr1e8GyvBeX7KQxC3rWUdbqNciA0dK0a6labulZZFaKtyio436oWJhn2sQRfK2_puM7nqgysearD0bURWx8JEXGVN1Ju89Kwuyznx4d5Lo-Jyysaj1gC1mufVYN2Q2UNxUDej7Bv6juKnPi5bzi6BfI9jmB4b05-ADVVw-OFQhnfq058U71cpxLQO1ti5BUZmoAUFUwSD"/>
 <div class="absolute inset-0 bg-primary/10 animate-pulse rounded-full"></div>
 </div>
 <div class="space-y-4">
@@ -256,7 +242,7 @@
 <div class="mt-2 text-[10px] text-on-surface-variant text-right italic">系统建议加强智能语音提醒频率</div>
 </div>
 </section>
-<!-- Section 2: RAG Detection Results -->
+<!-- RAG检测 -->
 <section class="col-span-12 md:col-span-6 bg-surface-container-low/80 backdrop-blur-md rounded-xl p-8 border border-outline-variant/10 relative overflow-hidden">
 <div class="flex items-center justify-between mb-8">
 <div class="flex items-center gap-2 text-tertiary">
@@ -286,7 +272,7 @@
 </div>
 </div>
 </section>
-<!-- Section 3: Multimodal Fusion -->
+<!-- 多模态 -->
 <section class="col-span-12 md:col-span-6 bg-surface-container-low/80 backdrop-blur-md rounded-xl p-8 border border-outline-variant/10 relative">
 <div class="flex items-center justify-between mb-8">
 <div class="flex items-center gap-2 text-primary">
@@ -299,7 +285,7 @@
 <div class="flex items-center justify-center py-4">
 <div class="relative w-48 h-2 bg-surface-container-highest rounded-full overflow-hidden">
 <div class="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary to-primary/20 animate-[shimmer_2s_infinite]"></div>
-<div class="h-full bg-primary w-[75%] shadow-[0_0_10px_rgba(92,191,255,0.6)]"></div>
+<div class="h-full bg-primary w-[75%] shadow-[0_0_10px_rgba(var(--rgb-primary),0.6)]"></div>
 </div>
 <div class="ml-4 text-2xl font-headline font-bold text-primary" id="report-detail-ai-probability">0.00</div>
 </div>
@@ -320,7 +306,7 @@
 </div>
 </div>
 </section>
-<!-- Footer Stats -->
+<!-- Footer -->
 <div class="col-span-12 flex flex-col md:flex-row justify-between items-center gap-4 py-8 border-t border-outline-variant/10">
 <div class="flex gap-8">
 <div class="flex flex-col">
@@ -348,6 +334,12 @@
 <div class="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/5 blur-[120px] rounded-full"></div>
 <div class="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-tertiary/5 blur-[120px] rounded-full"></div>
 </div>
+<script type="module">
+  import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+  initTheme();
+  const mount = document.getElementById("theme-switcher-mount");
+  if (mount) mountThemeSwitcher(mount);
+</script>
 <script>
   (function () {
     const map = {
@@ -366,25 +358,17 @@
     );
 
     navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+      a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+      a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
     });
 
     const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
     if (!activeLink) return;
 
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+    activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+    activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
   })();
 </script>
-<script src="/ui/src/report-detail-page.js" type="module"></script>
-</body></html>
-
-
-
-
-
-
-
-
-
+<script src="/ui/src/report-detail-page.js" type="module">  </script>
+</body>
+</html>

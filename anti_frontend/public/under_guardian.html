@@ -16,70 +16,70 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <link href="/ui/src/css/modal-one.css" rel="stylesheet" />
+    <link href="/ui/src/common/theme.css" rel="stylesheet"/>
+    <link href="/ui/src/css/modal-one.css" rel="stylesheet"/>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "surface-tint": "#5cbfff",
-                        "tertiary-fixed": "#00e3fd",
-                        "surface-variant": "#1f2633",
-                        "tertiary-fixed-dim": "#00d4ec",
-                        "surface-container-lowest": "#000000",
-                        "surface-container-highest": "#1f2633",
-                        "surface-container-high": "#19202c",
-                        "tertiary": "#81ecff",
-                        "primary-fixed": "#0cb3ff",
-                        "error": "#ff716c",
-                        "secondary-fixed-dim": "#cbd5e8",
-                        "secondary-container": "#3d4757",
-                        "primary-container": "#0cb3ff",
-                        "error-container": "#9f0519",
-                        "surface": "#090e17",
-                        "tertiary-container": "#00e3fd",
-                        "surface-container": "#141a25",
-                        "secondary-fixed": "#d9e3f7",
-                        "tertiary-dim": "#00d4ec",
-                        "on-surface": "#e1e5f3",
-                        "on-primary-fixed": "#000d18",
-                        "on-primary-container": "#002d45",
-                        "error-dim": "#d7383b",
-                        "outline-variant": "#434853",
-                        "inverse-on-surface": "#505560",
-                        "primary-dim": "#00a7f0",
-                        "on-error-container": "#ffa8a3",
-                        "outline": "#717581",
-                        "primary-fixed-dim": "#00a5ec",
-                        "on-tertiary-fixed-variant": "#005762",
-                        "on-error": "#490006",
-                        "secondary": "#d9e3f7",
-                        "primary": "#5cbfff",
-                        "on-primary-fixed-variant": "#003752",
-                        "on-tertiary-container": "#004d57",
-                        "on-tertiary": "#005762",
-                        "surface-bright": "#252c3b",
-                        "on-tertiary-fixed": "#003840",
-                        "inverse-primary": "#006593",
-                        "on-surface-variant": "#a6abb7",
-                        "inverse-surface": "#f9f9ff",
-                        "on-secondary-fixed": "#36404f",
-                        "on-background": "#e1e5f3",
-                        "secondary-dim": "#cbd5e8",
-                        "surface-dim": "#090e17",
-                        "on-secondary-container": "#c7d1e4",
-                        "on-secondary-fixed-variant": "#525c6c",
-                        "on-primary": "#003854",
-                        "on-secondary": "#485262",
-                        "surface-container-low": "#0e131d",
-                        "background": "#090e17"
+                        "surface-tint": "var(--color-surface-tint)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "tertiary": "var(--color-tertiary)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "error": "var(--color-error)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "primary-container": "var(--color-primary-container)",
+                        "error-container": "var(--color-error-container)",
+                        "surface": "var(--color-surface)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "surface-container": "var(--color-surface-container)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "tertiary-dim": "var(--color-tertiary-dim)",
+                        "on-surface": "var(--color-on-surface)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "error-dim": "var(--color-error-dim)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "primary-dim": "var(--color-primary-dim)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "outline": "var(--color-outline)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "on-error": "var(--color-on-error)",
+                        "secondary": "var(--color-secondary)",
+                        "primary": "var(--color-primary)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "on-background": "var(--color-on-background)",
+                        "secondary-dim": "var(--color-secondary-dim)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "on-primary": "var(--color-on-primary)",
+                        "on-secondary": "var(--color-on-secondary)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "background": "var(--color-background)"
                     },
                     "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "DEFAULT": "var(--radius-default)",
+                        "lg": "var(--radius-lg)",
+                        "xl": "var(--radius-xl)",
+                        "full": "var(--radius-full)"
                     },
                     "fontFamily": {
                         "headline": ["Space Grotesk"],
@@ -90,76 +90,51 @@
             },
         }
     </script>
-    <style>
-        body {
-            background-color: #090e17;
-            color: #e1e5f3;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .glass-panel {
-            background: rgba(25, 32, 44, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .data-grid-texture {
-            background-image: radial-gradient(rgba(92, 191, 255, 0.05) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-    </style>
+    <link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 
-<body class="bg-surface selection:bg-primary/30">
+<body class="bg-surface text-on-surface selection:bg-primary/30">
     <!-- TopNavBar -->
-    <nav
-        class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
         <div class="flex items-center gap-8">
             <span
-                class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+                class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
             <div class="hidden md:flex items-center space-x-6 font-['"'"' Space_Grotesk'"'"'] tracking-wider uppercase
                 text-xs">
-                <a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
+                <a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
                     href="/ui/detectAgent.html">反诈检测</a>
-                <a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
+                <a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
                     href="/ui/monitor.html">监护人</a>
-                <a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]"
+                <a class="text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] pb-1 cursor-pointer active:scale-95 text-[12px]"
                     href="/ui/reportHistory.html">检测历史</a>
-                <a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
+                <a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
                     href="/ui/detectSetting.html">风险检测设置</a>
-                <a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
+                <a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]"
                     href="/ui/infoSetting.html">个人信息</a>
             </div>
         </div>
         <div class="flex items-center space-x-4">
             <div class="relative group">
                 <span
-                    class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+                    class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
                 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
             </div>
             <span
-                class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-            <a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]"
+                class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+            <div id="theme-switcher-mount" class="flex items-center"></div>
+            <a aria-label="个人资料" class="inline-flex text-[var(--color-on-surface)] opacity-70 transition-all hover:text-[var(--color-tertiary)]"
                 href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
         </div>
     </nav><!-- SideNavBar -->
-    <aside
-        class="fixed left-0 top-16 h-full w-64 border-r border-slate-800/30 bg-[#090e17] dark:bg-slate-950 shadow-2xl flex flex-col pt-4 pb-20 z-40 hidden md:flex">
-        <div class="px-6 mb-8">
-            <div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
-            <div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low
-            </div>
-        </div>
+<aside class="leftAside">
+    <div>
         <nav class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
             <a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200"
                 href="/ui/monitor.html">
                 <span class="material-symbols-outlined">admin_panel_settings</span>
                 <span>管理监护人</span></a>
-            <a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3"
+            <a class="bg-[var(--color-surface-container-highest)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] px-6 py-4 flex items-center gap-3 activeNavLink"
                 href="/ui/under_guardian.html">
                 <span class="material-symbols-outlined">supervisor_account</span>
                 <span>管理被监护人</span>
@@ -169,17 +144,17 @@
                 <span class="material-symbols-outlined">hub</span>
                 <span>风险联动消息</span>
             </a>
-        </nav>
-        <div class="px-4 mt-auto mb-20">
-            <div class="pt-4 border-t border-slate-800/50">
-                <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm"
-                    href="#">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span>退出登录</span>
-                </a>
-            </div>
+    </nav>
+    <div>
+        <div class="pt-4 border-t border-slate-800/50">
+            <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm"
+                href="#">
+                <span class="material-symbols-outlined">logout</span>
+                <span>退出登录</span>
+            </a>
         </div>
-    </aside>
+    </div>
+</aside>
     <!-- Main Content -->
     <main class="ml-64 flex-1 min-h-screen pt-24 pb-16 px-10 data-grid-texture">
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -258,7 +233,7 @@
                                 <span>搜索</span>
                             </button>
                             <button
-                                class="bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold px-6 py-2.5 rounded-md flex items-center gap-2 hover:shadow-[0_0_20px_rgba(92,191,255,0.3)] transition-all active:scale-95 w-full lg:w-auto"
+                                class="bg-gradient-to-br from-primary to-primary-dim text-on-primary font-bold px-6 py-2.5 rounded-md flex items-center gap-2 hover:shadow-[0_0_20px_rgba(var(--rgb-primary),0.3)] transition-all active:scale-95 w-full lg:w-auto"
                                 id="open-ward-modal-btn" type="button">
                                 <span class="material-symbols-outlined text-lg">person_add</span>
                                 添加被监护人
@@ -477,7 +452,7 @@
                                 系统实时分析被监护人的网络环境与社交动态，通过多维向量匹配识别潜在欺诈威胁。</p>
                             <div class="flex items-center gap-4">
                                 <div class="h-2 flex-1 bg-surface-container-highest rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary w-[75%] shadow-[0_0_10px_rgba(92,191,255,0.5)]"></div>
+                                    <div class="h-full bg-primary w-[75%] shadow-[0_0_10px_rgba(var(--rgb-primary),0.5)]"></div>
                                 </div>
                                 <span class="text-xs font-headline font-bold text-primary">75% 安全率</span>
                             </div>
@@ -497,7 +472,7 @@
                                 <div class="h-16 w-2 bg-primary/40 rounded-t-sm self-end"></div>
                                 <div class="h-12 w-2 bg-primary/30 rounded-t-sm self-end"></div>
                                 <div
-                                    class="h-20 w-2 bg-tertiary/60 rounded-t-sm self-end shadow-[0_0_15px_rgba(129,236,255,0.4)]">
+                                    class="h-20 w-2 bg-tertiary/60 rounded-t-sm self-end shadow-[0_0_15px_rgba(var(--rgb-tertiary),0.4)]">
                                 </div>
                                 <div class="h-14 w-2 bg-primary/50 rounded-t-sm self-end"></div>
                                 <div class="h-18 w-2 bg-primary/40 rounded-t-sm self-end"></div>
@@ -526,6 +501,12 @@
     </main>
     </div>
     <script src="/ui/src/under-guardian-page.js" type="module"></script>
+    <script type="module">
+      import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+      initTheme();
+      const mount = document.getElementById("theme-switcher-mount");
+      if (mount) mountThemeSwitcher(mount);
+    </script>
 
     <script>
             (function () {
@@ -545,17 +526,16 @@
                 );
 
                 navLinks.forEach((a) => {
-                    a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-                    a.classList.add('text-[#e1e5f3]', 'opacity-70');
+                    a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+                    a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
                 });
 
                 const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
                 if (!activeLink) return;
 
-                activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-                activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+                activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+                activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
             })();
     </script>
 </body>
-
 </html>

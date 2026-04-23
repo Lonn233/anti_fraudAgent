@@ -18,16 +18,16 @@
   width: 100%;
   max-width: 440px;
   border-radius: 12px;
-  border: 1px solid rgba(92, 191, 255, 0.18);
-  background: rgba(20, 26, 37, 0.95);
-  box-shadow: 0 0 24px rgba(92, 191, 255, 0.16);
-  color: #e1e5f3;
+  border: 1px solid rgba(var(--rgb-primary), 0.18);
+  background: var(--color-surface-container);
+  box-shadow: 0 0 24px rgba(var(--rgb-primary), 0.16);
+  color: var(--color-on-surface);
   font-family: Inter, sans-serif;
 }
 
 .modal-one-header {
   padding: 18px 20px 10px;
-  border-bottom: 1px solid rgba(67, 72, 83, 0.35);
+  border-bottom: 1px solid rgba(var(--rgb-outline-variant), 0.35);
 }
 
 .modal-one h3 {
@@ -49,34 +49,29 @@
   font-size: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #a6abb7;
+  color: var(--color-on-surface-variant);
 }
 
 .modal-one input,
 .modal-one select {
   width: 100%;
   border-radius: 8px;
-  border: 1px solid rgba(67, 72, 83, 0.45);
-  background: #000000;
-  color: #e1e5f3;
+  border: 1px solid rgba(var(--rgb-outline-variant), 0.45);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
   padding: 10px 12px;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.modal-one input {
-  background: #000000;
-  color: #a6abb7;
-}
-
 .modal-one input::placeholder {
-  color: #a6abb7;
+  color: var(--color-on-surface-variant);
 }
 
 .modal-one input:focus,
 .modal-one select:focus {
-  border-color: rgba(92, 191, 255, 0.7);
-  box-shadow: 0 0 0 1px rgba(92, 191, 255, 0.25);
+  border-color: rgba(var(--rgb-primary), 0.7);
+  box-shadow: 0 0 0 1px rgba(var(--rgb-primary), 0.25);
 }
 
 .modal-one-actions {
@@ -98,21 +93,21 @@
 
 .modal-one-btn-cancel {
   background: transparent;
-  color: #5cbfff;
-  border-color: rgba(92, 191, 255, 0.3);
+  color: var(--color-primary);
+  border-color: rgba(var(--rgb-primary), 0.3);
 }
 
 .modal-one-btn-cancel:hover {
-  background: rgba(92, 191, 255, 0.08);
+  background: rgba(var(--rgb-primary), 0.08);
 }
 
 .modal-one-btn-add {
-  background: #5cbfff;
-  color: #003854;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .modal-one-btn-add:hover {
-  box-shadow: 0 0 15px rgba(92, 191, 255, 0.4);
+  box-shadow: 0 0 15px rgba(var(--rgb-primary), 0.4);
 }
 
 .modal-one-actions button:active {

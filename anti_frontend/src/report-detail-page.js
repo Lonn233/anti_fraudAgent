@@ -55,3 +55,37 @@ async function init() {
 init().catch((err) => {
   setText("report-detail-conclusion", err?.message || "报告加载失败");
 });
+
+export async function exportReportPdf() {
+  const btn = document.getElementById("btn-export-pdf");
+  if (btn) { btn.disabled = true; btn.textContent = "导出中…"; }
+
+  const content = document.getElementById("pdf-content");
+  const target = content || document.querySelector("main");
+
+  try {
+    const canvas = await html2canvas(target, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--color-background").trim() || "#0f1923",
+      logging: false,
+    });
+
+    const { jsPDF } = window.jspdf;
+    const orientation = canvas.width > canvas.height ? "landscape" : "portrait";
+    const pdf = new jsPDF({ orientation, unit: "px", format: [canvas.width / 2, canvas.height / 2] });
+
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width / 2, canvas.height / 2);
+
+    const reportId = document.getElementById("report-detail-report-id")?.textContent || "report";
+    pdf.save(`反诈报告_${reportId.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, "_")}.pdf`);
+  } catch (err) {
+    console.error("PDF 导出失败:", err);
+    alert("PDF 导出失败，请稍后重试。");
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "导出PDF"; }
+  }
+}
+
+window.exportReportPdf = exportReportPdf;

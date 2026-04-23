@@ -3,9 +3,9 @@
 <html class="dark" lang="zh-CN"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="/ui/src/common/theme.css" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -13,63 +13,63 @@
         theme: {
           extend: {
             "colors": {
-                    "surface-bright": "#252c3b",
-                    "inverse-primary": "#006593",
-                    "error-dim": "#d7383b",
-                    "on-primary": "#003854",
-                    "tertiary-dim": "#00d4ec",
-                    "error": "#ff716c",
-                    "secondary": "#d9e3f7",
-                    "primary-dim": "#00a7f0",
-                    "tertiary": "#81ecff",
-                    "secondary-fixed": "#d9e3f7",
-                    "primary-container": "#0cb3ff",
-                    "on-tertiary-container": "#004d57",
-                    "secondary-container": "#3d4757",
-                    "outline": "#717581",
-                    "on-surface-variant": "#a6abb7",
-                    "primary-fixed-dim": "#00a5ec",
-                    "surface-container-low": "#0e131d",
-                    "secondary-dim": "#cbd5e8",
-                    "secondary-fixed-dim": "#cbd5e8",
-                    "inverse-surface": "#f9f9ff",
-                    "surface-container": "#141a25",
-                    "surface-tint": "#5cbfff",
-                    "on-error": "#490006",
-                    "on-tertiary-fixed-variant": "#005762",
-                    "outline-variant": "#434853",
-                    "on-secondary-fixed": "#36404f",
-                    "surface-container-highest": "#1f2633",
-                    "primary": "#5cbfff",
-                    "on-secondary": "#485262",
-                    "on-tertiary": "#005762",
-                    "surface-container-high": "#19202c",
-                    "primary-fixed": "#0cb3ff",
-                    "surface-container-lowest": "#000000",
-                    "tertiary-container": "#00e3fd",
-                    "on-tertiary-fixed": "#003840",
-                    "error-container": "#9f0519",
-                    "on-secondary-fixed-variant": "#525c6c",
-                    "background": "#090e17",
-                    "on-primary-fixed": "#000d18",
-                    "on-surface": "#e1e5f3",
-                    "inverse-on-surface": "#505560",
-                    "on-primary-container": "#002d45",
-                    "on-primary-fixed-variant": "#003752",
-                    "surface": "#090e17",
-                    "on-error-container": "#ffa8a3",
-                    "tertiary-fixed-dim": "#00d4ec",
-                    "on-background": "#e1e5f3",
-                    "tertiary-fixed": "#00e3fd",
-                    "on-secondary-container": "#c7d1e4",
-                    "surface-dim": "#090e17",
-                    "surface-variant": "#1f2633"
+                    "surface-bright": "var(--color-surface-bright)",
+                    "inverse-primary": "var(--color-inverse-primary)",
+                    "error-dim": "var(--color-error-dim)",
+                    "on-primary": "var(--color-on-primary)",
+                    "tertiary-dim": "var(--color-tertiary-dim)",
+                    "error": "var(--color-error)",
+                    "secondary": "var(--color-secondary)",
+                    "primary-dim": "var(--color-primary-dim)",
+                    "tertiary": "var(--color-tertiary)",
+                    "secondary-fixed": "var(--color-secondary-fixed)",
+                    "primary-container": "var(--color-primary-container)",
+                    "on-tertiary-container": "var(--color-on-tertiary-container)",
+                    "secondary-container": "var(--color-secondary-container)",
+                    "outline": "var(--color-outline)",
+                    "on-surface-variant": "var(--color-on-surface-variant)",
+                    "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                    "surface-container-low": "var(--color-surface-container-low)",
+                    "secondary-dim": "var(--color-secondary-dim)",
+                    "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                    "inverse-surface": "var(--color-inverse-surface)",
+                    "surface-container": "var(--color-surface-container)",
+                    "surface-tint": "var(--color-surface-tint)",
+                    "on-error": "var(--color-on-error)",
+                    "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                    "outline-variant": "var(--color-outline-variant)",
+                    "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                    "surface-container-highest": "var(--color-surface-container-highest)",
+                    "primary": "var(--color-primary)",
+                    "on-secondary": "var(--color-on-secondary)",
+                    "on-tertiary": "var(--color-on-tertiary)",
+                    "surface-container-high": "var(--color-surface-container-high)",
+                    "primary-fixed": "var(--color-primary-fixed)",
+                    "surface-container-lowest": "var(--color-surface-container-lowest)",
+                    "tertiary-container": "var(--color-tertiary-container)",
+                    "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                    "error-container": "var(--color-error-container)",
+                    "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                    "background": "var(--color-background)",
+                    "on-primary-fixed": "var(--color-on-primary-fixed)",
+                    "on-surface": "var(--color-on-surface)",
+                    "inverse-on-surface": "var(--color-inverse-on-surface)",
+                    "on-primary-container": "var(--color-on-primary-container)",
+                    "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                    "surface": "var(--color-surface)",
+                    "on-error-container": "var(--color-on-error-container)",
+                    "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                    "on-background": "var(--color-on-background)",
+                    "tertiary-fixed": "var(--color-tertiary-fixed)",
+                    "on-secondary-container": "var(--color-on-secondary-container)",
+                    "surface-dim": "var(--color-surface-dim)",
+                    "surface-variant": "var(--color-surface-variant)"
             },
             "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
+                    "DEFAULT": "var(--radius-default)",
+                    "lg": "var(--radius-lg)",
+                    "xl": "var(--radius-xl)",
+                    "full": "var(--radius-full)"
             },
             "fontFamily": {
                     "headline": ["Space Grotesk"],
@@ -87,49 +87,54 @@
           max-width: 54rem;
         }
         .glass-panel {
-            background: rgba(25, 32, 44, 0.6);
+            background: var(--color-glass-bg);
             backdrop-filter: blur(20px);
         }
+        .data-grid-texture {
+            background-image: radial-gradient(rgba(var(--rgb-primary), 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
     </style>
+<link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 <body class="bg-background text-on-surface min-h-screen">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
-<div class="hidden md:flex items-center space-x-6 font-['"'"'Space_Grotesk'"'"'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<span class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
+<div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+<div id="theme-switcher-mount" class="flex items-center"></div>
+<a aria-label="个人资料" class="inline-flex text-[var(--color-on-surface)] opacity-70 transition-all hover:text-[var(--color-tertiary)]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
-<aside class="fixed left-0 top-16 h-full w-64 border-r border-slate-800/30 bg-[#090e17] dark:bg-slate-950 shadow-2xl flex flex-col pt-4 pb-20 z-40 hidden md:flex">
-<div class="px-6 mb-8">
-<div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
-<div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low</div>
+<aside class="leftAside">
+<div>
 </div>
 <nav class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
-<a class="text-[#e1e5f3] opacity-70 hover:bg-[#1f2633] hover:text-[#5cbfff] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all" href="/ui/overallEvaluation.html">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-primary)] hover:bg-[var(--color-surface-variant)] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all" href="/ui/overallEvaluation.html">
 <span class="material-symbols-outlined" data-icon="shield">shield</span>
 <span>综合风险情况</span>
 </a>
-<a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/reportHistory.html">
+<a class="bg-[var(--color-surface-variant)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] px-6 py-4 flex items-center gap-3 activeNavLink" href="/ui/reportHistory.html">
 <span class="material-symbols-outlined" data-icon="history">history</span>
 <span>检测历史</span>
 </a>
 </nav>
-<div class="px-4 mt-auto mb-20">
+<div>
 <div class="pt-4 border-t border-slate-800/50">
 <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
 <span class="material-symbols-outlined">logout</span>
@@ -164,14 +169,12 @@
 </header>
 <!-- Filtering Console -->
 <section class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
-<!-- Search -->
 <div class="md:col-span-4 relative group">
 <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
 <span class="material-symbols-outlined text-lg" style="">search</span>
 </div>
 <input class="w-full bg-surface-container-lowest border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 pl-12 pr-4 text-on-surface placeholder:text-outline/50 font-body transition-all" placeholder="搜索关键词、ID或应用名称..." type="text"/>
 </div>
-<!-- Date Filter -->
 <div class="md:col-span-3 relative">
 <select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
 <option>所有时间</option>
@@ -184,7 +187,6 @@
 <span class="material-symbols-outlined" style="">calendar_today</span>
 </div>
 </div>
-<!-- Type Filter -->
 <div class="md:col-span-3 relative">
 <select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
 <option>全部检测类型</option>
@@ -197,7 +199,6 @@
 <span class="material-symbols-outlined" style="">filter_list</span>
 </div>
 </div>
-<!-- Risk Filter -->
 <div class="md:col-span-2 relative">
 <select class="w-full bg-surface-container-low border-0 focus:ring-1 focus:ring-primary/40 rounded-xl py-4 px-4 text-on-surface font-body appearance-none cursor-pointer">
 <option>所有风险等级</option>
@@ -207,9 +208,9 @@
 </select>
 </div>
 </section>
-<!-- Results List (Editorial Style) -->
+<!-- Results List -->
 <section class="space-y-4" id="report-history-list">
-<!-- Item 1 (Critical) -->
+<!-- Item 1 -->
 <div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
 <div class="p-6 flex items-start md:items-center justify-between gap-4 md:gap-6">
@@ -235,7 +236,7 @@
 </div>
 </div>
 </div>
-<!-- Item 2 (Safe) -->
+<!-- Item 2 -->
 <div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
 <div class="p-6 flex items-start md:items-center justify-between gap-4 md:gap-6">
@@ -261,7 +262,7 @@
 </div>
 </div>
 </div>
-<!-- Item 3 (Warning) -->
+<!-- Item 3 -->
 <div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
 <div class="p-6 flex items-start md:items-center justify-between gap-4 md:gap-6">
@@ -287,7 +288,7 @@
 </div>
 </div>
 </div>
-<!-- Item 4 (Safe) -->
+<!-- Item 4 -->
 <div class="group relative overflow-hidden bg-surface-container-low hover:bg-surface-container transition-colors duration-300 rounded-xl">
 <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
 <div class="p-6 flex items-start md:items-center justify-between gap-4 md:gap-6">
@@ -331,10 +332,16 @@
 </footer>
 </div>
 </main>
-<!-- FAB for Quick Actions (Mobile Context) -->
+<!-- FAB -->
 <button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-primary to-primary-container rounded-full shadow-2xl flex items-center justify-center text-on-primary z-40 active:scale-90 transition-transform" style="">
 <span class="material-symbols-outlined" style="">analytics</span>
 </button>
+<script type="module">
+  import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+  initTheme();
+  const mount = document.getElementById("theme-switcher-mount");
+  if (mount) mountThemeSwitcher(mount);
+</script>
 <script>
   (function () {
     const map = {
@@ -357,25 +364,17 @@
     );
 
     navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+      a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+      a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
     });
 
     const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
     if (!activeLink) return;
 
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+    activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+    activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
   })();
 </script>
-<script src="/ui/src/report-history-page.js" type="module"></script>
-</body></html>
-
-
-
-
-
-
-
-
-
+<script src="/ui/src/report-history-page.js" type="module">  </script>
+</body>
+</html>

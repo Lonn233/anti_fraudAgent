@@ -1,0 +1,387 @@
+/* ============================================================
+   Theme System — CSS Variables + Theme Classes
+   All pages should link this file BEFORE tailwind-config.js
+   ============================================================ */
+
+/* ============================================================
+   1. Default (Dark) Theme — values extracted from tailwind.config
+   ============================================================ */
+:root {
+  /* ---- Primary ---- */
+  --color-primary: #5cbfff;
+  --color-primary-container: #0cb3ff;
+  --color-on-primary: #003854;
+  --color-on-primary-container: #002d45;
+  --color-primary-fixed: #0cb3ff;
+  --color-primary-fixed-dim: #00a5ec;
+  --color-primary-dim: #00a7f0;
+  --color-on-primary-fixed: #000d18;
+  --color-on-primary-fixed-variant: #003752;
+  --color-inverse-primary: #006593;
+  --color-surface-tint: #5cbfff;
+  --color-title: #5cbfff;
+
+  /* ---- Secondary ---- */
+  --color-secondary: #d9e3f7;
+  --color-secondary-container: #3d4757;
+  --color-on-secondary: #485262;
+  --color-on-secondary-container: #c7d1e4;
+  --color-secondary-fixed: #d9e3f7;
+  --color-secondary-fixed-dim: #cbd5e8;
+  --color-on-secondary-fixed: #36404f;
+  --color-on-secondary-fixed-variant: #525c6c;
+  --color-secondary-dim: #cbd5e8;
+
+  /* ---- Tertiary ---- */
+  --color-tertiary: #81ecff;
+  --color-tertiary-container: #00e3fd;
+  --color-on-tertiary: #005762;
+  --color-on-tertiary-container: #004d57;
+  --color-tertiary-fixed: #00e3fd;
+  --color-tertiary-fixed-dim: #00d4ec;
+  --color-on-tertiary-fixed: #003840;
+  --color-on-tertiary-fixed-variant: #005762;
+  --color-tertiary-dim: #00d4ec;
+
+  /* ---- Error ---- */
+  --color-error: #ff716c;
+  --color-error-container: #9f0519;
+  --color-on-error: #490006;
+  --color-on-error-container: #ffa8a3;
+  --color-error-dim: #d7383b;
+
+  /* ---- Surface ---- */
+  --color-surface: #090e17;
+  --color-surface-bright: #252c3b;
+  --color-surface-container: #141a25;
+  --color-surface-container-low: #0e131d;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-high: #19202c;
+  --color-surface-container-highest: #1f2633;
+  --color-surface-dim: #090e17;
+  --color-surface-variant: #1f2633;
+  --color-on-surface: #e1e5f3;
+  --color-on-surface-variant: #a6abb7;
+
+  /* ---- Background ---- */
+  --color-background: #090e17;
+  --color-on-background: #e1e5f3;
+
+  /* ---- Outline ---- */
+  --color-outline: #717581;
+  --color-outline-variant: #434853;
+
+  /* ---- Inverse ---- */
+  --color-inverse-surface: #f9f9ff;
+  --color-inverse-on-surface: #505560;
+
+  /* ---- Border Radius ---- */
+  --radius-default: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+
+  /* ---- Semantic aliases (convenience) ---- */
+  --color-scrollbar-thumb: #1f2633;
+  --color-scrollbar-thumb-hover: #434853;
+  --color-glass-bg: rgba(20, 26, 37, 0.65);
+  --color-glass-border: rgba(67, 72, 83, 0.35);
+  --color-active-nav-bg: #1f2633;
+  --color-nav-link-inactive: #a6abb7;
+  --color-nav-link-hover: #81ecff;
+  --color-primary-gradient-start: #5cbfff;
+  --color-primary-gradient-end: #0cb3ff;
+  --color-text-link: #a6abb7;
+  --color-text-muted: #a6abb7;
+  --color-border-default: rgba(67, 72, 83, 0.3);
+  --color-border-strong: rgba(67, 72, 83, 0.5);
+
+  /* ---- RGB triplets for use in rgba() — use like rgba(var(--rgb-primary), 0.5) ---- */
+  --rgb-primary: 92, 191, 255;
+  --rgb-primary-container: 12, 179, 255;
+  --rgb-tertiary: 129, 236, 255;
+  --rgb-tertiary-container: 0, 227, 253;
+  --rgb-error: 255, 113, 108;
+  --rgb-error-container: 159, 5, 25;
+  --rgb-secondary: 217, 227, 247;
+  --rgb-secondary-container: 61, 71, 87;
+  --rgb-outline-variant: 67, 72, 83;
+  --rgb-on-surface: 225, 229, 243;
+  --rgb-title: 92, 191, 255;
+}
+
+/* ============================================================
+   2. Light Theme
+   ============================================================ */
+html.theme-light {
+  --color-primary: #36C972;
+  --color-primary-container: #90e0ef;
+  --color-on-primary: #ffffff;
+  --color-title: #1a252c;
+  --color-on-primary-container: #001d33;
+  --color-primary-fixed: #0077b6;
+  --color-primary-fixed-dim: #0096c7;
+  --color-primary-dim: #00a8d4;
+  --color-on-primary-fixed: #ffffff;
+  --color-on-primary-fixed-variant: #00334e;
+  --color-inverse-primary: #80d8ff;
+  --color-surface-tint: #0077b6;
+
+  --color-secondary: #3a4750;
+  --color-secondary-container: #d6e0e8;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #1a252c;
+  --color-secondary-fixed: #c8d6e0;
+  --color-secondary-fixed-dim: #a8b8c4;
+  --color-on-secondary-fixed: #1a252c;
+  --color-on-secondary-fixed-variant: #2a3a44;
+  --color-secondary-dim: #a8b8c4;
+
+  --color-tertiary: #00796b;
+  --color-tertiary-container: #80cbc4;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #002020;
+  --color-tertiary-fixed: #009688;
+  --color-tertiary-fixed-dim: #4db6ac;
+  --color-on-tertiary-fixed: #ffffff;
+  --color-on-tertiary-fixed-variant: #004d40;
+  --color-tertiary-dim: #4db6ac;
+
+  --color-error: #b71c1c;
+  --color-error-container: #ffcdd2;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #410002;
+  --color-error-dim: #d32f2f;
+
+  --color-surface: #f8f9fa;
+  --color-surface-bright: #ffffff;
+  --color-surface-container: #eaeef2;
+  --color-surface-container-low: #f0f3f6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #dce0e6;
+  --color-surface-container-highest: #d0d5db;
+  --color-surface-dim: #e8ebee;
+  --color-surface-variant: #dce1e8;
+  --color-on-surface: #1a252c;
+  --color-on-surface-variant: #4a5568;
+
+  --color-background: #f8f9fa;
+  --color-on-background: #1a252c;
+
+  --color-outline: #6b7280;
+  --color-outline-variant: #c8d0d8;
+
+  --color-inverse-surface: #2a3a44;
+  --color-inverse-on-surface: #e8ecef;
+
+  --color-scrollbar-thumb: #c8d0d8;
+  --color-scrollbar-thumb-hover: #a8b4c0;
+  --color-glass-bg: rgba(255, 255, 255, 0.75);
+  --color-glass-border: rgba(200, 208, 216, 0.35);
+  --color-active-nav-bg: #e0e8f0;
+  --color-nav-link-inactive: #6b7280;
+  --color-nav-link-hover: #00947e;
+  --color-primary-gradient-start: #0077b6;
+  --color-primary-gradient-end: #0096c7;
+  --color-text-link: #6b7280;
+  --color-text-muted: #4a5568;
+  --color-border-default: rgba(100, 116, 139, 0.2);
+  --color-border-strong: rgba(100, 116, 139, 0.4);
+
+  --rgb-primary: 0, 119, 182;
+  --rgb-primary-container: 144, 224, 239;
+  --rgb-tertiary: 0, 121, 107;
+  --rgb-tertiary-container: 128, 203, 196;
+  --rgb-error: 183, 28, 28;
+  --rgb-error-container: 255, 205, 210;
+  --rgb-secondary: 58, 71, 80;
+  --rgb-secondary-container: 214, 224, 232;
+  --rgb-outline-variant: 200, 208, 216;
+  --rgb-on-surface: 26, 37, 44;
+  --rgb-title: 26, 37, 44;
+}
+
+/* ============================================================
+   3. Pink/Purple Theme
+   ============================================================ */
+html.theme-pink {
+  --color-primary: #ff6b9d;
+  --color-primary-container: #ff4081;
+  --color-on-primary: #ffffff;
+  --color-title: #ff6b9d;
+  --color-on-primary-container: #3e0018;
+  --color-primary-fixed: #ff4081;
+  --color-primary-fixed-dim: #e91e63;
+  --color-primary-dim: #ff4081;
+  --color-on-primary-fixed: #ffffff;
+  --color-on-primary-fixed-variant: #5c1133;
+  --color-inverse-primary: #ff80ab;
+  --color-surface-tint: #ff6b9d;
+
+  --color-secondary: #f3e5f5;
+  --color-secondary-container: #7b1fa2;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #f3e5f5;
+  --color-secondary-fixed: #e1bee7;
+  --color-secondary-fixed-dim: #ce93d8;
+  --color-on-secondary-fixed: #3a0052;
+  --color-on-secondary-fixed-variant: #4a1062;
+  --color-secondary-dim: #ce93d8;
+
+  --color-tertiary: #ea80fc;
+  --color-tertiary-container: #aa00ff;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #2e004f;
+  --color-tertiary-fixed: #d500f9;
+  --color-tertiary-fixed-dim: #e040fb;
+  --color-on-tertiary-fixed: #ffffff;
+  --color-on-tertiary-fixed-variant: #6a0080;
+  --color-tertiary-dim: #e040fb;
+
+  --color-error: #ff1744;
+  --color-error-container: #d50000;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #ffcdd2;
+  --color-error-dim: #ff5252;
+
+  --color-surface: #12000f;
+  --color-surface-bright: #1e0017;
+  --color-surface-container: #2a0022;
+  --color-surface-container-low: #1a000f;
+  --color-surface-container-lowest: #0a0007;
+  --color-surface-container-high: #330028;
+  --color-surface-container-highest: #3e0030;
+  --color-surface-dim: #12000f;
+  --color-surface-variant: #2a0022;
+  --color-on-surface: #fce4ec;
+  --color-on-surface-variant: #f48fb1;
+
+  --color-background: #12000f;
+  --color-on-background: #fce4ec;
+
+  --color-outline: #ad1457;
+  --color-outline-variant: #880e4f;
+
+  --color-inverse-surface: #fce4ec;
+  --color-inverse-on-surface: #3e0030;
+
+  --color-scrollbar-thumb: #3e0030;
+  --color-scrollbar-thumb-hover: #5c1048;
+  --color-glass-bg: rgba(42, 0, 34, 0.6);
+  --color-glass-border: rgba(136, 14, 79, 0.25);
+  --color-active-nav-bg: #3e0030;
+  --color-nav-link-inactive: #ad1457;
+  --color-nav-link-hover: #ea80fc;
+  --color-primary-gradient-start: #ff6b9d;
+  --color-primary-gradient-end: #ff4081;
+  --color-text-link: #ad1457;
+  --color-text-muted: #f48fb1;
+  --color-border-default: rgba(136, 14, 79, 0.3);
+  --color-border-strong: rgba(136, 14, 79, 0.5);
+
+  --rgb-primary: 255, 107, 157;
+  --rgb-primary-container: 255, 64, 129;
+  --rgb-tertiary: 234, 128, 252;
+  --rgb-tertiary-container: 170, 0, 255;
+  --rgb-error: 255, 23, 68;
+  --rgb-error-container: 213, 0, 0;
+  --rgb-secondary: 243, 229, 245;
+  --rgb-secondary-container: 123, 31, 162;
+  --rgb-outline-variant: 136, 14, 79;
+  --rgb-on-surface: 252, 228, 236;
+  --rgb-title: 255, 107, 157;
+}
+
+/* ============================================================
+   4. Utility classes built on CSS variables
+   These replace common hardcoded patterns across the codebase
+   ============================================================ */
+
+/* Glass card — shared across many pages */
+.glass-card {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-border);
+}
+
+/* Theme switcher button (topNav) */
+.theme-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  color: var(--color-on-surface);
+  opacity: 0.7;
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.theme-switcher-btn:hover {
+  opacity: 1;
+  color: var(--color-tertiary);
+  background: rgba(var(--rgb-tertiary), 0.1);
+}
+.theme-switcher-btn:active {
+  transform: scale(0.92);
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+/* Data grid overlay */
+.data-grid-overlay {
+  background-image: radial-gradient(var(--color-outline-variant) 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  opacity: 0.03;
+}
+
+/* Active nav list item */
+.activeLi {
+  background: linear-gradient(to right, rgba(var(--rgb-primary-container), 0.1), transparent);
+  border-left: 4px solid var(--color-primary);
+  font-weight: 1000;
+}
+.normalLi {
+  color: rgba(var(--rgb-on-surface), 0.4);
+}
+
+/* Brand text glow */ 
+.text-brand {
+  color: var(--color-primary);
+  text-shadow: 0 0 8px rgba(var(--rgb-primary), 0.4);
+}
+.glass-panel {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--rgb-primary), 0.1);
+}
+
+
+/* 返回按钮 */
+.return
+{
+  position: absolute;
+  top: -3rem;
+  right: 0; 
+  letter-spacing: 0.2rem;
+  font-weight: 600;
+  color:var(--color-nav-link-inactive);
+}
+
+main.ml-72{
+  margin-left: 20rem;
+}

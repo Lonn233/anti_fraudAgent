@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="dark" lang="zh-CN">
 <head>
   <meta charset="utf-8"/>
@@ -6,6 +6,8 @@
   <title>综合风险评估 · 反诈智能助手</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+  <!-- Theme CSS — MUST come before tailwind-config so CSS variables are available -->
+  <link href="/ui/src/common/theme.css" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script id="tailwind-config">
     tailwind.config = {
@@ -13,22 +15,22 @@
       theme: {
         extend: {
           colors: {
-            background: "#090e17",
-            surface: "#090e17",
-            "surface-container": "#141a25",
-            "surface-container-low": "#0e131d",
-            "surface-container-high": "#19202c",
-            "surface-container-highest": "#1f2633",
-            "surface-variant": "#1f2633",
-            primary: "#5cbfff",
-            "primary-container": "#0cb3ff",
-            tertiary: "#81ecff",
-            error: "#ff716c",
-            outline: "#717581",
-            "outline-variant": "#434853",
-            "on-surface": "#e1e5f3",
-            "on-surface-variant": "#a6abb7",
-            "on-primary": "#003854",
+            background: "var(--color-background)",
+            surface: "var(--color-surface)",
+            "surface-container": "var(--color-surface-container)",
+            "surface-container-low": "var(--color-surface-container-low)",
+            "surface-container-high": "var(--color-surface-container-high)",
+            "surface-container-highest": "var(--color-surface-container-highest)",
+            "surface-variant": "var(--color-surface-variant)",
+            primary: "var(--color-primary)",
+            "primary-container": "var(--color-primary-container)",
+            tertiary: "var(--color-tertiary)",
+            error: "var(--color-error)",
+            outline: "var(--color-outline)",
+            "outline-variant": "var(--color-outline-variant)",
+            "on-surface": "var(--color-on-surface)",
+            "on-surface-variant": "var(--color-on-surface-variant)",
+            "on-primary": "var(--color-on-primary)",
           },
           fontFamily: {
             headline: ["Space Grotesk", "sans-serif"],
@@ -45,22 +47,24 @@
       vertical-align: middle;
     }
     .glass-panel {
-      background: rgba(25, 32, 44, 0.65);
+      background: var(--color-glass-bg);
       backdrop-filter: blur(16px);
-      border: 1px solid rgba(67, 72, 83, 0.35);
+      border: 1px solid var(--color-glass-border);
     }
     .data-grid-bg {
-      background-image: radial-gradient(rgba(92, 191, 255, 0.06) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(var(--rgb-primary), 0.06) 1px, transparent 1px);
       background-size: 22px 22px;
     }
     .chart-box { height: 320px; width: 100%; }
     .chart-box-sm { height: 280px; width: 100%; }
   </style>
+  <link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 <body class="bg-background text-on-surface font-body min-h-screen data-grid-bg">
-  <nav class="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant/20 bg-[#090e17]/85 px-6 backdrop-blur-xl md:px-8">
+  <nav class="topNav_oe">
     <div class="flex items-center gap-6 md:gap-8">
-      <span class="font-headline text-lg font-bold tracking-tight text-primary drop-shadow-[0_0_10px_rgba(92,191,255,0.35)]">反诈智能助手</span>
+      <span class="font-headline text-lg font-bold tracking-tight text-primary" style="filter:drop-shadow(0 0 10px rgba(var(--rgb-title),0.35))">反诈智能助手</span>
       <div class="hidden items-center gap-5 text-xs font-medium uppercase tracking-wide md:flex">
         <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/detectAgent.html">反诈检测</a>
         <a class="text-on-surface/70 transition hover:text-tertiary" href="/ui/monitor.html">监护人</a>
@@ -72,18 +76,15 @@
     <div class="flex items-center gap-3 text-on-surface/70">
       <span class="material-symbols-outlined cursor-pointer text-xl hover:text-tertiary">notifications</span>
       <span class="material-symbols-outlined cursor-pointer text-xl hover:text-tertiary">shield</span>
+      <div id="theme-switcher-mount" class="flex items-center"></div>
       <a aria-label="个人资料" class="inline-flex hover:text-tertiary" href="/ui/infoSetting.html"><span class="material-symbols-outlined text-xl">account_circle</span></a>
     </div>
   </nav>
 
-  <!-- SideNavBar -->
-  <aside class="fixed left-0 top-16 z-40 hidden h-full w-64 flex-col border-r border-slate-800/30 bg-[#090e17] pt-4 pb-20 shadow-2xl dark:bg-slate-950 lg:flex">
-    <div class="mb-8 px-6">
-      <div class="font-['Space_Grotesk'] text-lg font-black tracking-widest text-[#5cbfff]">SENTINEL CORE</div>
-      <div class="mt-1 text-[10px] font-label uppercase tracking-widest text-tertiary/70">Vulnerability Level: Low</div>
-    </div>
-    <div class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
-      <a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/overallEvaluation.html">
+  <aside class="leftAside">
+    <div>
+      <nav>
+      <a class="activeNavLink bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/overallEvaluation.html">
         <span class="material-symbols-outlined" data-icon="shield">shield</span>
         <span>综合风险情况</span>
       </a>
@@ -91,8 +92,8 @@
         <span class="material-symbols-outlined" data-icon="history">history</span>
         <span>检测历史</span>
       </a>
-    </div>
-    <div class="px-4 mt-auto mb-20">
+    </nav>
+    <div>
       <div class="pt-4 border-t border-slate-800/50">
         <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
           <span class="material-symbols-outlined">logout</span>
@@ -563,5 +564,11 @@
   badge.textContent = "中危";
 })();
   </script>
+  <script type="module">
+    import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+    initTheme();
+    const mount = document.getElementById("theme-switcher-mount");
+    if (mount) mountThemeSwitcher(mount);
+    </script>
 </body>
 </html>

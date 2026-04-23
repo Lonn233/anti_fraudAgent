@@ -1,76 +1,79 @@
 ﻿<!DOCTYPE html>
 
-<html class="dark" lang="zh-CN"><head>
+<html class="dark" lang="zh-CN">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>监护联动消息 - SENTINEL AI</title>
+<link href="/ui/src/common/theme.css" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="/ui/src/css/modal-one.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+<link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "on-secondary": "#485262",
-                        "surface-bright": "#252c3b",
-                        "background": "#090e17",
-                        "outline": "#717581",
-                        "primary-container": "#0cb3ff",
-                        "inverse-primary": "#006593",
-                        "tertiary-container": "#00e3fd",
-                        "tertiary-fixed": "#00e3fd",
-                        "primary-fixed": "#0cb3ff",
-                        "on-tertiary-fixed-variant": "#005762",
-                        "outline-variant": "#434853",
-                        "secondary-dim": "#cbd5e8",
-                        "on-tertiary-container": "#004d57",
-                        "on-primary-fixed-variant": "#003752",
-                        "on-background": "#e1e5f3",
-                        "on-secondary-fixed-variant": "#525c6c",
-                        "inverse-surface": "#f9f9ff",
-                        "on-surface-variant": "#a6abb7",
-                        "secondary-fixed": "#d9e3f7",
-                        "on-primary-fixed": "#000d18",
-                        "on-surface": "#e1e5f3",
-                        "secondary-container": "#3d4757",
-                        "on-primary": "#003854",
-                        "surface-container-high": "#19202c",
-                        "tertiary-fixed-dim": "#00d4ec",
-                        "inverse-on-surface": "#505560",
-                        "error-container": "#9f0519",
-                        "surface-container": "#141a25",
-                        "on-error-container": "#ffa8a3",
-                        "surface-variant": "#1f2633",
-                        "on-primary-container": "#002d45",
-                        "on-tertiary": "#005762",
-                        "on-error": "#490006",
-                        "tertiary-dim": "#00d4ec",
-                        "error-dim": "#d7383b",
-                        "surface": "#090e17",
-                        "surface-dim": "#090e17",
-                        "surface-container-low": "#0e131d",
-                        "primary-dim": "#00a7f0",
-                        "primary": "#5cbfff",
-                        "on-secondary-fixed": "#36404f",
-                        "primary-fixed-dim": "#00a5ec",
-                        "error": "#ff716c",
-                        "surface-container-highest": "#1f2633",
-                        "tertiary": "#81ecff",
-                        "on-tertiary-fixed": "#003840",
-                        "on-secondary-container": "#c7d1e4",
-                        "surface-tint": "#5cbfff",
-                        "surface-container-lowest": "#000000",
-                        "secondary-fixed-dim": "#cbd5e8",
-                        "secondary": "#d9e3f7"
+                        "on-secondary": "var(--color-on-secondary)",
+                        "surface-bright": "var(--color-surface-bright)",
+                        "background": "var(--color-background)",
+                        "outline": "var(--color-outline)",
+                        "primary-container": "var(--color-primary-container)",
+                        "inverse-primary": "var(--color-inverse-primary)",
+                        "tertiary-container": "var(--color-tertiary-container)",
+                        "tertiary-fixed": "var(--color-tertiary-fixed)",
+                        "primary-fixed": "var(--color-primary-fixed)",
+                        "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                        "outline-variant": "var(--color-outline-variant)",
+                        "secondary-dim": "var(--color-secondary-dim)",
+                        "on-tertiary-container": "var(--color-on-tertiary-container)",
+                        "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                        "on-background": "var(--color-on-background)",
+                        "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                        "inverse-surface": "var(--color-inverse-surface)",
+                        "on-surface-variant": "var(--color-on-surface-variant)",
+                        "secondary-fixed": "var(--color-secondary-fixed)",
+                        "on-primary-fixed": "var(--color-on-primary-fixed)",
+                        "on-surface": "var(--color-on-surface)",
+                        "secondary-container": "var(--color-secondary-container)",
+                        "on-primary": "var(--color-on-primary)",
+                        "surface-container-high": "var(--color-surface-container-high)",
+                        "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                        "inverse-on-surface": "var(--color-inverse-on-surface)",
+                        "error-container": "var(--color-error-container)",
+                        "surface-container": "var(--color-surface-container)",
+                        "on-error-container": "var(--color-on-error-container)",
+                        "surface-variant": "var(--color-surface-variant)",
+                        "on-primary-container": "var(--color-on-primary-container)",
+                        "on-tertiary": "var(--color-on-tertiary)",
+                        "on-error": "var(--color-on-error)",
+                        "tertiary-dim": "var(--color-tertiary-dim)",
+                        "error-dim": "var(--color-error-dim)",
+                        "surface": "var(--color-surface)",
+                        "surface-dim": "var(--color-surface-dim)",
+                        "surface-container-low": "var(--color-surface-container-low)",
+                        "primary-dim": "var(--color-primary-dim)",
+                        "primary": "var(--color-primary)",
+                        "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                        "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                        "error": "var(--color-error)",
+                        "surface-container-highest": "var(--color-surface-container-highest)",
+                        "tertiary": "var(--color-tertiary)",
+                        "on-tertiary-fixed": "var(--color-on-tertiary-fixed)",
+                        "on-secondary-container": "var(--color-on-secondary-container)",
+                        "surface-tint": "var(--color-surface-tint)",
+                        "surface-container-lowest": "var(--color-surface-container-lowest)",
+                        "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                        "secondary": "var(--color-secondary)"
                     },
                     "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "DEFAULT": "var(--radius-default)",
+                        "lg": "var(--radius-lg)",
+                        "xl": "var(--radius-xl)",
+                        "full": "var(--radius-full)"
                     },
                     "fontFamily": {
                         "headline": ["Space Grotesk"],
@@ -83,70 +86,69 @@
     </script>
 <style>
         body {
-            background-color: #090e17;
-            color: #e1e5f3;
+            background-color: var(--color-surface);
+            color: var(--color-on-surface);
             font-family: 'Inter', sans-serif;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .glass-panel {
-            background: rgba(25, 32, 44, 0.6);
+            background: var(--color-glass-bg);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(67, 72, 83, 0.15);
+            border: 1px solid var(--color-glass-border);
         }
         .data-grid-texture {
-            background-image: radial-gradient(rgba(92, 191, 255, 0.03) 1px, transparent 0);
+            background-image: radial-gradient(rgba(var(--rgb-primary), 0.03) 1px, transparent 0);
             background-size: 24px 24px;
         }
     </style>
 </head>
 <body class="data-grid-texture">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<span class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
 <div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
 <a href="/ui/monitor_msg.html" title="联动消息">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
 <span id="topnav-alert-badge" class="absolute -top-1 -right-1 hidden min-w-[18px] h-[18px] bg-error text-white text-[10px] font-bold rounded-full flex items-center justify-center px-0.5">0</span>
 </a>
 </div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<a aria-label="个人资料" class="inline-flex text-[#e1e5f3] opacity-70 transition-all hover:text-[#81ecff]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+<div id="theme-switcher-mount" class="flex items-center"></div>
+<a aria-label="个人资料" class="inline-flex text-[var(--color-on-surface)] opacity-70 transition-all hover:text-[var(--color-tertiary)]" href="/ui/infoSetting.html"><span class="material-symbols-outlined">account_circle</span></a>
 </div>
 </nav><!-- SideNavBar -->
-<aside class="fixed left-0 top-16 h-full w-64 border-r border-slate-800/30 bg-[#090e17] dark:bg-slate-950 shadow-2xl flex flex-col h-full pt-4 pb-20 z-40 hidden md:flex">
-<div class="px-6 mb-8">
-<div class="font-['Space_Grotesk'] font-black text-[#5cbfff] tracking-widest text-lg">SENTINEL CORE</div>
-<div class="text-[10px] text-tertiary/70 font-label tracking-widest uppercase mt-1">Vulnerability Level: Low</div>
+<aside class="leftAside">
+<div>
 </div>
 <nav class="flex-1 space-y-1 font-['Inter'] text-sm font-medium tracking-wide">
-<a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/monitor.html">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all hover:translate-x-1 duration-200" href="/ui/monitor.html">
 <span class="material-symbols-outlined">admin_panel_settings</span>
 <span>管理监护人</span>
-<span id="sidebar-monitor-dot" class="hidden w-2 h-2 rounded-full bg-error shadow-[0_0_6px_#ff716c]"></span>
+<span id="sidebar-monitor-dot" class="hidden w-2 h-2 rounded-full bg-error shadow-[0_0_6px_var(--color-error)]"></span>
 </a>
-<a class="text-slate-500 px-6 py-4 flex items-center gap-3 hover:text-slate-300 hover:bg-[#0e131d] transition-all hover:translate-x-1 duration-200" href="/ui/under_guardian.html">
+<a class="text-[var(--color-on-surface)] opacity-70 hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)] hover:opacity-100 px-6 py-4 flex items-center gap-3 transition-all hover:translate-x-1 duration-200" href="/ui/under_guardian.html">
 <span class="material-symbols-outlined">supervisor_account</span>
 <span>管理被监护人</span>
 </a>
-<a class="bg-[#1f2633] text-[#5cbfff] border-l-4 border-[#5cbfff] px-6 py-4 flex items-center gap-3" href="/ui/monitor_msg.html">
+<a class="bg-[var(--color-surface-variant)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] px-6 py-4 flex items-center gap-3 activeNavLink" href="/ui/monitor_msg.html">
 <span class="material-symbols-outlined">hub</span>
 <span>风险联动消息</span>
-<span id="sidebar-msg-dot" class="hidden w-2 h-2 rounded-full bg-error shadow-[0_0_6px_#ff716c]"></span>
+<span id="sidebar-msg-dot" class="hidden w-2 h-2 rounded-full bg-error shadow-[0_0_6px_var(--color-error)]"></span>
 </a>
 </nav>
-<div class="px-4 mt-auto mb-20">
+<div>
 <div class="pt-4 border-t border-slate-800/50">
 <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-sm" href="#">
 <span class="material-symbols-outlined">logout</span>
@@ -157,7 +159,6 @@
 </aside>
 <!-- Main Content -->
 <main class="ml-64 mt-16 p-8 min-h-screen">
-<!-- Header Section -->
 <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
 <div>
 <h1 class="text-4xl font-headline font-bold tracking-tight text-on-background mb-2">监护联动消息</h1>
@@ -170,7 +171,6 @@
 </div>
 </div>
 </div>
-<!-- Message List Table -->
 <section class="glass-panel rounded-xl overflow-hidden shadow-[0_8px_32px_0_rgba(0,0,0,0.2)]">
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
@@ -188,12 +188,10 @@
 <tbody id="alert-tbody" class="divide-y divide-outline-variant/5"></tbody>
 </table>
 </div>
-<!-- Empty state -->
 <div id="alert-empty-state" class="hidden px-6 py-12 text-center">
   <span class="material-symbols-outlined text-5xl text-outline mb-3">inbox</span>
   <p class="text-on-surface-variant text-sm">暂无联动预警消息</p>
 </div>
-<!-- Pagination -->
 <div class="px-6 py-4 bg-surface-container-low/30 border-t border-outline-variant/10 flex items-center justify-between">
   <span id="alert-pagination-summary" class="text-xs text-outline font-label">显示 0 条，共 0 条；共 1 页</span>
   <div class="flex gap-2">
@@ -208,7 +206,6 @@
   <button id="alert-mark-all-btn" class="px-3 py-1.5 bg-surface-container-highest text-primary text-xs font-bold rounded border border-primary/10 hover:bg-primary hover:text-on-primary transition-all" type="button">全部标为已读</button>
 </div>
 </section>
-<!-- Stats Grid -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
 <div class="glass-panel p-6 rounded-xl relative overflow-hidden">
 <div class="absolute top-0 right-0 p-4 opacity-10">
@@ -242,7 +239,13 @@
 </div>
 </div>
 </main>
-<script type="module" src="/ui/src/monitor-msg-page.js"></script>
+<script type="module">
+  import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+  initTheme();
+  const mount = document.getElementById("theme-switcher-mount");
+  if (mount) mountThemeSwitcher(mount);
+</script>
+<script src="/ui/src/monitor-msg-page.js" type="module"></script>
 <script>
   (function () {
     const map = {
@@ -262,13 +265,14 @@
       ["/ui/detectAgent.html", "/ui/monitor.html", "/ui/under_guardian.html", "/ui/monitor_msg.html", "/ui/overallEvaluation.html", "/ui/reportHistory.html", "/ui/detectSetting.html", "/ui/infoSetting.html", "/ui/accountManage.html"].includes(a.getAttribute('href'))
     );
     navLinks.forEach((a) => {
-      a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-      a.classList.add('text-[#e1e5f3]', 'opacity-70');
+      a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+      a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
     });
     const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
     if (!activeLink) return;
-    activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-    activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+    activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+    activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
   })();
-</script>
-</body></html>
+  </script>
+</body>
+</html>

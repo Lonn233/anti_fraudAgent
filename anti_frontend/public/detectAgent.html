@@ -3,124 +3,75 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<style>
-    .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #090e17;
-        color: #e1e5f3;
-    }
-    .headline-font {
-        font-family: 'Space Grotesk', sans-serif;
-    }
-    .data-grid-overlay {
-        background-image: radial-gradient(#434853 0.5px, transparent 0.5px);
-        background-size: 24px 24px;
-        opacity: 0.03;
-    }
-    .glass-card {
-        background: rgba(25, 32, 44, 0.6);
-        backdrop-filter: blur(20px);
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #1f2633;
-        border-radius: 10px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #434853;
-    }
-    /* 模式切换按钮激活状态 - 参考对话模式初始选中样式 */
-    .active {
-        background-color: #5cbfff !important;
-        color: #003854 !important;
-        box-shadow: 0 0 10px rgba(92, 191, 255, 0.4) !important;
-        border-radius: 0.375rem !important;
-        padding: 0.375rem 1rem !important;
-    }
-    /* 对话列表激活项 */
-    .activeLi {
-        background: linear-gradient(to right, rgba(110, 0, 184, 0.1), rgba(92, 191, 255, 0));
-        border-left: 4px solid #17B4FF;
-        font-weight: 1000;
-    }
-    .normalLi {
-        color: rgba(225, 229, 243, 0.4);
-    }
-</style>
+<!-- Theme CSS — MUST come before tailwind-config so variables are available -->
+<link href="/ui/src/common/theme.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
     tailwind.config = {
         darkMode: "class",
         theme: {
             extend: {
                 "colors": {
-                    "surface-container-low": "#0e131d",
-                    "error-container": "#9f0519",
-                    "primary-dim": "#00a7f0",
-                    "on-tertiary-container": "#004d57",
-                    "on-secondary-fixed": "#36404f",
-                    "outline-variant": "#434853",
-                    "tertiary-dim": "#00d4ec",
-                    "on-tertiary-fixed": "#003840",
-                    "primary-container": "#0cb3ff",
-                    "secondary-fixed-dim": "#cbd5e8",
-                    "surface": "#090e17",
-                    "primary-fixed-dim": "#00a5ec",
-                    "background": "#090e17",
-                    "on-surface-variant": "#a6abb7",
-                    "on-primary": "#003854",
-                    "on-primary-fixed": "#000d18",
-                    "inverse-primary": "#006593",
-                    "error-dim": "#d7383b",
-                    "inverse-on-surface": "#505560",
-                    "secondary-dim": "#cbd5e8",
-                    "tertiary-container": "#00e3fd",
-                    "error": "#ff716c",
-                    "on-background": "#e1e5f3",
-                    "on-primary-fixed-variant": "#003752",
-                    "outline": "#717581",
-                    "on-secondary-container": "#c7d1e4",
-                    "surface-bright": "#252c3b",
-                    "on-tertiary-fixed-variant": "#005762",
-                    "on-primary-container": "#002d45",
-                    "on-secondary": "#485262",
-                    "surface-dim": "#090e17",
-                    "on-secondary-fixed-variant": "#525c6c",
-                    "primary-fixed": "#0cb3ff",
-                    "surface-container": "#141a25",
-                    "on-tertiary": "#005762",
-                    "surface-variant": "#1f2633",
-                    "surface-container-lowest": "#000000",
-                    "on-error": "#490006",
-                    "on-error-container": "#ffa8a3",
-                    "inverse-surface": "#f9f9ff",
-                    "surface-tint": "#5cbfff",
-                    "secondary-container": "#3d4757",
-                    "tertiary-fixed": "#00e3fd",
-                    "primary": "#5cbfff",
-                    "on-surface": "#e1e5f3",
-                    "surface-container-high": "#19202c",
-                    "secondary": "#d9e3f7",
-                    "surface-container-highest": "#1f2633",
-                    "tertiary": "#81ecff",
-                    "tertiary-fixed-dim": "#00d4ec",
-                    "secondary-fixed": "#d9e3f7"
+                    /* All colors reference CSS variables — themes change by updating the <html> class */
+                    "surface-container-low": "var(--color-surface-container-low)",
+                    "error-container": "var(--color-error-container)",
+                    "primary-dim": "var(--color-primary-dim)",
+                    "on-tertiary-container": "var(--color-on-tertiary-container)",
+                    "on-secondary-fixed": "var(--color-on-secondary-fixed)",
+                    "outline-variant": "var(--color-outline-variant)",
+                    "tertiary-dim": "var(--color-tertiary-dim)",
+                    "on-tertiatopNav_oery-fixed": "var(--color-on-tertiary-fixed)",
+                    "primary-container": "var(--color-primary-container)",
+                    "secondary-fixed-dim": "var(--color-secondary-fixed-dim)",
+                    "surface": "var(--color-surface)",
+                    "primary-fixed-dim": "var(--color-primary-fixed-dim)",
+                    "background": "var(--color-background)",
+                    "on-surface-variant": "var(--color-on-surface-variant)",
+                    "on-primary": "var(--color-on-primary)",
+                    "on-primary-fixed": "var(--color-on-primary-fixed)",
+                    "inverse-primary": "var(--color-inverse-primary)",
+                    "error-dim": "var(--color-error-dim)",
+                    "inverse-on-surface": "var(--color-inverse-on-surface)",
+                    "secondary-dim": "var(--color-secondary-dim)",
+                    "tertiary-container": "var(--color-tertiary-container)",
+                    "error": "var(--color-error)",
+                    "on-background": "var(--color-on-background)",
+                    "on-primary-fixed-variant": "var(--color-on-primary-fixed-variant)",
+                    "outline": "var(--color-outline)",
+                    "on-secondary-container": "var(--color-on-secondary-container)",
+                    "surface-bright": "var(--color-surface-bright)",
+                    "on-tertiary-fixed-variant": "var(--color-on-tertiary-fixed-variant)",
+                    "on-primary-container": "var(--color-on-primary-container)",
+                    "on-secondary": "var(--color-on-secondary)",
+                    "surface-dim": "var(--color-surface-dim)",
+                    "on-secondary-fixed-variant": "var(--color-on-secondary-fixed-variant)",
+                    "primary-fixed": "var(--color-primary-fixed)",
+                    "surface-container": "var(--color-surface-container)",
+                    "on-tertiary": "var(--color-on-tertiary)",
+                    "surface-variant": "var(--color-surface-variant)",
+                    "surface-container-lowest": "var(--color-surface-container-lowest)",
+                    "on-error": "var(--color-on-error)",
+                    "on-error-container": "var(--color-on-error-container)",
+                    "inverse-surface": "var(--color-inverse-surface)",
+                    "surface-tint": "var(--color-surface-tint)",
+                    "secondary-container": "var(--color-secondary-container)",
+                    "tertiary-fixed": "var(--color-tertiary-fixed)",
+                    "primary": "var(--color-primary)",
+                    "on-surface": "var(--color-on-surface)",
+                    "surface-container-high": "var(--color-surface-container-high)",
+                    "secondary": "var(--color-secondary)",
+                    "surface-container-highest": "var(--color-surface-container-highest)",
+                    "tertiary": "var(--color-tertiary)",
+                    "tertiary-fixed-dim": "var(--color-tertiary-fixed-dim)",
+                    "secondary-fixed": "var(--color-secondary-fixed)"
                 },
                 "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
+                    "DEFAULT": "var(--radius-default)",
+                    "lg": "var(--radius-lg)",
+                    "xl": "var(--radius-xl)",
+                    "full": "var(--radius-full)"
                 },
                 "fontFamily": {
                     "headline": ["Space Grotesk"],
@@ -131,37 +82,94 @@
         }
     }
 </script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--color-surface);
+        color: var(--color-on-surface);
+    }
+    .headline-font {
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    .data-grid-overlay {
+        background-image: radial-gradient(var(--color-outline-variant) 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+        opacity: 0.03;
+    }
+    .glass-card {
+        background: var(--color-glass-bg);
+        backdrop-filter: blur(20px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--color-scrollbar-thumb);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--color-scrollbar-thumb-hover);
+    }
+    /* 模式切换按钮激活状态 */
+    .active {
+        background-color: var(--color-primary) !important;
+        color: var(--color-on-primary) !important;
+        box-shadow: 0 0 10px rgba(var(--rgb-primary), 0.4) !important;
+        border-radius: 0.375rem !important;
+        padding: 0.375rem 1rem !important;
+    }
+    /* 对话列表激活项 */
+    .activeLi {
+        background: linear-gradient(to right, rgba(var(--rgb-primary-container), 0.1), transparent);
+        border-left: 4px solid var(--color-primary);
+        font-weight: 1000;
+    }
+    .normalLi {
+        color: rgba(var(--rgb-on-surface), 0.4);
+    }
+</style>
+  <link href="/ui/src/css/common/nav.css" rel="stylesheet"/>
+  <link href="/ui/src/css/common/aside.css" rel="stylesheet"/>
 </head>
 <body class="bg-surface text-on-surface selection:bg-tertiary/30">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-[#090e17] backdrop-blur-xl bg-opacity-60 flex justify-between items-center px-8 h-16 w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+<nav class="topNav_oe">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold tracking-tighter text-[#5cbfff] drop-shadow-[0_0_8px_rgba(92,191,255,0.4)] font-headline">反诈智能助手</span>
+<span class="text-xl font-bold tracking-tighter text-[var(--color-primary)] drop-shadow-[0_0_8px_rgba(var(--rgb-primary),0.4)] font-headline">反诈智能助手</span>
 <div class="hidden md:flex items-center space-x-6 font-['Space_Grotesk'] tracking-wider uppercase text-xs">
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
-<a class="text-[#81ecff] border-b-2 border-[#81ecff] pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
-<a class="text-[#e1e5f3] opacity-70 hover:text-[#81ecff] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectAgent.html">反诈检测</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/monitor.html">监护人</a>
+<a class=" border-b-2 border-[var(--color-primary) pb-1 cursor-pointer active:scale-95 text-[12px]" href="/ui/reportHistory.html">检测历史</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/detectSetting.html">风险检测设置</a>
+<a class="text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] hover:opacity-100 transition-all duration-300 cursor-pointer active:scale-95 text-[12px]" href="/ui/infoSetting.html">个人信息</a>
 </div>
 </div>
 <div class="flex items-center space-x-4">
 <div class="relative group">
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">notifications</span>
 <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
 </div>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">shield</span>
-<span class="material-symbols-outlined text-[#e1e5f3] opacity-70 hover:text-[#81ecff] transition-all cursor-pointer">account_circle</span>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">shield</span>
+<div id="theme-switcher-mount" class="flex items-center"></div>
+<span class="material-symbols-outlined text-[var(--color-on-surface)] opacity-70 hover:text-[var(--color-tertiary)] transition-all cursor-pointer">account_circle</span>
 </div>
 </nav>
 
 <!-- SideNavBar -->
-<aside class="flex flex-col pt-20 pb-8 px-4 border-r border-[#434853]/15 h-screen w-72 left-0 top-0 fixed bg-[#0e131d] font-['Inter'] text-sm antialiased">
+<aside class="leftAside_da">
 <div class="mb-6 px-2">
-<div class="headline-font font-bold text-[#81ecff] text-lg uppercase tracking-widest mb-1">SENTINEL COMMAND</div>
-<div class="text-[10px] uppercase tracking-[0.2em] text-[#5cbfff] opacity-70">Threat Level: Low</div>
+<div class="headline-font font-bold text-[var(--color-tertiary)] text-lg uppercase tracking-widest mb-1"> 
+    <img src="/ui/src/assets/logo3.png"style="display:inline-block; width:60px;height:60px; border-radius:50%" alt="">
+    您好，Lonn233</div>
+<div class="text-[10px] uppercase tracking-[0.2em] text-[var(--color-primary)] opacity-70"></div>
 </div>
-<button class="mb-8 w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(92,191,255,0.2)]" id="detect-new-chat-btn" type="button">
+<button class="mb-8 w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(var(--rgb-primary),0.2)]" id="detect-new-chat-btn" type="button">
 <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
 新建对话
 </button>
@@ -169,32 +177,31 @@
 <div class="px-2 mb-2">
 <span class="text-[10px] font-bold text-outline uppercase tracking-wider">对话历史</span>
 </div>
-<a class="group flex items-center gap-3 px-3 py-3 bg-gradient-to-r from-[#5cbfff]/10 to-transparent text-[#5cbfff] border-l-4 border-[#5cbfff] transition-all duration-200" href="#">
+<a class="activeNavLink group flex items-center gap-3 px-3 py-3 bg-gradient-to-r from-[var(--color-primary)]/10 to-transparent text-[var(--color-primary)] border-l-4 border-[var(--color-primary)] transition-all duration-200" href="#">
 <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span>
 <span class="truncate">疑似刷单短信分析</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<a class="group flex items-center gap-3 px-3 py-3 text-[var(--color-on-surface)]/40 hover:bg-[var(--color-surface-variant)]/30 hover:translate-x-1 transition-all duration-200" href="#">
 <span class="material-symbols-outlined text-[18px]" data-icon="link">link</span>
 <span class="truncate">恶意链接检测记录</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<a class="group flex items-center gap-3 px-3 py-3 text-[var(--color-on-surface)]/40 hover:bg-[var(--color-surface-variant)]/30 hover:translate-x-1 transition-all duration-200" href="#">
 <span class="material-symbols-outlined text-[18px]" data-icon="phone_disabled">phone_disabled</span>
 <span class="truncate">电话拦截记录</span>
 </a>
-<a class="group flex items-center gap-3 px-3 py-3 text-[#e1e5f3]/40 hover:bg-[#1f2633]/30 hover:translate-x-1 transition-all duration-200" href="#">
+<a class="group flex items-center gap-3 px-3 py-3 text-[var(--color-on-surface)]/40 hover:bg-[var(--color-surface-variant)]/30 hover:translate-x-1 transition-all duration-200" href="#">
 <span class="material-symbols-outlined text-[18px]" data-icon="archive">archive</span>
 <span class="truncate">历史存档</span>
 </a>
 </div>
-<div class="mt-auto pt-4 border-t border-[#434853]/15 flex items-center gap-3 px-2">
-<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-[#5cbfff]/30">
-<img alt="User Intelligence Profile" data-alt="Cyberpunk style digital avatar of a security analyst with blue neon highlights and minimalist tech features" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBntmoNVd9j0p26IyAK7PoupOLB7dDY8-zz9USsjv58_S3MjVdBLXQX2i0JdfwLbrBRYACFTo-iyqJoiO9JYfy3niLcaseQ3AI9nQCTENM2LSOIvHSxrNgEgdA-V4um9rmSaVQRZPqWSqvb7J44GJmDb77k0ZKIWAnQHFrzY_zpP_9prArPLrMogVEfwgTCF1lIXd79LF0i7FGYaZPXpZ-wpf6zro3tvEOOTr60MTU4lz6XZcAl52RcuJgoBOs3LSo5UIyMet0G8IpS"/>
-</div>
-<div>
-<div class="text-xs font-bold text-on-surface">Admin Sentinel</div>
-<div class="text-[10px] text-tertiary">Verified Node</div>
-</div>
-</div>
+<div class="px-4 mt-auto mb-20">
+    <div class="pt-4 border-t border-slate-800/50">
+    <a class="text-slate-500 px-2 py-2 flex items-center gap-3 hover:text-error transition-colors text-[16px]" href="#">
+    <span class="material-symbols-outlined">logout</span>
+    <span>退出登录</span>
+    </a>
+    </div>
+    </div>
 </aside>
 
 <!-- Main Content Canvas -->
@@ -205,7 +212,7 @@
 <header class="px-8 py-6 flex justify-between items-end border-b border-outline-variant/10 relative z-10">
 <div>
 <h1 class="text-3xl font-bold headline-font tracking-tight text-on-surface">反诈智能对话中心</h1>
-<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Real-time Neural Fraud Analysis Node 0-7</p>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1"></p>
 </div>
 <div class="flex gap-4">
 <div class="px-3 py-1 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
@@ -289,7 +296,7 @@
 <div class="relative group">
 <!-- Glow effect -->
 <div class="absolute -inset-1 bg-gradient-to-r from-primary/20 via-tertiary/20 to-primary/20 rounded-2xl blur-md opacity-25 group-focus-within:opacity-100 transition-opacity"></div>
-<div class="relative flex items-center bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2 gap-2 shadow-2xl">
+<div class="relative flex items-center bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-2 gap-2 ">
 <button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" id="detect-attach-btn" type="button">
 <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
 </button>
@@ -298,7 +305,7 @@
 <button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" id="detect-mic-btn" title="开始录音" type="button">
 <span class="material-symbols-outlined" data-icon="mic">mic</span>
 </button>
-<button class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl shadow-[0_0_15px_rgba(92,191,255,0.3)] hover:scale-105 active:scale-95 transition-all" id="detect-send-btn" type="button">
+<button class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-xl shadow-[0_0_15px_rgba(var(--rgb-primary),0.3)] hover:scale-105 active:scale-95 transition-all" id="detect-send-btn" type="button">
 <span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
 </button>
 </div>
@@ -322,13 +329,12 @@
 预警模式
 </button>
 </div>
-<!-- Detection Specific Settings (Visible when Detection Mode active) -->
+<!-- Detection Specific Settings -->
 <div class="flex items-center gap-6">
-<!-- Notification Methods -->
 <div class="flex items-center gap-3 border-l border-outline-variant/20 pl-6">
 <span class="text-[10px] font-bold text-outline-variant uppercase tracking-tighter mr-1">通知方式:</span>
 <div class="flex gap-2">
-<button class="w-7 h-7 flex items-center justify-center rounded border border-tertiary/40 bg-tertiary/10 text-tertiary shadow-[0_0_8px_rgba(0,227,253,0.2)]" title="手机">
+<button class="w-7 h-7 flex items-center justify-center rounded border border-tertiary/40 bg-tertiary/10 text-tertiary shadow-[0_0_8px_rgba(var(--rgb-tertiary),0.2)]" title="手机">
 <span class="material-symbols-outlined text-[16px]">smartphone</span>
 </button>
 <button class="w-7 h-7 flex items-center justify-center rounded border border-outline-variant/30 text-on-surface-variant hover:border-tertiary/40 hover:text-tertiary transition-all" title="短信">
@@ -373,7 +379,7 @@
 </div>
 <div class="flex justify-end gap-3">
 <button class="px-5 py-2.5 rounded-xl border border-outline-variant/20 text-on-surface-variant hover:text-on-surface hover:border-outline/40 transition-all" data-delete-chat-cancel="button" type="button">取消</button>
-<button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-error to-[#ff8a7e] text-on-error font-bold shadow-[0_0_20px_rgba(255,113,108,0.22)] hover:brightness-110 active:scale-[0.98] transition-all disabled:cursor-not-allowed disabled:opacity-60" id="delete-chat-confirm-btn" type="button">确认删除</button>
+<button class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-error to-[#ff8a7e] text-on-error font-bold shadow-[0_0_20px_rgba(var(--rgb-error),0.22)] hover:brightness-110 active:scale-[0.98] transition-all disabled:cursor-not-allowed disabled:opacity-60" id="delete-chat-confirm-btn" type="button">确认删除</button>
 </div>
 </div>
 </div>
@@ -382,6 +388,12 @@
 <div class="fixed top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none z-0"></div>
 <div class="fixed bottom-0 left-0 w-64 h-64 bg-tertiary/5 blur-[120px] pointer-events-none z-0"></div>
 
+<script type="module">
+  import { initTheme, mountThemeSwitcher } from '/ui/src/common/theme-switcher.js';
+  initTheme();
+  const mount = document.getElementById("theme-switcher-mount");
+  if (mount) mountThemeSwitcher(mount);
+</script>
 <script>
 (function () {
 const map = {
@@ -400,15 +412,15 @@ const navLinks = Array.from(document.querySelectorAll('nav a[href]')).filter((a)
 );
 
 navLinks.forEach((a) => {
-a.classList.remove('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
-a.classList.add('text-[#e1e5f3]', 'opacity-70');
+a.classList.remove('text-[var(--color-tertiary)]', 'border-b-2', 'border-[var(--color-tertiary)]', 'pb-1');
+a.classList.add('text-[var(--color-on-surface)]', 'opacity-70');
 });
 
 const activeLink = navLinks.find((a) => a.getAttribute('href') === activeHref);
 if (!activeLink) return;
 
-activeLink.classList.remove('text-[#e1e5f3]', 'opacity-70');
-activeLink.classList.add('text-[#81ecff]', 'border-b-2', 'border-[#81ecff]', 'pb-1');
+activeLink.classList.remove('text-[var(--color-on-surface)]', 'opacity-70');
+activeLink.classList.add('text-[var(--color-primary)]', 'border-b-2', 'border-[var(--color-primary)]', 'pb-1');
 })();
 </script>
 <script src="/ui/src/detect-agent-page.js" type="module"></script>
